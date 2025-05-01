@@ -27,8 +27,8 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: ✅ Run unit tests with code coverage
-        run: dotnet test ./DDDAplication.NUnitTests/DDDAplication.NUnitTests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" --verbosity normal
+        run: dotnet test ./Examination.NUnitTests/Examination.NUnitTests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" --verbosity normal
       
       - name: ✅ Run integration tests with code coverage
-        run: dotnet test ./DDDAplication.Api.IntegrationTests/DDDAplication.Api.IntegrationTests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" --verbosity normal
+        run: dotnet test ./Examination.Api.IntegrationTests/Examination.Api.IntegrationTests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" --verbosity normal
 
