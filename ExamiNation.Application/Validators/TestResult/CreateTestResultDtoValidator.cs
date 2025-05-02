@@ -25,10 +25,10 @@ namespace ExamiNation.Application.Validators.NewFolder
             RuleFor(x => x.Status)
                 .IsInEnum().WithMessage("Invalid status value.");
 
-            When(x => x.Options != null && x.Options.Any(), (Action)(() =>
-            {
-                RuleForEach(x => x.Options).SetValidator(new EditOptionDtoValidator());
-            }));
+            //When(x => x.Options != null && x.Options.Any(), (Action)(() =>
+            //{
+            //    RuleForEach(x => x.Options).SetValidator(new EditOptionDtoValidator());
+            //}));
         }
     }
 }
