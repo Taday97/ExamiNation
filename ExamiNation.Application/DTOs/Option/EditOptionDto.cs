@@ -6,7 +6,7 @@ namespace ExamiNation.Application.DTOs.Option
     public class EditOptionDto
     {
         [Required]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required, StringLength(300)]
         public string Text { get; set; }

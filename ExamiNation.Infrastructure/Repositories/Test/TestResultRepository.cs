@@ -6,18 +6,18 @@ using System.Linq.Expressions;
 
 namespace ExamiNation.Infrastructure.Repositories.Test
 {
-    public class OptionRepository : IOptionRepository
+    public class TestResultRepository : ITestResultRepository
     {
         private readonly AppDbContext _context;
 
-        public OptionRepository(AppDbContext context)
+        public TestResultRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Option?> GetByIdAsync(Guid id, bool asNoTracking = true)
+        public async Task<TestResult?> GetByIdAsync(Guid id, bool asNoTracking = true)
         {
-            var query = _context.Options.AsQueryable();
+            var query = _context.TestResults.AsQueryable();
 
             if (asNoTracking)
             {
@@ -27,9 +27,9 @@ namespace ExamiNation.Infrastructure.Repositories.Test
             return await query.FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task<IEnumerable<Option>> GetOptionsAsync(Expression<Func<Option, bool>>? filter = null, bool asNoTracking = true)
+        public async Task<IEnumerable<TestResult>> GetTestResultsAsync(Expression<Func<TestResult, bool>>? filter = null, bool asNoTracking = true)
         {
-            IQueryable<Option> query = _context.Options;
+            IQueryable<TestResult> query = _context.TestResults;
 
             if (asNoTracking)
             {
@@ -44,9 +44,9 @@ namespace ExamiNation.Infrastructure.Repositories.Test
             return await query.ToListAsync();
         }
 
-        public async Task<Option?> FindFirstOptionAsync(Expression<Func<Option, bool>> filter, bool asNoTracking = true)
+        public async Task<TestResult?> FindFirstTestResultAsync(Expression<Func<TestResult, bool>> filter, bool asNoTracking = true)
         {
-            var query = _context.Options.AsQueryable();
+            var query = _context.TestResults.AsQueryable();
 
             if (asNoTracking)
             {
@@ -56,35 +56,35 @@ namespace ExamiNation.Infrastructure.Repositories.Test
             return await query.FirstOrDefaultAsync(filter);
         }
 
-        public async Task<Option> AddAsync(Option option)
+        public async Task<TestResult> AddAsync(TestResult option)
         {
-            await _context.Options.AddAsync(option);
+            await _context.TestResults.AddAsync(option);
             await _context.SaveChangesAsync();
             return option;
         }
 
-        public async Task<Option?> UpdateAsync(Option option)
+        public async Task<TestResult?> UpdateAsync(TestResult option)
         {
-            var existingOption = await _context.Options.FindAsync(option.Id);
-            if (existingOption == null)
+            var existingTestResult = await _context.TestResults.FindAsync(option.Id);
+            if (existingTestResult == null)
             {
                 return null;
             }
 
-            _context.Entry(existingOption).CurrentValues.SetValues(option);
+            _context.Entry(existingTestResult).CurrentValues.SetValues(option);
             await _context.SaveChangesAsync();
-            return existingOption;
+            return existingTestResult;
         }
 
-        public async Task<Option?> DeleteAsync(Guid id)
+        public async Task<TestResult?> DeleteAsync(Guid id)
         {
-            var option = await _context.Options.FindAsync(id);
+            var option = await _context.TestResults.FindAsync(id);
             if (option == null)
             {
                 return null;
             }
 
-            _context.Options.Remove(option);
+            _context.TestResults.Remove(option);
             await _context.SaveChangesAsync();
             return option;
         }

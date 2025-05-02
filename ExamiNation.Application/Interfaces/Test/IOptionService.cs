@@ -6,9 +6,9 @@ namespace ExamiNation.Application.Interfaces.Test
     public interface IOptionService
     {
         Task<ApiResponse<IEnumerable<OptionDto>>> GetAllAsync();
-        Task<ApiResponse<OptionDto>> GetByIdAsync(string id);
+        Task<ApiResponse<OptionDto>> GetByIdAsync(Guid id);
         Task<ApiResponse<OptionDto>> AddAsync(CreateOptionDto OptionDto);
         Task<ApiResponse<OptionDto>> Update(EditOptionDto OptionDto);
-        Task<ApiResponse<OptionDto>> Delete(string id);
+        Task<ApiResponse<OptionDto>> Delete(Guid id);
     }
 }

@@ -36,9 +36,14 @@ namespace ExamiNation.API.Controllers.Test
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOptionById(string id)
+        public async Task<IActionResult> GetOptionById(Guid id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (!Guid.TryParse(id.ToString(), out var guid))
+            {
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid GUID.");
+                return BadRequest(errorResponse.Message);
+            }
+            if (string.IsNullOrEmpty(id.ToString()))
             {
                 return BadRequest("Option ID is required.");
             }
@@ -68,7 +73,7 @@ namespace ExamiNation.API.Controllers.Test
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOption(string id, [FromBody] EditOptionDto editOptionDto)
+        public async Task<IActionResult> UpdateOption(Guid id, [FromBody] EditOptionDto editOptionDto)
         {
 
             if (editOptionDto == null)
@@ -89,9 +94,14 @@ namespace ExamiNation.API.Controllers.Test
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpDelete("{optionId}")]
-        public async Task<IActionResult> DeleteOption(string optionId)
+        public async Task<IActionResult> DeleteOption(Guid optionId)
         {
-            if (string.IsNullOrEmpty(optionId))
+            if (!Guid.TryParse(optionId.ToString(), out var guid))
+            {
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid GUID.");
+                return BadRequest(errorResponse.Message);
+            }
+            if (string.IsNullOrEmpty(optionId.ToString()))
             {
                 var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID is required.");
                 return BadRequest(errorResponse.Message);

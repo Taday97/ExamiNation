@@ -11,14 +11,14 @@ namespace ExamiNation.Application.Services.Test
 {
     public class OptionService : IOptionService
     {
-        private readonly IOptionRepository _roleRepository;
+        private readonly IOptionRepository _optionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public OptionService(IOptionRepository roleRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
+        public OptionService(IOptionRepository optionRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
         {
-            _roleRepository = roleRepository;
+            _optionRepository = optionRepository;
             _userRepository = userRepository;
             _userService = userService;
             _mapper = mapper;
@@ -26,43 +26,43 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<OptionDto>>> GetAllAsync()
         {
-            var roles = await _roleRepository.GetOptionsAsync();
+            var options = await _optionRepository.GetOptionsAsync();
 
-            if (roles == null || !roles.Any())
+            if (options == null || !options.Any())
             {
-                return ApiResponse<IEnumerable<OptionDto>>.CreateErrorResponse("No roles found.");
+                return ApiResponse<IEnumerable<OptionDto>>.CreateErrorResponse("No options found.");
             }
 
-            var roleDtos = _mapper.Map<IEnumerable<OptionDto>>(roles);
+            var optionDtos = _mapper.Map<IEnumerable<OptionDto>>(options);
 
-            return ApiResponse<IEnumerable<OptionDto>>.CreateSuccessResponse("Option retrieved successfully.", roleDtos);
+            return ApiResponse<IEnumerable<OptionDto>>.CreateSuccessResponse("Option retrieved successfully.", optionDtos);
         }
-        public async Task<ApiResponse<OptionDto>> GetByIdAsync(string id)
+        public async Task<ApiResponse<OptionDto>> GetByIdAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid GUID.");
             }
-            var role = await _roleRepository.GetByIdAsync(guid);
-            if (role == null)
+            var option = await _optionRepository.GetByIdAsync(guid);
+            if (option == null)
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse($"Option with id {id} not found.");
             }
 
-            var roleDto = _mapper.Map<OptionDto>(role);
-            return ApiResponse<OptionDto>.CreateSuccessResponse("Option retrieved successfully.", roleDto);
+            var optionDto = _mapper.Map<OptionDto>(option);
+            return ApiResponse<OptionDto>.CreateSuccessResponse("Option retrieved successfully.", optionDto);
         }
 
-        public async Task<ApiResponse<OptionDto>> AddAsync(CreateOptionDto roleDto)
+        public async Task<ApiResponse<OptionDto>> AddAsync(CreateOptionDto optionDto)
         {
-            if (roleDto == null)
+            if (optionDto == null)
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse("Option data cannot be null.");
             }
 
-            var roleEntity = _mapper.Map<Option>(roleDto);
+            var optionEntity = _mapper.Map<Option>(optionDto);
 
-            var createdOption = await _roleRepository.AddAsync(roleEntity);
+            var createdOption = await _optionRepository.AddAsync(optionEntity);
 
             var createdOptionDto = _mapper.Map<OptionDto>(createdOption);
 
@@ -70,28 +70,28 @@ namespace ExamiNation.Application.Services.Test
 
         }
 
-        public async Task<ApiResponse<OptionDto>> Delete(string id)
+        public async Task<ApiResponse<OptionDto>> Delete(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid GUID.");
             }
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id.ToString()))
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse("Option ID is required.");
             }
 
-            var role = await _roleRepository.GetByIdAsync(guid);
-            if (role == null)
+            var option = await _optionRepository.GetByIdAsync(guid);
+            if (option == null)
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse($"Option with id {id} not found.");
             }
 
-            var rolDelete = await _roleRepository.DeleteAsync(guid);
+            var rolDelete = await _optionRepository.DeleteAsync(guid);
 
-            var roleDto = _mapper.Map<OptionDto>(role);
+            var optionDto = _mapper.Map<OptionDto>(option);
 
-            return ApiResponse<OptionDto>.CreateSuccessResponse("Option deleted successfully.", roleDto);
+            return ApiResponse<OptionDto>.CreateSuccessResponse("Option deleted successfully.", optionDto);
         }
 
         public async Task<ApiResponse<OptionDto>> Update(EditOptionDto editOptionDto)
@@ -104,18 +104,18 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid GUID.");
             }
-            var role = await _roleRepository.GetByIdAsync(guid);
-            if (role == null)
+            var option = await _optionRepository.GetByIdAsync(guid);
+            if (option == null)
             {
                 return ApiResponse<OptionDto>.CreateErrorResponse($"Option with id {editOptionDto.Id} not found.");
             }
 
-            _mapper.Map(editOptionDto, role);
+            _mapper.Map(editOptionDto, option);
 
-            await _roleRepository.UpdateAsync(role);
+            await _optionRepository.UpdateAsync(option);
 
-            OptionDto roleDto = _mapper.Map<OptionDto>(role);
-            return ApiResponse<OptionDto>.CreateSuccessResponse("Option updated successfully.", roleDto);
+            OptionDto optionDto = _mapper.Map<OptionDto>(option);
+            return ApiResponse<OptionDto>.CreateSuccessResponse("Option updated successfully.", optionDto);
         }
 
 

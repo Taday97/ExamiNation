@@ -1,4 +1,4 @@
-﻿namespace ExamiNation.Application.Common.Authorization
+﻿namespace ExamiNation.Application.Common.Autorization
 {
     public static class RoleNames
     {

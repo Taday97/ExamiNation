@@ -6,18 +6,18 @@ using System.Linq.Expressions;
 
 namespace ExamiNation.Infrastructure.Repositories.Test
 {
-    public class OptionRepository : IOptionRepository
+    public class QuestionRepository : IQuestionRepository
     {
         private readonly AppDbContext _context;
 
-        public OptionRepository(AppDbContext context)
+        public QuestionRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<Option?> GetByIdAsync(Guid id, bool asNoTracking = true)
+        public async Task<Question?> GetByIdAsync(Guid id, bool asNoTracking = true)
         {
-            var query = _context.Options.AsQueryable();
+            var query = _context.Questions.AsQueryable();
 
             if (asNoTracking)
             {
@@ -27,9 +27,9 @@ namespace ExamiNation.Infrastructure.Repositories.Test
             return await query.FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task<IEnumerable<Option>> GetOptionsAsync(Expression<Func<Option, bool>>? filter = null, bool asNoTracking = true)
+        public async Task<IEnumerable<Question>> GetQuestionsAsync(Expression<Func<Question, bool>>? filter = null, bool asNoTracking = true)
         {
-            IQueryable<Option> query = _context.Options;
+            IQueryable<Question> query = _context.Questions;
 
             if (asNoTracking)
             {
@@ -44,9 +44,9 @@ namespace ExamiNation.Infrastructure.Repositories.Test
             return await query.ToListAsync();
         }
 
-        public async Task<Option?> FindFirstOptionAsync(Expression<Func<Option, bool>> filter, bool asNoTracking = true)
+        public async Task<Question?> FindFirstQuestionAsync(Expression<Func<Question, bool>> filter, bool asNoTracking = true)
         {
-            var query = _context.Options.AsQueryable();
+            var query = _context.Questions.AsQueryable();
 
             if (asNoTracking)
             {
@@ -56,35 +56,35 @@ namespace ExamiNation.Infrastructure.Repositories.Test
             return await query.FirstOrDefaultAsync(filter);
         }
 
-        public async Task<Option> AddAsync(Option option)
+        public async Task<Question> AddAsync(Question option)
         {
-            await _context.Options.AddAsync(option);
+            await _context.Questions.AddAsync(option);
             await _context.SaveChangesAsync();
             return option;
         }
 
-        public async Task<Option?> UpdateAsync(Option option)
+        public async Task<Question?> UpdateAsync(Question option)
         {
-            var existingOption = await _context.Options.FindAsync(option.Id);
-            if (existingOption == null)
+            var existingQuestion = await _context.Questions.FindAsync(option.Id);
+            if (existingQuestion == null)
             {
                 return null;
             }
 
-            _context.Entry(existingOption).CurrentValues.SetValues(option);
+            _context.Entry(existingQuestion).CurrentValues.SetValues(option);
             await _context.SaveChangesAsync();
-            return existingOption;
+            return existingQuestion;
         }
 
-        public async Task<Option?> DeleteAsync(Guid id)
+        public async Task<Question?> DeleteAsync(Guid id)
         {
-            var option = await _context.Options.FindAsync(id);
+            var option = await _context.Questions.FindAsync(id);
             if (option == null)
             {
                 return null;
             }
 
-            _context.Options.Remove(option);
+            _context.Questions.Remove(option);
             await _context.SaveChangesAsync();
             return option;
         }

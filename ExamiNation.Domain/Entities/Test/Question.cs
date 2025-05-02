@@ -15,12 +15,11 @@ namespace ExamiNation.Domain.Entities.Test
         [Required]
         public QuestionType Type { get;  set; }
 
-        // FK 
         [Required]
         public Guid TestId { get;  set; }
         public Test Test { get;  set; }
 
-        public virtual ICollection<Option> Options { get; private set; } = new List<Option>();
+        public virtual ICollection<Option> Options { get;  set; }
         public virtual ICollection<Answer> Answers { get; set; }
     }
 

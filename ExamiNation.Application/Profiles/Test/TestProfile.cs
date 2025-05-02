@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using ExamiNation.Application.DTOs.Option;
+using ExamiNation.Application.DTOs.Test;
 using ExamiNation.Domain.Entities.Test;
+using TestEntity = ExamiNation.Domain.Entities.Test.Test;
 
 namespace ExamiNation.Application.Profiles.Test
 {
@@ -8,9 +9,9 @@ namespace ExamiNation.Application.Profiles.Test
     {
         public TestProfile()
         {
-            CreateMap<Option, OptionDto>().ReverseMap();
-            CreateMap<CreateOptionDto, Option>();
-            CreateMap<EditOptionDto, Option>().ReverseMap();
+            CreateMap<TestEntity, TestDto>().ReverseMap();
+            CreateMap<CreateTestDto, TestEntity>();
+            CreateMap<EditTestDto, TestEntity>().ReverseMap();
         }
     }
 }

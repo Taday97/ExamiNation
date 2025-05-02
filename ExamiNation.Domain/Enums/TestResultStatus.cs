@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace ExamiNation.Domain.Enums
 {
-    public enum TestType
+    public enum TestResultStatus
     {
-        IQ,
-        Personality,
-        Skills,
-        Other
+        InProgress,
+        Completed,
+        Abandoned
     }
 }

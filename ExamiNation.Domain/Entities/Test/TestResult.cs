@@ -1,4 +1,5 @@
 ﻿using ExamiNation.Domain.Entities.Security;
+using ExamiNation.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,6 +21,8 @@ namespace ExamiNation.Domain.Entities.Test
         [Required]
         [Precision(10, 4)]
         public decimal Score { get;  set; }
+
+        public TestResultStatus Status { get; set; }
 
         public virtual ICollection<Answer> Answers { get;  set; }
     }
