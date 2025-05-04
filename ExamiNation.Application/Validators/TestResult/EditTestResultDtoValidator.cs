@@ -1,4 +1,4 @@
-﻿using ExamiNation.Application.DTOs.Test;
+﻿using ExamiNation.Application.DTOs.TestResult;
 using FluentValidation;
 
 namespace ExamiNation.Application.Validators.TestResult
@@ -21,6 +21,11 @@ namespace ExamiNation.Application.Validators.TestResult
 
             RuleFor(x => x.Status)
                 .IsInEnum().WithMessage("Invalid status value.");
+
+            RuleFor(x => x.CompletedAt)
+              .GreaterThan(x => x.StartedAt)
+              .When(x => x.StartedAt.HasValue && x.CompletedAt.HasValue)
+              .WithMessage("CompletedAt must be after StartedAt.");
 
         }
     }

@@ -1,11 +1,11 @@
-﻿using ExamiNation.Application.DTOs.Test;
+﻿using ExamiNation.Application.DTOs.Question;
 using ExamiNation.Application.Validators.Option;
 using ExamiNation.Domain.Enums;
 using FluentValidation;
 using FluentValidation.Results;
 using Nito.AsyncEx;
 
-namespace ExamiNation.Application.Validators.Test
+namespace ExamiNation.Application.Validators.Question
 {
     public class EditQuestionDtoValidator : AbstractValidator<EditQuestionDto>
     {

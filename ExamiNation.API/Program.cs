@@ -89,7 +89,7 @@ namespace ExamiNation.API
 
             builder.Services.AddApplicationServices();
             builder.Services.AddAutoMapperServices();
-
+         
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();

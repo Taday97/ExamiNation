@@ -15,7 +15,7 @@ namespace ExamiNation.Infrastructure.Repositories.Test
             _context = context;
         }
 
-        public async Task<Question?> GetByIdAsync(Guid id, bool asNoTracking = true)
+        public async Task<Question?> GetByIdAsync( Guid id,bool asNoTracking = true, params Expression<Func<Question, object>>[] includes)
         {
             var query = _context.Questions.AsQueryable();
 
@@ -24,10 +24,23 @@ namespace ExamiNation.Infrastructure.Repositories.Test
                 query = query.AsNoTracking();
             }
 
-            return await query.FirstOrDefaultAsync(r => r.Id == id);
+            if (includes != null && includes.Any())
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(q => q.Id == id);
         }
 
-        public async Task<IEnumerable<Question>> GetQuestionsAsync(Expression<Func<Question, bool>>? filter = null, bool asNoTracking = true)
+
+
+        public async Task<IEnumerable<Question>> GetQuestionsAsync(
+        Expression<Func<Question, bool>>? filter = null,
+        bool asNoTracking = true,
+        params Expression<Func<Question, object>>[] includes) 
         {
             IQueryable<Question> query = _context.Questions;
 
@@ -41,10 +54,20 @@ namespace ExamiNation.Infrastructure.Repositories.Test
                 query = query.Where(filter);
             }
 
+            if (includes != null && includes.Any())
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
             return await query.ToListAsync();
         }
 
-        public async Task<Question?> FindFirstQuestionAsync(Expression<Func<Question, bool>> filter, bool asNoTracking = true)
+
+        public async Task<Question?> FindFirstQuestionAsync(Expression<Func<Question, bool>> filter,bool asNoTracking = true,
+        params Expression<Func<Question, object>>[] includes) 
         {
             var query = _context.Questions.AsQueryable();
 
@@ -53,8 +76,19 @@ namespace ExamiNation.Infrastructure.Repositories.Test
                 query = query.AsNoTracking();
             }
 
-            return await query.FirstOrDefaultAsync(filter);
+            query = query.Where(filter);
+
+            if (includes != null && includes.Any())
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync();
         }
+
 
         public async Task<Question> AddAsync(Question option)
         {

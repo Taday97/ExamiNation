@@ -195,14 +195,38 @@ namespace ExamiNation.Infrastructure.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Test", b =>
+            modelBuilder.Entity("ExamiNation.Domain.Entities.Test.ScoreRange", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Classification")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("MaxScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinScore")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TestId");
+
+                    b.ToTable("ScoreRanges");
+                });
+
+            modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Test", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -216,12 +240,6 @@ namespace ExamiNation.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime?>("StartedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -237,9 +255,18 @@ namespace ExamiNation.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("Score")
                         .HasPrecision(10, 4)
                         .HasColumnType("decimal(10,4)");
+
+                    b.Property<DateTime?>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("TestId")
                         .HasColumnType("uniqueidentifier");
@@ -407,6 +434,17 @@ namespace ExamiNation.Infrastructure.Migrations
                     b.Navigation("Test");
                 });
 
+            modelBuilder.Entity("ExamiNation.Domain.Entities.Test.ScoreRange", b =>
+                {
+                    b.HasOne("ExamiNation.Domain.Entities.Test.Test", "Test")
+                        .WithMany("ScoreRanges")
+                        .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Test");
+                });
+
             modelBuilder.Entity("ExamiNation.Domain.Entities.Test.TestResult", b =>
                 {
                     b.HasOne("ExamiNation.Domain.Entities.Test.Test", "Test")
@@ -492,6 +530,8 @@ namespace ExamiNation.Infrastructure.Migrations
             modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Test", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("ScoreRanges");
 
                     b.Navigation("TestResults");
                 });

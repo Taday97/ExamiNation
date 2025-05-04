@@ -1,4 +1,5 @@
 ﻿using ExamiNation.Application.DTOs.TestResult;
+using ExamiNation.Application.Validators.Answer;
 using ExamiNation.Application.Validators.Option;
 using FluentValidation;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExamiNation.Application.Validators.NewFolder
+namespace ExamiNation.Application.Validators.TestResult
 {
     public class CreateTestResultDtoValidator : AbstractValidator<CreateTestResultDto>
     {
@@ -22,13 +23,15 @@ namespace ExamiNation.Application.Validators.NewFolder
             RuleFor(x => x.Score)
                 .GreaterThanOrEqualTo(0).WithMessage("Score must be a non-negative number.");
 
-            RuleFor(x => x.Status)
-                .IsInEnum().WithMessage("Invalid status value.");
+            RuleFor(x => x.CompletedAt)
+               .GreaterThan(x => x.StartedAt)
+               .When(x => x.StartedAt.HasValue && x.CompletedAt.HasValue)
+               .WithMessage("CompletedAt must be after StartedAt.");
 
-            //When(x => x.Options != null && x.Options.Any(), (Action)(() =>
-            //{
-            //    RuleForEach(x => x.Options).SetValidator(new EditOptionDtoValidator());
-            //}));
+            When(x => x.Answers != null && x.Answers.Any(), () =>
+            {
+                RuleForEach(x => x.Answers).SetValidator(new CreateAnswerDtoValidator());
+            });
         }
     }
 }

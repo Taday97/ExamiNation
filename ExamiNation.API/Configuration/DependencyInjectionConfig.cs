@@ -1,4 +1,5 @@
 ﻿using ExamiNation.Application;
+using ExamiNation.Infrastructure.Data.Seed;
 using ExamiNation.Infrastructure.Helpers;
 using System.Reflection;
 
@@ -19,6 +20,7 @@ namespace ExamiNation.API.Configuration
             var infrastructureAssembly = Assembly.Load("ExamiNation.Infrastructure");
             services.AddServicesFromAssembly(infrastructureAssembly);
 
+            services.AddScoped<Seeder>();
             services.AddScoped<JwtService>();
 
             return services;

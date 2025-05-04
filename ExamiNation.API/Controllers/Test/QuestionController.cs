@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.Question;
-using ExamiNation.Application.DTOs.Test;
 using ExamiNation.Application.Interfaces.Test;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,14 +39,10 @@ namespace ExamiNation.API.Controllers.Test
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestionById(Guid id)
         {
-            if (!Guid.TryParse(id.ToString(), out var guid))
+            if (id == Guid.Empty)
             {
-                var errorResponse = ApiResponse<QuestionDto>.CreateErrorResponse("Question ID must be a valid GUID.");
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Question ID must be a valid non-empty GUID.");
                 return BadRequest(errorResponse.Message);
-            }
-            if (string.IsNullOrEmpty(id.ToString()))
-            {
-                return BadRequest("Question ID is required.");
             }
             var response = await _questionService.GetByIdAsync(id);
 
@@ -56,7 +52,7 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response.Data);
         }
 
-        [HttpGet("by-test/{testId}")]
+        [HttpGet("test/{testId}")]
         public async Task<IActionResult> GetQuestionsByTest(Guid testId)
         {
             var result = await _questionService.GetByTestIdAsync(testId);
@@ -82,6 +78,11 @@ namespace ExamiNation.API.Controllers.Test
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateQuestion(Guid id, [FromBody] EditQuestionDto editQuestionDto)
         {
+            if (id == Guid.Empty)
+            {
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Question ID must be a valid non-empty GUID.");
+                return BadRequest(errorResponse.Message);
+            }
 
             if (editQuestionDto == null)
             {
@@ -100,21 +101,16 @@ namespace ExamiNation.API.Controllers.Test
         }
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
-        [HttpDelete("{questionId}")]
-        public async Task<IActionResult> DeleteQuestion(Guid questionId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQuestion(Guid id)
         {
-            if (!Guid.TryParse(questionId.ToString(), out var guid))
+            if (id == Guid.Empty)
             {
-                var errorResponse = ApiResponse<QuestionDto>.CreateErrorResponse("Question ID must be a valid GUID.");
-                return BadRequest(errorResponse.Message);
-            }
-            if (string.IsNullOrEmpty(questionId.ToString()))
-            {
-                var errorResponse = ApiResponse<QuestionDto>.CreateErrorResponse("Question ID is required.");
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Question ID must be a valid non-empty GUID.");
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _questionService.Delete(questionId);
+            var response = await _questionService.Delete(id);
 
             if (!response.Success)
                 return NotFound(response.Message);

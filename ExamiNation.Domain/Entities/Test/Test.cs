@@ -20,14 +20,10 @@ namespace ExamiNation.Domain.Entities.Test
         [Required]
         public DateTime CreatedAt { get;  set; }
 
-        public DateTime? StartedAt { get;  set; }
-        public DateTime? CompletedAt { get;  set; }
-
-        [Required]
-        public TestStatus Status { get;  set; }
 
         public virtual ICollection<Question> Questions { get;  set; }
         public virtual ICollection<TestResult> TestResults { get;  set; }
+        public virtual ICollection<ScoreRange> ScoreRanges { get;  set; }
         
     }
 

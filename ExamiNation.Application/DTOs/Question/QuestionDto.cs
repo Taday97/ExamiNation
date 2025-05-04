@@ -1,7 +1,7 @@
 ﻿using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Domain.Enums;
 
-namespace ExamiNation.Application.DTOs.Test
+namespace ExamiNation.Application.DTOs.Question
 {
     public class QuestionDto
     {
@@ -13,8 +13,7 @@ namespace ExamiNation.Application.DTOs.Test
 
         public Guid TestId { get; set; }
 
-        public string TestText { get; set; }
+        public string TestName { get; set; }
 
-        public List<OptionDto> Options { get; set; } = new();
     }
 }

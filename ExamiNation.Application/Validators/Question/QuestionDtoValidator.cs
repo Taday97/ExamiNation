@@ -1,8 +1,8 @@
-﻿using ExamiNation.Application.DTOs.Test;
+﻿using ExamiNation.Application.DTOs.Question;
 using ExamiNation.Application.Validators.Option;
 using FluentValidation;
 
-namespace ExamiNation.Application.Validators.Test
+namespace ExamiNation.Application.Validators.Question
 {
     public class QuestionDtoValidator : AbstractValidator<QuestionDto>
     {
@@ -21,11 +21,9 @@ namespace ExamiNation.Application.Validators.Test
             RuleFor(x => x.TestId)
                 .NotEmpty().WithMessage("Test ID is required.");
 
-            RuleFor(x => x.TestText)
-                .NotEmpty().WithMessage("Test text is required.");
+            RuleFor(x => x.TestName)
+                .NotEmpty().WithMessage("Test name is required.");
 
-            RuleForEach(x => x.Options)
-                .SetValidator(new OptionDtoValidator());
         }
     }
 }

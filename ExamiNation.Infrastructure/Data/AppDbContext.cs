@@ -71,5 +71,6 @@ namespace ExamiNation.Infrastructure.Data
         public DbSet<Question> Questions { get; set; }
         public DbSet<Test> Tests { get; set; }
         public DbSet<TestResult> TestResults { get; set; }
+        public DbSet<ScoreRange> ScoreRanges { get; set; }
     }
 }

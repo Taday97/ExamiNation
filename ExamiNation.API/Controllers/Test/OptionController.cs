@@ -38,15 +38,12 @@ namespace ExamiNation.API.Controllers.Test
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOptionById(Guid id)
         {
-            if (!Guid.TryParse(id.ToString(), out var guid))
+            if (id == Guid.Empty)
             {
-                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid GUID.");
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid non-empty GUID.");
                 return BadRequest(errorResponse.Message);
             }
-            if (string.IsNullOrEmpty(id.ToString()))
-            {
-                return BadRequest("Option ID is required.");
-            }
+
             var response = await _optionService.GetByIdAsync(id);
 
             if (!response.Success)
@@ -75,6 +72,11 @@ namespace ExamiNation.API.Controllers.Test
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOption(Guid id, [FromBody] EditOptionDto editOptionDto)
         {
+            if (id == Guid.Empty)
+            {
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid non-empty GUID.");
+                return BadRequest(errorResponse.Message);
+            }
 
             if (editOptionDto == null)
             {
@@ -93,21 +95,16 @@ namespace ExamiNation.API.Controllers.Test
         }
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
-        [HttpDelete("{optionId}")]
-        public async Task<IActionResult> DeleteOption(Guid optionId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOption(Guid id)
         {
-            if (!Guid.TryParse(optionId.ToString(), out var guid))
+            if (id == Guid.Empty)
             {
-                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid GUID.");
-                return BadRequest(errorResponse.Message);
-            }
-            if (string.IsNullOrEmpty(optionId.ToString()))
-            {
-                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID is required.");
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Option ID must be a valid non-empty GUID.");
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _optionService.Delete(optionId);
+            var response = await _optionService.Delete(id);
 
             if (!response.Success)
                 return NotFound(response.Message);

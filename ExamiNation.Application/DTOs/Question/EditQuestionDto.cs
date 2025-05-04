@@ -2,7 +2,7 @@
 using ExamiNation.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExamiNation.Application.DTOs.Test
+namespace ExamiNation.Application.DTOs.Question
 {
     public class EditQuestionDto
     {

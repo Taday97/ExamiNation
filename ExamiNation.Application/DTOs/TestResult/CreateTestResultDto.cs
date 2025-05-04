@@ -1,5 +1,5 @@
-﻿using ExamiNation.Application.DTOs.Option;
-using ExamiNation.Application.DTOs.Role;
+﻿using ExamiNation.Application.DTOs.Answer;
+using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -18,8 +18,9 @@ namespace ExamiNation.Application.DTOs.TestResult
         [Precision(10, 4)]
         public decimal Score { get; set; }
 
-        public TestResultStatus Status { get; set; }
-
         public List<CreateAnswerDto>? Answers { get; set; }
+
+        public DateTime? StartedAt { get;  set; }
+        public DateTime? CompletedAt { get;  set; }
     }
 }

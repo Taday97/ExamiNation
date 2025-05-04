@@ -17,11 +17,5 @@ namespace ExamiNation.Application.DTOs.Test
 
         [Required]
         public TestType Type { get; set; }
-
-        public DateTime? StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-
-        [Required]
-        public TestStatus Status { get; set; }
     }
 }

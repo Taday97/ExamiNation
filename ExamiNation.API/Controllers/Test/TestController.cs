@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.Test;
 using ExamiNation.Application.Interfaces.Test;
 using Microsoft.AspNetCore.Authorization;
@@ -38,9 +39,10 @@ namespace ExamiNation.API.Controllers.Test
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTestById(Guid id)
         {
-            if (string.IsNullOrEmpty(id.ToString()))
+            if (id == Guid.Empty)
             {
-                return BadRequest("Test ID is required.");
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Test ID must be a valid non-empty GUID.");
+                return BadRequest(errorResponse.Message);
             }
             var response = await _testService.GetByIdAsync(id);
 
@@ -70,7 +72,11 @@ namespace ExamiNation.API.Controllers.Test
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTest(Guid id, [FromBody] EditTestDto editTestDto)
         {
-
+            if (id == Guid.Empty)
+            {
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Test ID must be a valid non-empty GUID.");
+                return BadRequest(errorResponse.Message);
+            }
             if (editTestDto == null)
             {
                 return BadRequest("Test data cannot be null.");
@@ -88,16 +94,16 @@ namespace ExamiNation.API.Controllers.Test
         }
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
-        [HttpDelete("{testId}")]
-        public async Task<IActionResult> DeleteTest(Guid testId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTest(Guid id)
         {
-            if (string.IsNullOrEmpty(testId.ToString()))
+            if (id == Guid.Empty)
             {
-                var errorResponse = ApiResponse<TestDto>.CreateErrorResponse("Test ID is required.");
+                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("Test ID must be a valid non-empty GUID.");
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _testService.Delete(testId);
+            var response = await _testService.Delete(id);
 
             if (!response.Success)
                 return NotFound(response.Message);

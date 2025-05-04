@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ExamiNation.Application.DTOs.Role
+namespace ExamiNation.Application.DTOs.Answer
 {
     public class CreateAnswerDto
     {

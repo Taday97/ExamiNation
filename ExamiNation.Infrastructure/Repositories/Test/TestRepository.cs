@@ -27,6 +27,17 @@ namespace ExamiNation.Infrastructure.Repositories.Test
 
             return await query.FirstOrDefaultAsync(r => r.Id == id);
         }
+        public async Task<TestEntity?> GetByIdWithQuestionsAsync(Guid id, bool asNoTracking = true)
+        {
+            var query = _context.Tests.Include("Questions").Include("Options").AsQueryable();
+
+            if (asNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.FirstOrDefaultAsync(r => r.Id == id);
+        }
 
         public async Task<IEnumerable<TestEntity>> GetTestEntitysAsync(Expression<Func<TestEntity, bool>>? filter = null, bool asNoTracking = true)
         {

@@ -1,0 +1,1099 @@
+﻿{
+  "name": "Test Otis Básico",
+  "description": "Evaluación de habilidades cognitivas y razonamiento lógico, basada en el Test de Otis-Lennon.",
+  "type": 0,
+  "questions": [
+    {
+      "text": "1. Lo opuesto al odio es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "enemigo",
+          "isCorrect": false
+        },
+        {
+          "text": "temor",
+          "isCorrect": false
+        },
+        {
+          "text": "amor",
+          "isCorrect": true
+        },
+        {
+          "text": "alegría",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "2. Si tres lápices cuestan cinco pesos ¿Cuántos lápices podré comprar con cincuenta pesos?",
+      "type": 0,
+      "options": [
+        {
+          "text": "30",
+          "isCorrect": false
+        },
+        {
+          "text": "33",
+          "isCorrect": true
+        },
+        {
+          "text": "25",
+          "isCorrect": false
+        },
+        {
+          "text": "20",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "3. Un pájaro no siempre tiene:",
+      "type": 0,
+      "options": [
+        {
+          "text": "alas",
+          "isCorrect": false
+        },
+        {
+          "text": "ojos",
+          "isCorrect": false
+        },
+        {
+          "text": "nido",
+          "isCorrect": true
+        },
+        {
+          "text": "pico",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "4. Lo opuesto a honor es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "derrota",
+          "isCorrect": false
+        },
+        {
+          "text": "villanía",
+          "isCorrect": true
+        },
+        {
+          "text": "humillación",
+          "isCorrect": false
+        },
+        {
+          "text": "cobardía",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "5. El zorro se parece más a:",
+      "type": 0,
+      "options": [
+        {
+          "text": "el lobo",
+          "isCorrect": true
+        },
+        {
+          "text": "la cabra",
+          "isCorrect": false
+        },
+        {
+          "text": "el cerdo",
+          "isCorrect": false
+        },
+        {
+          "text": "el tigre",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "6. El silencio tiene la misma relación con el sonido que la oscuridad con:",
+      "type": 0,
+      "options": [
+        {
+          "text": "sótano",
+          "isCorrect": false
+        },
+        {
+          "text": "luz",
+          "isCorrect": true
+        },
+        {
+          "text": "ruido",
+          "isCorrect": false
+        },
+        {
+          "text": "noche",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "7. Un grupo consistía en dos matrimonios, dos hermanos y dos hermanas ¿Cuál es el número mínimo de personas que podrían componer el grupo?",
+      "type": 0,
+      "options": [
+        {
+          "text": "6",
+          "isCorrect": true
+        },
+        {
+          "text": "8",
+          "isCorrect": false
+        },
+        {
+          "text": "4",
+          "isCorrect": false
+        },
+        {
+          "text": "7",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "8. Un árbol siempre tiene:",
+      "type": 0,
+      "options": [
+        {
+          "text": "hojas",
+          "isCorrect": false
+        },
+        {
+          "text": "fruto",
+          "isCorrect": false
+        },
+        {
+          "text": "raíces",
+          "isCorrect": true
+        },
+        {
+          "text": "sombra",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "9. Lo opuesto de lo económico es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "barato",
+          "isCorrect": false
+        },
+        {
+          "text": "gastador",
+          "isCorrect": true
+        },
+        {
+          "text": "rico",
+          "isCorrect": false
+        },
+        {
+          "text": "avaro",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "10. La plata es más cara que el hierro porque es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "más pesada",
+          "isCorrect": false
+        },
+        {
+          "text": "más escasa",
+          "isCorrect": true
+        },
+        {
+          "text": "más dura",
+          "isCorrect": false
+        },
+        {
+          "text": "más hermosa",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "11. ¿Cuál de las seis razones expresa el significado del refrán: “Comida hecha compañía deshecha”?",
+      "type": 0,
+      "options": [
+        {
+          "text": "No se debe olvidar el beneficio recibido y alejarse de aquél de quien se recibió",
+          "isCorrect": true
+        },
+        {
+          "text": "No hay que separarse de los amigos después de comer",
+          "isCorrect": false
+        },
+        {
+          "text": "Cada uno debe mirar antes por sí mismo que por los otros",
+          "isCorrect": false
+        },
+        {
+          "text": "Es peligroso prolongar la sobremesa",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "12. ¿Cuál de las seis razones dadas en el No. 11 expresa el significado de este proverbio?: “Obra empezada, medio acabada”",
+      "type": 0,
+      "options": [
+        {
+          "text": "La mayor dificultad en cualquier cosa consiste, por lo común, en los principios",
+          "isCorrect": true
+        },
+        {
+          "text": "A nada conduce prolongar demasiado un asunto",
+          "isCorrect": false
+        },
+        {
+          "text": "Es peligroso prolongar la sobremesa",
+          "isCorrect": false
+        },
+        {
+          "text": "Cada uno debe mirar antes por sí mismo que por los otros",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "13. ¿Cuál de las seis razones dadas en el No. 11 explica el proverbio “Antes son mis dientes que mis parientes.”?",
+      "type": 0,
+      "options": [
+        {
+          "text": "Cada uno debe mirar antes por sí mismo que por los otros",
+          "isCorrect": true
+        },
+        {
+          "text": "No se debe olvidar el beneficio recibido y alejarse de aquél de quien se recibió",
+          "isCorrect": false
+        },
+        {
+          "text": "La mayor dificultad en cualquier cosa consiste, por lo común, en los principios",
+          "isCorrect": false
+        },
+        {
+          "text": "A nada conduce prolongar demasiado un asunto",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "14. Una luz eléctrica se relaciona con la bujía (vela de alumbrar) como un automóvil se relaciona con:",
+      "type": 0,
+      "options": [
+        {
+          "text": "un carruaje",
+          "isCorrect": true
+        },
+        {
+          "text": "la electricidad",
+          "isCorrect": false
+        },
+        {
+          "text": "una llanta",
+          "isCorrect": false
+        },
+        {
+          "text": "el resplandor",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "15. Si un caballo puede correr a la velocidad de 6 metros en un ¼ de segundo ¿Cuántos metros corre en 10 segundos?",
+      "type": 0,
+      "options": [
+        {
+          "text": "60",
+          "isCorrect": false
+        },
+        {
+          "text": "600",
+          "isCorrect": false
+        },
+        {
+          "text": "240",
+          "isCorrect": false
+        },
+        {
+          "text": "2400",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "16. Una comida siempre supone:",
+      "type": 0,
+      "options": [
+        {
+          "text": "mesa",
+          "isCorrect": false
+        },
+        {
+          "text": "plato",
+          "isCorrect": false
+        },
+        {
+          "text": "hambre",
+          "isCorrect": false
+        },
+        {
+          "text": "alimento",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "17. De las cinco palabras siguientes cuatro son parecidas ¿Cuál es la que no es parecida a esas cuatro?",
+      "type": 0,
+      "options": [
+        {
+          "text": "postre",
+          "isCorrect": false
+        },
+        {
+          "text": "lima",
+          "isCorrect": true
+        },
+        {
+          "text": "pato",
+          "isCorrect": false
+        },
+        {
+          "text": "papel",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "18. Lo opuesto a nunca es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "a menudo",
+          "isCorrect": false
+        },
+        {
+          "text": "a veces",
+          "isCorrect": false
+        },
+        {
+          "text": "frecuentemente",
+          "isCorrect": false
+        },
+        {
+          "text": "siempre",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "19. Un reloj tiene con el tiempo la misma relación que un termómetro con:",
+      "type": 0,
+      "options": [
+        {
+          "text": "un reloj",
+          "isCorrect": false
+        },
+        {
+          "text": "caliente",
+          "isCorrect": false
+        },
+        {
+          "text": "tubo",
+          "isCorrect": false
+        },
+        {
+          "text": "temperatura",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "20. ¿Cuál de las siguientes palabras debería ponerse en el espacio en blanco para que sea cierta la afirmación: “_____________ los hombres son más bajos que sus esposas”?",
+      "type": 0,
+      "options": [
+        {
+          "text": "siempre",
+          "isCorrect": false
+        },
+        {
+          "text": "a menudo",
+          "isCorrect": false
+        },
+        {
+          "text": "a veces",
+          "isCorrect": false
+        },
+        {
+          "text": "raras veces",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "21. En la siguiente serie hay un número equivocado ¿Cuál debería ocupar su lugar? 1 - 4 - 2 - 5 - 3 - 6 - 4 - 7 - 5 - 9 - 6 - 9",
+      "type": 0,
+      "options": [
+        {
+          "text": "8",
+          "isCorrect": true
+        },
+        {
+          "text": "7",
+          "isCorrect": false
+        },
+        {
+          "text": "9",
+          "isCorrect": false
+        },
+        {
+          "text": "6",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "22. Si las dos primeras proposiciones son ciertas la tercera es: ‘Todos los miembros de este club son Argentinos’, ‘González no es Argentino’, ‘González es miembro de este club’",
+      "type": 0,
+      "options": [
+        {
+          "text": "verdadera",
+          "isCorrect": false
+        },
+        {
+          "text": "falsa",
+          "isCorrect": true
+        },
+        {
+          "text": "dudosa",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "23. Una lucha siempre tiene:",
+      "type": 0,
+      "options": [
+        {
+          "text": "réferi",
+          "isCorrect": false
+        },
+        {
+          "text": "contendientes",
+          "isCorrect": true
+        },
+        {
+          "text": "espectadores",
+          "isCorrect": false
+        },
+        {
+          "text": "aplausos",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "24. ¿Cuál de los números de esta serie aparece antes por segunda vez? 6 - 4 - 5 - 3 - 7 - 0 - 9 - 5 - 9 - 8 - 8 - 6 - 5 - 4 - 7 - 3 - 0 - 8 - 9",
+      "type": 0,
+      "options": [
+        {
+          "text": "5",
+          "isCorrect": true
+        },
+        {
+          "text": "6",
+          "isCorrect": false
+        },
+        {
+          "text": "8",
+          "isCorrect": false
+        },
+        {
+          "text": "9",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "25. La luna se relaciona con la tierra como la tierra con:",
+      "type": 0,
+      "options": [
+        {
+          "text": "Marte",
+          "isCorrect": false
+        },
+        {
+          "text": "el sol",
+          "isCorrect": true
+        },
+        {
+          "text": "las nubes",
+          "isCorrect": false
+        },
+        {
+          "text": "el universo",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "26. ¿Qué palabra hace falta para que sea verdadera la siguiente proposición? “Los padres son ____________ más prudentes que los hijos”",
+      "type": 0,
+      "options": [
+        {
+          "text": "siempre",
+          "isCorrect": false
+        },
+        {
+          "text": "usualmente",
+          "isCorrect": true
+        },
+        {
+          "text": "mucho",
+          "isCorrect": false
+        },
+        {
+          "text": "raras veces",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "27. Lo opuesto a torpe es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "fuerte",
+          "isCorrect": false
+        },
+        {
+          "text": "bonito",
+          "isCorrect": false
+        },
+        {
+          "text": "hábil",
+          "isCorrect": true
+        },
+        {
+          "text": "rápido",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "28. “Una madre siempre es___________ que su hija”",
+      "type": 0,
+      "options": [
+        {
+          "text": "más sabia",
+          "isCorrect": false
+        },
+        {
+          "text": "más alta",
+          "isCorrect": false
+        },
+        {
+          "text": "más vieja",
+          "isCorrect": true
+        },
+        {
+          "text": "más arrugada",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "29. ¿Cuál de las cinco proposiciones indica el significado del proverbio “Haz bien y guárdate”?",
+      "type": 0,
+      "options": [
+        {
+          "text": "El bien ha de hacerse desinteresadamente",
+          "isCorrect": false
+        },
+        {
+          "text": "Nunca se hace el bien sin ningún provecho",
+          "isCorrect": false
+        },
+        {
+          "text": "Hay que obrar bien y no publicarlo",
+          "isCorrect": true
+        },
+        {
+          "text": "Los ingratos pagan con malas obras el bien que se les hace",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "30. ¿Cuál de las proposiciones del No. 29 explica el proverbio: “Haz bien y no mires a quien”?",
+      "type": 0,
+      "options": [
+        {
+          "text": "El bien ha de hacerse desinteresadamente",
+          "isCorrect": true
+        },
+        {
+          "text": "Nunca se hace el bien sin ningún provecho",
+          "isCorrect": false
+        },
+        {
+          "text": "Hay que obrar bien y no publicarlo",
+          "isCorrect": false
+        },
+        {
+          "text": "Los ingratos pagan con malas obras el bien que se les hace",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "31. ¿Cuál de las proposiciones del No. 29 explica el proverbio: “Haz buena harina y no toques bocina”?",
+      "type": 0,
+      "options": [
+        {
+          "text": "El bien ha de hacerse desinteresadamente",
+          "isCorrect": false
+        },
+        {
+          "text": "Nunca se hace el bien sin ningún provecho",
+          "isCorrect": false
+        },
+        {
+          "text": "Hay que obrar bien y no publicarlo",
+          "isCorrect": true
+        },
+        {
+          "text": "Los ingratos pagan con malas obras el bien que se les hace",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "32. Cuando un individuo enajena su propiedad es porque:",
+      "type": 0,
+      "options": [
+        {
+          "text": "la compra",
+          "isCorrect": false
+        },
+        {
+          "text": "la vende",
+          "isCorrect": true
+        },
+        {
+          "text": "la devuelve",
+          "isCorrect": false
+        },
+        {
+          "text": "la presta",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "33. ¿Qué se relaciona con enfermedad, como cuidado se relaciona con accidente?",
+      "type": 0,
+      "options": [
+        {
+          "text": "doctor",
+          "isCorrect": false
+        },
+        {
+          "text": "cirugía",
+          "isCorrect": false
+        },
+        {
+          "text": "medicina",
+          "isCorrect": true
+        },
+        {
+          "text": "hospital",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "34. De estas cinco cosas, cuatro son parecidas en algo. ¿Cuál es la que no pertenece a ese grupo?",
+      "type": 0,
+      "options": [
+        {
+          "text": "contrabando",
+          "isCorrect": false
+        },
+        {
+          "text": "robo",
+          "isCorrect": false
+        },
+        {
+          "text": "calma",
+          "isCorrect": true
+        },
+        {
+          "text": "estafa",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "35. Si diez cajas llenas de manzanas pesan cuatrocientos kilogramos ¿Cuánto pesan sólo las manzanas, si cada caja pesa 4 kilogramos vacía?",
+      "type": 0,
+      "options": [
+        {
+          "text": "360 kg",
+          "isCorrect": true
+        },
+        {
+          "text": "400 kg",
+          "isCorrect": false
+        },
+        {
+          "text": "380 kg",
+          "isCorrect": false
+        },
+        {
+          "text": "390 kg",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "36. Lo opuesto de esperanza es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "fe",
+          "isCorrect": false
+        },
+        {
+          "text": "desaliento",
+          "isCorrect": true
+        },
+        {
+          "text": "tristeza",
+          "isCorrect": false
+        },
+        {
+          "text": "odio",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "37. Si todas las letras que ocupan números impares se cruzaran ¿Cuál sería la décima letra no cruzada (No haga marcas en el alfabeto)? A B C D E F G H I J K L M N Ñ O P Q R S T U V W X Y Z",
+      "type": 0,
+      "options": [
+        {
+          "text": "K",
+          "isCorrect": false
+        },
+        {
+          "text": "L",
+          "isCorrect": true
+        },
+        {
+          "text": "M",
+          "isCorrect": false
+        },
+        {
+          "text": "N",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "38. ¿Qué letra en la palabra METACRÓMICO, ocupa el mismo lugar, contando desde el principio en dicha palabra y en el alfabeto? (no cuente la Ch, como letra).",
+      "type": 0,
+      "options": [
+        {
+          "text": "M",
+          "isCorrect": true
+        },
+        {
+          "text": "C",
+          "isCorrect": false
+        },
+        {
+          "text": "O",
+          "isCorrect": false
+        },
+        {
+          "text": "T",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "39. Lo que la gente dice de una persona constituye su:",
+      "type": 0,
+      "options": [
+        {
+          "text": "carácter",
+          "isCorrect": false
+        },
+        {
+          "text": "murmuración",
+          "isCorrect": false
+        },
+        {
+          "text": "reputación",
+          "isCorrect": true
+        },
+        {
+          "text": "personalidad",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "40. Si 2 ½ mts. de tela cuestan 30 pesos ¿Cuánto cuestan 10 metros?",
+      "type": 0,
+      "options": [
+        {
+          "text": "120 pesos",
+          "isCorrect": true
+        },
+        {
+          "text": "100 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "90 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "150 pesos",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "41. Si las palabras siguientes se ordenaran para formar una oración ¿Con qué letra comenzaría la tercera palabra de dicha proposición? (escriba la letra con mayúscula). bajo, contrario, significa, que, lo, alto.",
+      "type": 0,
+      "options": [
+        {
+          "text": "S",
+          "isCorrect": true
+        },
+        {
+          "text": "B",
+          "isCorrect": false
+        },
+        {
+          "text": "C",
+          "isCorrect": false
+        },
+        {
+          "text": "L",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "42. Si las primeras dos proposiciones son verdaderas, la tercera es:\n“Jorge es mayor que Paco”\n“Jaime es mayor que Jorge”\n“Paco es menor que Jaime”",
+      "type": 0,
+      "options": [
+        {
+          "text": "verdadera",
+          "isCorrect": true
+        },
+        {
+          "text": "falsa",
+          "isCorrect": false
+        },
+        {
+          "text": "dudosa",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "43. Suponiendo que en la palabra CONSTITUCIONAL, la primera y la segunda letras se intercambiaran y también la 3ª con la 4ª y la 5ª con la 6ª, etc. escriba (en mayúsculas) la letra que en el caso sería la 12ª contando de izquierda a derecha.",
+      "type": 0,
+      "options": [
+        {
+          "text": "N",
+          "isCorrect": true
+        },
+        {
+          "text": "C",
+          "isCorrect": false
+        },
+        {
+          "text": "L",
+          "isCorrect": false
+        },
+        {
+          "text": "O",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "44. Un número está equivocado en la siguiente serie ¿Cuál debe ir en su lugar? 0 -1 – 3 -6 – 10 -15 – 21 – 28 - 34",
+      "type": 0,
+      "options": [
+        {
+          "text": "36",
+          "isCorrect": true
+        },
+        {
+          "text": "34",
+          "isCorrect": false
+        },
+        {
+          "text": "30",
+          "isCorrect": false
+        },
+        {
+          "text": "38",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "45. Si cuatro y medio metros de tela cuestan 90 pesos ¿Cuántos pesos costarán 2 ½ metros?",
+      "type": 0,
+      "options": [
+        {
+          "text": "50 pesos",
+          "isCorrect": true
+        },
+        {
+          "text": "40 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "45 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "60 pesos",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "46. La influencia de un hombre en la comunidad en que vive debe depender de su:",
+      "type": 0,
+      "options": [
+        {
+          "text": "sabiduría",
+          "isCorrect": true
+        },
+        {
+          "text": "fortuna",
+          "isCorrect": false
+        },
+        {
+          "text": "ambición",
+          "isCorrect": false
+        },
+        {
+          "text": "poder político",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "47. ¿Cuál de las siguientes palabras tiene la misma relación con “poco” que ordinario tiene con respecto a “excepcional”?",
+      "type": 0,
+      "options": [
+        {
+          "text": "nada",
+          "isCorrect": true
+        },
+        {
+          "text": "mucho",
+          "isCorrect": false
+        },
+        {
+          "text": "algo",
+          "isCorrect": false
+        },
+        {
+          "text": "más",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "48. Lo opuesto a traidor es:",
+      "type": 0,
+      "options": [
+        {
+          "text": "amistoso",
+          "isCorrect": false
+        },
+        {
+          "text": "valiente",
+          "isCorrect": false
+        },
+        {
+          "text": "sabio",
+          "isCorrect": false
+        },
+        {
+          "text": "leal",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "49. ¿Cuál de las cinco siguientes palabras tiene menos relación con las otras cuatro?",
+      "type": 0,
+      "options": [
+        {
+          "text": "bueno",
+          "isCorrect": false
+        },
+        {
+          "text": "ancho",
+          "isCorrect": false
+        },
+        {
+          "text": "rojo",
+          "isCorrect": true
+        },
+        {
+          "text": "camino",
+          "isCorrect": false
+        },
+        {
+          "text": "espeso",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "50. Si las dos primeras proposiciones son verdaderas, la tercera es:\\n\\“Algunos de los amigos de López son cordobeses\\”\\n\\“Algunos de los amigos de López son dentistas\\”\\n\\“Algunos de los amigos de López son dentistas cordobeses\\”",
+      "type": 0,
+      "options": [
+        {
+          "text": "verdadera",
+          "isCorrect": false
+        },
+        {
+          "text": "falsa",
+          "isCorrect": false
+        },
+        {
+          "text": "no se sabe",
+          "isCorrect": true
+        }
+      ]
+    }
+  ]
+}

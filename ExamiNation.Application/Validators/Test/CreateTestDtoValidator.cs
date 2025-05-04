@@ -25,13 +25,7 @@ namespace ExamiNation.Application.Validators.Test
             RuleFor(x => x.Type)
                 .IsInEnum().WithMessage("Invalid test type.");
 
-            RuleFor(x => x.Status)
-                .IsInEnum().WithMessage("Invalid test status.");
-
-            RuleFor(x => x.CompletedAt)
-                .GreaterThan(x => x.StartedAt)
-                .When(x => x.StartedAt.HasValue && x.CompletedAt.HasValue)
-                .WithMessage("CompletedAt must be after StartedAt.");
+           
         }
 
         private async Task<bool> NameMustBeUnique(CreateTestDto dto, string name, CancellationToken cancellation)

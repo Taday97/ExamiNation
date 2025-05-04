@@ -1,5 +1,6 @@
-﻿using ExamiNation.Application.DTOs.Role;
-using ExamiNation.Application.DTOs.Test;
+﻿using ExamiNation.Application.DTOs.Answer;
+using ExamiNation.Application.DTOs.Role;
+using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Domain.Enums;
 using FluentValidation;
 
@@ -22,6 +23,7 @@ namespace ExamiNation.Application.Validators.TestResult
 
             RuleFor(x => x.Status)
                 .IsInEnum();
+
 
             RuleFor(x => x.Answers)
                 .NotNull()

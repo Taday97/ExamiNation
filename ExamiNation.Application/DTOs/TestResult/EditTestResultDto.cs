@@ -4,7 +4,7 @@ using ExamiNation.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExamiNation.Application.DTOs.Test
+namespace ExamiNation.Application.DTOs.TestResult
 {
     public class EditTestResultDto
     {
@@ -24,6 +24,8 @@ namespace ExamiNation.Application.DTOs.Test
         public TestResultStatus Status { get; set; }
 
         public List<EditAnswerDto>? Answers { get; set; }
+        public DateTime? CompletedAt { get; internal set; }
+        public DateTime? StartedAt { get; internal set; }
     }
 
 }

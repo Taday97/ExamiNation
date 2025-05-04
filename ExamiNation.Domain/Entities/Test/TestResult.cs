@@ -18,10 +18,15 @@ namespace ExamiNation.Domain.Entities.Test
         public Guid TestId { get;  set; }
         public Test Test { get;  set; }
 
+        public DateTime? StartedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+
         [Required]
         [Precision(10, 4)]
         public decimal Score { get;  set; }
 
+
+        [Required]
         public TestResultStatus Status { get; set; }
 
         public virtual ICollection<Answer> Answers { get;  set; }

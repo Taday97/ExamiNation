@@ -26,17 +26,17 @@ namespace ExamiNation.Application.Validators.Question
             RuleFor(x => x.TestId)
                 .NotEmpty().WithMessage("Test ID is required.");
 
-            //When(x => x.Options != null && x.Options.Any(), (Action)(() =>
-            //{
-            //    RuleForEach(x => x.Options).SetValidator(new EditOptionDtoValidator());
+            When(x => x.Options != null && x.Options.Any(), (Action)(() =>
+            {
+                RuleForEach(x => x.Options).SetValidator(new CreateOptionDtoValidator());
 
-            //    When(x => x.Type == QuestionType.MultipleChoice || x.Type == QuestionType.TrueFalse, () =>
-            //    {
-            //        RuleFor(x => x.Options)
-            //            .Must(options => options.Any(o => o.IsCorrect))
-            //            .WithMessage("At least one correct option is required for MultipleChoice or TrueFalse questions.");
-            //    });
-            //}));
+                When(x => x.Type == QuestionType.MultipleChoice || x.Type == QuestionType.TrueFalse, () =>
+                {
+                    RuleFor(x => x.Options)
+                        .Must(options => options.Any(o => o.IsCorrect))
+                        .WithMessage("At least one correct option is required for MultipleChoice or TrueFalse questions.");
+                });
+            }));
         }
 
         public override ValidationResult Validate(ValidationContext<CreateQuestionDto> context)

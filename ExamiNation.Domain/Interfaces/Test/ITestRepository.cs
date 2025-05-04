@@ -12,6 +12,7 @@ namespace ExamiNation.Domain.Interfaces.Test
     public interface ITestRepository
     {
         Task<TestEntity?> GetByIdAsync(Guid id, bool asNoTracking = true);
+        Task<TestEntity?> GetByIdWithQuestionsAsync(Guid id, bool asNoTracking = true);
 
         Task<IEnumerable<TestEntity>> GetTestEntitysAsync(Expression<Func<TestEntity, bool>> filter = null, bool asNoTracking = true);
 
@@ -22,5 +23,6 @@ namespace ExamiNation.Domain.Interfaces.Test
         Task<TestEntity?> UpdateAsync(TestEntity role);
 
         Task<TestEntity?> DeleteAsync(Guid id);
+       
     }
 }

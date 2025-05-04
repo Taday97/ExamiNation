@@ -1,4 +1,5 @@
-﻿using ExamiNation.Domain.Entities.Test;
+﻿using AutoMapper;
+using ExamiNation.Domain.Entities.Test;
 using System.Linq.Expressions;
 
 namespace ExamiNation.Domain.Interfaces.Test
@@ -6,6 +7,7 @@ namespace ExamiNation.Domain.Interfaces.Test
     public interface ITestResultRepository
     {
         Task<TestResult?> GetByIdAsync(Guid id, bool asNoTracking = true);
+        Task<TestResult?> GetByIdWithAnswersAsync(Guid guid, bool asNoTracking = true);
 
         Task<IEnumerable<TestResult>> GetTestResultsAsync(Expression<Func<TestResult, bool>> filter = null, bool asNoTracking = true);
 
@@ -16,5 +18,6 @@ namespace ExamiNation.Domain.Interfaces.Test
         Task<TestResult?> UpdateAsync(TestResult role);
 
         Task<TestResult?> DeleteAsync(Guid id);
+       
     }
 }

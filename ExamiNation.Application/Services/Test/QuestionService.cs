@@ -2,7 +2,6 @@
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.Question;
-using ExamiNation.Application.DTOs.Test;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Entities.Test;
@@ -28,7 +27,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<QuestionDto>>> GetAllAsync()
         {
-            var questions = await _questionRepository.GetQuestionsAsync();
+            var questions = await _questionRepository.GetQuestionsAsync(null,true,l=>l.Test);
 
             if (questions == null || !questions.Any())
             {
@@ -39,25 +38,25 @@ namespace ExamiNation.Application.Services.Test
 
             return ApiResponse<IEnumerable<QuestionDto>>.CreateSuccessResponse("Question retrieved successfully.", questionDtos);
         }
-        public async Task<ApiResponse<QuestionDto>> GetByIdAsync(Guid id)
+        public async Task<ApiResponse<QuestionDtoWithOptions>> GetByIdAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
-                return ApiResponse<QuestionDto>.CreateErrorResponse("Question ID must be a valid GUID.");
+                return ApiResponse<QuestionDtoWithOptions>.CreateErrorResponse("Question ID must be a valid GUID.");
             }
-            var question = await _questionRepository.GetByIdAsync(guid);
+            var question = await _questionRepository.GetByIdAsync(guid, true, q => q.Options, q => q.Test);
             if (question == null)
             {
-                return ApiResponse<QuestionDto>.CreateErrorResponse($"Question with id {id} not found.");
+                return ApiResponse<QuestionDtoWithOptions>.CreateErrorResponse($"Question with id {id} not found.");
             }
 
-            var questionDto = _mapper.Map<QuestionDto>(question);
-            return ApiResponse<QuestionDto>.CreateSuccessResponse("Question retrieved successfully.", questionDto);
+            var questionDto = _mapper.Map<QuestionDtoWithOptions>(question);
+            return ApiResponse<QuestionDtoWithOptions>.CreateSuccessResponse("Question retrieved successfully.", questionDto);
         }
 
         public async Task<ApiResponse<IEnumerable<QuestionDto>>> GetByTestIdAsync(Guid testId)
         {
-            var questions = await _questionRepository.GetQuestionsAsync(l => l.TestId == testId);
+            var questions = await _questionRepository.GetQuestionsAsync(l => l.TestId == testId,true, l=>l.Test);
 
             if (questions == null || !questions.Any())
             {
