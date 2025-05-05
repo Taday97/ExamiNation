@@ -4,6 +4,9 @@
 
 This project is ideal for showcasing clean architecture, security practices with **ASP.NET Identity**, and robust CI/CD pipelines for automated testing.
 
+![image](https://github.com/user-attachments/assets/78b223b9-96b6-49f6-89f1-113508dd3ba0)
+
+
 ---
 
 ### Key Features:
@@ -16,6 +19,7 @@ This project is ideal for showcasing clean architecture, security practices with
 - **Docker Support**: The application and **SQL Server** database are containerized using Docker for streamlined development and deployment.
 - **CI/CD Pipeline**: Automated testing, building, and deployment using **GitHub Actions**.
 - **Improved Performance**: Repository methods optimized with `AsNoTracking()` for better performance in read-only queries.
+- **Seed Service**: The application includes a **Seed Service** that populates the database with initial test data and classifications based on scores, available in both **English** and **Spanish**.
 
 ---
 
@@ -67,6 +71,18 @@ Follow these steps to set up the application on your local machine using Docker:
 
 ---
 
+### Seed Service for Initial Data:
+
+The application includes a **Seed Service** that automatically populates the database with initial test data and classifications based on scores. This data is available in both **English** and **Spanish**. The `Seed` functionality allows you to:
+
+1. Populate the **test questions**.
+2. Add **classifications** according to the score ranges in both languages.
+3. Seed both English and Spanish versions of the classifications.
+
+To use the Seed service, simply run the application and the data will be added to the database upon startup.
+
+---
+
 ### CI/CD Pipeline:
 
 The project includes a CI/CD pipeline set up using **GitHub Actions**. This pipeline automatically:
@@ -74,4 +90,4 @@ The project includes a CI/CD pipeline set up using **GitHub Actions**. This pipe
 1. **Builds and Tests** the application.
 2. **Deploys** it (future configurations can be added for deployment to a server or cloud platform).
 
-You can view the CI/CD configuration
+You can view the CI/CD configuration in the `.github/workflows` directory.
