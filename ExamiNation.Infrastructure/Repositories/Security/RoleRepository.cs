@@ -6,11 +6,11 @@ using System.Linq.Expressions;
 
 namespace ExamiNation.Infrastructure.Repositories.Security
 {
-    public class OptionRepository : IRoleRepository
+    public class RoleRepository : IRoleRepository
     {
         private readonly AppDbContext _context;
 
-        public OptionRepository(AppDbContext context)
+        public RoleRepository(AppDbContext context)
         {
             _context = context;
         }

@@ -27,7 +27,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<TestDto>>> GetAllAsync()
         {
-            var tests = await _optionRepository.GetTestEntitysAsync();
+            var tests = await _optionRepository.GetAllAsync();
 
             if (tests == null || !tests.Any())
             {
@@ -71,7 +71,7 @@ namespace ExamiNation.Application.Services.Test
 
         }
 
-        public async Task<ApiResponse<TestDto>> Delete(Guid id)
+        public async Task<ApiResponse<TestDto>> DeleteAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
@@ -91,7 +91,7 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<TestDto>.CreateSuccessResponse("Test deleted successfully.", optionDto);
         }
 
-        public async Task<ApiResponse<TestDto>> Update(EditTestDto editTestDto)
+        public async Task<ApiResponse<TestDto>> UpdateAsync(EditTestDto editTestDto)
         {
             if (editTestDto == null)
             {

@@ -15,6 +15,8 @@ namespace ExamiNation.Application.DTOs.Question
         [Required]
         public Guid TestId { get; set; }
 
+        public int? QuestionNumber { get; set; }
+
         public List<CreateOptionDto>? Options { get; set; }
     }
 }

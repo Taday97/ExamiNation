@@ -19,11 +19,11 @@ namespace ExamiNation.API.Controllers.Test
             _context = context;
         }
 
-        [HttpPost("seed")]
+        [HttpPost("seed-spanish")]
         public async Task<IActionResult> SeedTestAsync()
         {
-            var testFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\test-otis.json";
-            var scoreRangeFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\classifications.json";
+            var testFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\test-otis.json";
+            var scoreRangeFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\classifications.json";
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -32,7 +32,7 @@ namespace ExamiNation.API.Controllers.Test
                     await _testSeeder.SeedTestFromJsonAsync(testFilePath, scoreRangeFilePath);
                     await transaction.CommitAsync();
 
-                    return Ok("Database populated successfully.");25
+                    return Ok("Database populated successfully.");
                 }
                 catch (Exception ex)
                 {
@@ -43,7 +43,29 @@ namespace ExamiNation.API.Controllers.Test
             }
         }
 
+        [HttpPost("seed-english")]
+        public async Task<IActionResult> SeedTestEnglishAsync()
+        {
+            var testFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\test-otis-english.json"; 
+            var scoreRangeFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\classifications-english.json"; 
 
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    await _testSeeder.SeedTestFromJsonAsync(testFilePath, scoreRangeFilePath);
+                    await transaction.CommitAsync();
+
+                    return Ok("Database populated successfully.");
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+
+                    return StatusCode(500, $"There was an error while seeding the database: {ex.Message}");
+                }
+            }
+        }
 
 
 

@@ -1,6 +1,7 @@
 ﻿using ExamiNation.Application.DTOs.Question;
 using ExamiNation.Application.Validators.Option;
 using ExamiNation.Domain.Enums;
+using ExamiNation.Domain.Interfaces.Test;
 using FluentValidation;
 using FluentValidation.Results;
 using Nito.AsyncEx;
@@ -9,8 +10,11 @@ namespace ExamiNation.Application.Validators.Question
 {
     public class EditQuestionDtoValidator : AbstractValidator<EditQuestionDto>
     {
-        public EditQuestionDtoValidator()
+        private readonly IQuestionRepository _questionRepository;
+
+        public EditQuestionDtoValidator(IQuestionRepository questionRepository)
         {
+            _questionRepository = questionRepository;
             RuleFor(x => x.Id)
                 .NotEmpty().WithMessage("Question ID is required.");
 
@@ -24,12 +28,10 @@ namespace ExamiNation.Application.Validators.Question
             RuleFor(x => x.TestId)
                 .NotEmpty().WithMessage("Test ID is required.");
 
-            // Optional: validate options if they are provided
             When(x => x.Options != null && x.Options.Any(), () =>
             {
                 RuleForEach(x => x.Options).SetValidator(new EditOptionDtoValidator());
 
-                // Require at least one correct option for certain question types
                 When(x => x.Type == QuestionType.MultipleChoice || x.Type == QuestionType.TrueFalse, () =>
                 {
                     RuleFor(x => x.Options)
@@ -37,6 +39,18 @@ namespace ExamiNation.Application.Validators.Question
                         .WithMessage("At least one correct option is required for MultipleChoice or TrueFalse questions.");
                 });
             });
+
+            When(x => x.QuestionNumber.HasValue, () =>
+            {
+                RuleFor(x => x)
+                    .MustAsync(IsUniqueQuestionNumberAsync)
+                    .WithMessage("Question number is already used in this test.");
+            });
+        }
+
+        private async Task<bool> IsUniqueQuestionNumberAsync(EditQuestionDto dto, CancellationToken cancellationToken)
+        {
+            return await _questionRepository.FindFirstAsync(l =>l.Id!=dto.Id && l.TestId == dto.TestId && l.QuestionNumber == dto.QuestionNumber.Value) == null;
         }
 
         public override ValidationResult Validate(ValidationContext<EditQuestionDto> context)

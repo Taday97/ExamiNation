@@ -6,87 +6,8 @@ using System.Linq.Expressions;
 
 namespace ExamiNation.Infrastructure.Repositories.Test
 {
-    public class OptionRepository : IOptionRepository
+    public class OptionRepository : GenericRepository<Option>, IOptionRepository
     {
-        private readonly AppDbContext _context;
-
-        public OptionRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<Option?> GetByIdAsync(Guid id, bool asNoTracking = true)
-        {
-            var query = _context.Options.AsQueryable();
-
-            if (asNoTracking)
-            {
-                query = query.AsNoTracking();
-            }
-
-            return await query.FirstOrDefaultAsync(r => r.Id == id);
-        }
-
-        public async Task<IEnumerable<Option>> GetOptionsAsync(Expression<Func<Option, bool>>? filter = null, bool asNoTracking = true)
-        {
-            IQueryable<Option> query = _context.Options;
-
-            if (asNoTracking)
-            {
-                query = query.AsNoTracking();
-            }
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            return await query.ToListAsync();
-        }
-
-        public async Task<Option?> FindFirstOptionAsync(Expression<Func<Option, bool>> filter, bool asNoTracking = true)
-        {
-            var query = _context.Options.AsQueryable();
-
-            if (asNoTracking)
-            {
-                query = query.AsNoTracking();
-            }
-
-            return await query.FirstOrDefaultAsync(filter);
-        }
-
-        public async Task<Option> AddAsync(Option option)
-        {
-            await _context.Options.AddAsync(option);
-            await _context.SaveChangesAsync();
-            return option;
-        }
-
-        public async Task<Option?> UpdateAsync(Option option)
-        {
-            var existingOption = await _context.Options.FindAsync(option.Id);
-            if (existingOption == null)
-            {
-                return null;
-            }
-
-            _context.Entry(existingOption).CurrentValues.SetValues(option);
-            await _context.SaveChangesAsync();
-            return existingOption;
-        }
-
-        public async Task<Option?> DeleteAsync(Guid id)
-        {
-            var option = await _context.Options.FindAsync(id);
-            if (option == null)
-            {
-                return null;
-            }
-
-            _context.Options.Remove(option);
-            await _context.SaveChangesAsync();
-            return option;
-        }
+        public OptionRepository(AppDbContext context) : base(context) { }
     }
 }

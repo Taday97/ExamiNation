@@ -37,7 +37,20 @@ namespace ExamiNation.Application.Validators.Question
                         .WithMessage("At least one correct option is required for MultipleChoice or TrueFalse questions.");
                 });
             }));
+
+            When(x => x.QuestionNumber.HasValue, () =>
+            {
+                RuleFor(x => x)
+                    .MustAsync(IsUniqueQuestionNumberAsync)
+                    .WithMessage("Question number is already used in this test.");
+            });
         }
+
+        private async Task<bool> IsUniqueQuestionNumberAsync(CreateQuestionDto dto, CancellationToken cancellationToken)
+        {
+            return await _questionRepository.FindFirstAsync(l=>l.TestId== dto.TestId && l.QuestionNumber== dto.QuestionNumber.Value)==null;
+        }
+
 
         public override ValidationResult Validate(ValidationContext<CreateQuestionDto> context)
         {

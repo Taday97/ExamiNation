@@ -133,7 +133,7 @@ namespace ExamiNation.API.Controllers.Test
             }
 
             editTestResultDto.Id = id;
-            var response = await _testResultService.Update(editTestResultDto);
+            var response = await _testResultService.UpdateAsync(editTestResultDto);
             if (!response.Success)
                 return BadRequest(response.Message);
             return Ok(response);
@@ -149,7 +149,7 @@ namespace ExamiNation.API.Controllers.Test
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _testResultService.Delete(id);
+            var response = await _testResultService.DeleteAsync(id);
 
             if (!response.Success)
                 return NotFound(response.Message);

@@ -6,6 +6,9 @@ using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Application.Interfaces;
+using ExamiNation.Domain.Common;
+using System.Linq.Expressions;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -26,7 +29,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<AnswerDto>>> GetAllAsync()
         {
-            var answers = await _answerRepository.GetAnswersAsync();
+            var answers = await _answerRepository.GetAllAsync();
 
             if (answers == null || !answers.Any())
             {
@@ -43,8 +46,17 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<IEnumerable<AnswerDto>>.CreateErrorResponse("Invalid test ID.");
             }
+            var options = new QueryOptions<Answer>
+            {
+                Filter = l => l.TestResult != null && l.TestResult.TestId == testId,
+                AsNoTracking = true,
+                Includes = new List<Expression<Func<Answer, object>>>
+                {
+                   l => l.TestResult
+                }
+            };
 
-            var answers = await _answerRepository.GetAnswersAsync(l => l.TestResult != null && l.TestResult.TestId == testId);
+            var answers = await _answerRepository.GetAllAsync(options);
 
             if (answers == null || !answers.Any())
             {
@@ -89,7 +101,31 @@ namespace ExamiNation.Application.Services.Test
 
         }
 
-        public async Task<ApiResponse<AnswerDto>> Delete(Guid id)
+        public async Task<ApiResponse<AnswerDto>> UpdateAsync(EditAnswerDto editDto)
+        {
+            if (editDto == null)
+            {
+                return ApiResponse<AnswerDto>.CreateErrorResponse("Answer data cannot be null.");
+            }
+            if (!Guid.TryParse(editDto.Id.ToString(), out var guid))
+            {
+                return ApiResponse<AnswerDto>.CreateErrorResponse("Answer ID must be a valid GUID.");
+            }
+            var answer = await _answerRepository.GetByIdAsync(guid);
+            if (answer == null)
+            {
+                return ApiResponse<AnswerDto>.CreateErrorResponse($"Answer with id {editDto.Id} not found.");
+            }
+
+            _mapper.Map(editDto, answer);
+
+            await _answerRepository.UpdateAsync(answer);
+
+            AnswerDto answerDto = _mapper.Map<AnswerDto>(answer);
+            return ApiResponse<AnswerDto>.CreateSuccessResponse("Answer updated successfully.", answerDto);
+        }
+
+        public async Task<ApiResponse<AnswerDto>> DeleteAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
@@ -112,32 +148,5 @@ namespace ExamiNation.Application.Services.Test
 
             return ApiResponse<AnswerDto>.CreateSuccessResponse("Answer deleted successfully.", answerDto);
         }
-
-        public async Task<ApiResponse<AnswerDto>> Update(EditAnswerDto editAnswerDto)
-        {
-            if (editAnswerDto == null)
-            {
-                return ApiResponse<AnswerDto>.CreateErrorResponse("Answer data cannot be null.");
-            }
-            if (!Guid.TryParse(editAnswerDto.Id.ToString(), out var guid))
-            {
-                return ApiResponse<AnswerDto>.CreateErrorResponse("Answer ID must be a valid GUID.");
-            }
-            var answer = await _answerRepository.GetByIdAsync(guid);
-            if (answer == null)
-            {
-                return ApiResponse<AnswerDto>.CreateErrorResponse($"Answer with id {editAnswerDto.Id} not found.");
-            }
-
-            _mapper.Map(editAnswerDto, answer);
-
-            await _answerRepository.UpdateAsync(answer);
-
-            AnswerDto answerDto = _mapper.Map<AnswerDto>(answer);
-            return ApiResponse<AnswerDto>.CreateSuccessResponse("Answer updated successfully.", answerDto);
-        }
-
-
-
     }
 }

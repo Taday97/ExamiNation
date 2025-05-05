@@ -4,6 +4,7 @@ using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
+using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Security;
@@ -31,7 +32,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<TestResultDto>>> GetAllAsync()
         {
-            var testResult = await _testResultRepository.GetTestResultsAsync();
+            var testResult = await _testResultRepository.GetAllAsync();
 
             if (testResult == null || !testResult.Any())
             {
@@ -53,8 +54,12 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<IEnumerable<TestResultDto>>.CreateErrorResponse("Invalid test result status.");
             }
+            var options = new QueryOptions<TestResult>
+            {
+                Filter = l => l.Status == status && l.UserId == usertId
+            };
 
-            var testResult = await _testResultRepository.GetTestResultsAsync(l => l.Status == status && l.UserId == usertId);
+            var testResult = await _testResultRepository.GetAllAsync(options);
 
             if (testResult == null || !testResult.Any())
             {
@@ -84,7 +89,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<TestResultDto>>> GetByTestIdAsync(Guid testId)
         {
-            var testResult = await _testResultRepository.GetTestResultsAsync(l => l.TestId == testId);
+            var testResult = await _testResultRepository.GetAllAsync(new QueryOptions<TestResult> { Filter = l => l.TestId == testId });
 
             if (testResult == null || !testResult.Any())
             {
@@ -98,7 +103,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<TestResultDto>>> GetByUserIdAsync(Guid userId)
         {
-            var testResult = await _testResultRepository.GetTestResultsAsync(l => l.UserId == userId);
+            var testResult = await _testResultRepository.GetAllAsync(new QueryOptions<TestResult> { Filter = l => l.UserId == userId });
 
             if (testResult == null || !testResult.Any())
             {
@@ -169,7 +174,7 @@ namespace ExamiNation.Application.Services.Test
             return questions.Count == 0 ? 0 : (decimal)correctCount / questions.Count * 100;
         }
 
-        public async Task<ApiResponse<TestResultDto>> Delete(Guid id)
+        public async Task<ApiResponse<TestResultDto>> DeleteAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
@@ -193,7 +198,7 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<TestResultDto>.CreateSuccessResponse("TestResult deleted successfully.", testResultDto);
         }
 
-        public async Task<ApiResponse<TestResultDto>> Update(EditTestResultDto editTestResultDto)
+        public async Task<ApiResponse<TestResultDto>> UpdateAsync(EditTestResultDto editTestResultDto)
         {
             if (editTestResultDto == null)
             {
@@ -205,7 +210,7 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<TestResultDto>.CreateErrorResponse("TestResult ID must be a valid GUID.");
             }
 
-            var testResult = await _testResultRepository.GetByIdWithAnswersAsync(guid); 
+            var testResult = await _testResultRepository.FindFirstAsync(l=>l.Id== guid); 
             if (testResult == null)
             {
                 return ApiResponse<TestResultDto>.CreateErrorResponse($"TestResult with id {editTestResultDto.Id} not found.");
@@ -215,7 +220,7 @@ namespace ExamiNation.Application.Services.Test
 
             SyncAnswers(testResult, editTestResultDto.Answers);
 
-            var test = await _testRepository.GetByIdWithQuestionsAsync(testResult.TestId);
+            var test = await _testRepository.FindFirstAsync(l=>l.Id== testResult.TestId,asNoTracking:true,l=>l.Questions);
 
             var totalQuestions = test.Questions.Count;
             var answeredQuestions = testResult.Answers.Count;

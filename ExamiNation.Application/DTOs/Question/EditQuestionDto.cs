@@ -18,6 +18,8 @@ namespace ExamiNation.Application.DTOs.Question
         [Required]
         public Guid TestId { get; set; }
 
+        public int? QuestionNumber { get; set; }
+
         public List<EditOptionDto>? Options { get; set; }
     }
 

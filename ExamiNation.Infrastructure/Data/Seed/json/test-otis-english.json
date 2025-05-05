@@ -1,0 +1,1156 @@
+﻿{
+  "name": "Basic Otis Test",
+  "description": "Assessment of cognitive abilities and logical reasoning, based on the Otis-Lennon Test.",
+  "type": 0,
+  "questions": [
+    {
+      "text": "The opposite of hate is:",
+      "type": 0,
+      "questionNumber": 1,
+      "options": [
+        {
+          "text": "enemy",
+          "isCorrect": false
+        },
+        {
+          "text": "fear",
+          "isCorrect": false
+        },
+        {
+          "text": "love",
+          "isCorrect": true
+        },
+        {
+          "text": "joy",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If three pencils cost five pesos, how many pencils can I buy with fifty pesos?",
+      "type": 0,
+      "questionNumber": 2,
+      "options": [
+        {
+          "text": "30",
+          "isCorrect": false
+        },
+        {
+          "text": "33",
+          "isCorrect": true
+        },
+        {
+          "text": "25",
+          "isCorrect": false
+        },
+        {
+          "text": "20",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "A bird does not always have:",
+      "type": 0,
+      "questionNumber": 3,
+      "options": [
+        {
+          "text": "wings",
+          "isCorrect": false
+        },
+        {
+          "text": "eyes",
+          "isCorrect": false
+        },
+        {
+          "text": "a nest",
+          "isCorrect": true
+        },
+        {
+          "text": "a beak",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The opposite of honor is:",
+      "type": 0,
+      "questionNumber": 4,
+      "options": [
+        {
+          "text": "defeat",
+          "isCorrect": false
+        },
+        {
+          "text": "villainy",
+          "isCorrect": true
+        },
+        {
+          "text": "humiliation",
+          "isCorrect": false
+        },
+        {
+          "text": "cowardice",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The fox most resembles:",
+      "type": 0,
+      "questionNumber": 5,
+      "options": [
+        {
+          "text": "the wolf",
+          "isCorrect": true
+        },
+        {
+          "text": "the goat",
+          "isCorrect": false
+        },
+        {
+          "text": "the pig",
+          "isCorrect": false
+        },
+        {
+          "text": "the tiger",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Silence has the same relation to sound as darkness to:",
+      "type": 0,
+      "questionNumber": 6,
+      "options": [
+        {
+          "text": "basement",
+          "isCorrect": false
+        },
+        {
+          "text": "light",
+          "isCorrect": true
+        },
+        {
+          "text": "noise",
+          "isCorrect": false
+        },
+        {
+          "text": "night",
+          "isCorrect": false
+        }
+      ]
+    },
+
+    {
+      "text": "A group consisted of two married couples, two brothers, and two sisters. What is the minimum number of people that could make up the group?",
+      "type": 0,
+      "questionNumber": 7,
+      "options": [
+        {
+          "text": "6",
+          "isCorrect": true
+        },
+        {
+          "text": "8",
+          "isCorrect": false
+        },
+        {
+          "text": "4",
+          "isCorrect": false
+        },
+        {
+          "text": "7",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "A tree always has:",
+      "type": 0,
+      "questionNumber": 8,
+      "options": [
+        {
+          "text": "leaves",
+          "isCorrect": false
+        },
+        {
+          "text": "fruit",
+          "isCorrect": false
+        },
+        {
+          "text": "roots",
+          "isCorrect": true
+        },
+        {
+          "text": "shade",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The opposite of economical is:",
+      "type": 0,
+      "questionNumber": 9,
+      "options": [
+        {
+          "text": "cheap",
+          "isCorrect": false
+        },
+        {
+          "text": "spendthrift",
+          "isCorrect": true
+        },
+        {
+          "text": "rich",
+          "isCorrect": false
+        },
+        {
+          "text": "miser",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Silver is more expensive than iron because it is:",
+      "type": 0,
+      "questionNumber": 10,
+      "options": [
+        {
+          "text": "heavier",
+          "isCorrect": false
+        },
+        {
+          "text": "rarer",
+          "isCorrect": true
+        },
+        {
+          "text": "harder",
+          "isCorrect": false
+        },
+        {
+          "text": "more beautiful",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which of the six reasons expresses the meaning of the proverb: “Meal finished, company diminished”?",
+      "type": 0,
+      "questionNumber": 11,
+      "options": [
+        {
+          "text": "One should not forget a received benefit and distance oneself from the one who provided it",
+          "isCorrect": true
+        },
+        {
+          "text": "One should not part from friends after eating",
+          "isCorrect": false
+        },
+        {
+          "text": "Everyone should look after themselves before others",
+          "isCorrect": false
+        },
+        {
+          "text": "It is dangerous to prolong the after-meal time",
+          "isCorrect": false
+        }
+      ]
+    },
+
+    {
+      "text": "Which of the six reasons from No. 11 expresses the meaning of this proverb?: “Work started is half finished”",
+      "type": 0,
+      "questionNumber": 12,
+      "options": [
+        {
+          "text": "The greatest difficulty in anything usually lies in getting started",
+          "isCorrect": true
+        },
+        {
+          "text": "Nothing is gained by dragging an issue out too long",
+          "isCorrect": false
+        },
+        {
+          "text": "It is dangerous to prolong the after-meal time",
+          "isCorrect": false
+        },
+        {
+          "text": "Everyone should look after themselves before others",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which of the six reasons given in No. 11 explains the proverb: 'My teeth come before my relatives'?",
+      "type": 0,
+      "questionNumber": 13,
+      "options": [
+        {
+          "text": "Everyone should look after themselves before others",
+          "isCorrect": true
+        },
+        {
+          "text": "One should not forget a received benefit and distance oneself from the one who provided it",
+          "isCorrect": false
+        },
+        {
+          "text": "The greatest difficulty in anything usually lies in getting started",
+          "isCorrect": false
+        },
+        {
+          "text": "Nothing is gained by dragging an issue out too long",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "An electric light relates to a candle as a car relates to:",
+      "type": 0,
+      "questionNumber": 14,
+      "options": [
+        {
+          "text": "a carriage",
+          "isCorrect": true
+        },
+        {
+          "text": "electricity",
+          "isCorrect": false
+        },
+        {
+          "text": "a tire",
+          "isCorrect": false
+        },
+        {
+          "text": "brightness",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If a horse can run 6 meters in ¼ of a second, how many meters does it run in 10 seconds?",
+      "type": 0,
+      "questionNumber": 15,
+      "options": [
+        {
+          "text": "60",
+          "isCorrect": false
+        },
+        {
+          "text": "600",
+          "isCorrect": false
+        },
+        {
+          "text": "240",
+          "isCorrect": false
+        },
+        {
+          "text": "2400",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "A meal always implies:",
+      "type": 0,
+      "questionNumber": 16,
+      "options": [
+        {
+          "text": "table",
+          "isCorrect": false
+        },
+        {
+          "text": "plate",
+          "isCorrect": false
+        },
+        {
+          "text": "hunger",
+          "isCorrect": false
+        },
+        {
+          "text": "food",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "Of the following five words, four are alike. Which one is not like the others?",
+      "type": 0,
+      "questionNumber": 17,
+      "options": [
+        {
+          "text": "dessert",
+          "isCorrect": false
+        },
+        {
+          "text": "file",
+          "isCorrect": true
+        },
+        {
+          "text": "duck",
+          "isCorrect": false
+        },
+        {
+          "text": "paper",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The opposite of never is:",
+      "type": 0,
+      "questionNumber": 18,
+      "options": [
+        {
+          "text": "often",
+          "isCorrect": false
+        },
+        {
+          "text": "sometimes",
+          "isCorrect": false
+        },
+        {
+          "text": "frequently",
+          "isCorrect": false
+        },
+        {
+          "text": "always",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "A clock relates to time in the same way a thermometer relates to:",
+      "type": 0,
+      "questionNumber": 19,
+      "options": [
+        {
+          "text": "a clock",
+          "isCorrect": false
+        },
+        {
+          "text": "hot",
+          "isCorrect": false
+        },
+        {
+          "text": "tube",
+          "isCorrect": false
+        },
+        {
+          "text": "temperature",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "Which of the following words should be placed in the blank to make the statement true: '_____________ men are shorter than their wives'?",
+      "type": 0,
+      "questionNumber": 20,
+      "options": [
+        {
+          "text": "always",
+          "isCorrect": false
+        },
+        {
+          "text": "often",
+          "isCorrect": false
+        },
+        {
+          "text": "sometimes",
+          "isCorrect": false
+        },
+        {
+          "text": "rarely",
+          "isCorrect": true
+        }
+      ]
+    },
+
+    {
+      "text": "In the following series there is one incorrect number. Which number should take its place? 1 - 4 - 2 - 5 - 3 - 6 - 4 - 7 - 5 - 9 - 6 - 9",
+      "type": 0,
+      "questionNumber": 21,
+      "options": [
+        {
+          "text": "8",
+          "isCorrect": true
+        },
+        {
+          "text": "7",
+          "isCorrect": false
+        },
+        {
+          "text": "9",
+          "isCorrect": false
+        },
+        {
+          "text": "6",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If the first two statements are true, the third is: ‘All members of this club are Argentine’, ‘González is not Argentine’, ‘González is a member of this club’",
+      "type": 0,
+      "questionNumber": 22,
+      "options": [
+        {
+          "text": "true",
+          "isCorrect": false
+        },
+        {
+          "text": "false",
+          "isCorrect": true
+        },
+        {
+          "text": "uncertain",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "A fight always has:",
+      "type": 0,
+      "questionNumber": 23,
+      "options": [
+        {
+          "text": "referee",
+          "isCorrect": false
+        },
+        {
+          "text": "opponents",
+          "isCorrect": true
+        },
+        {
+          "text": "spectators",
+          "isCorrect": false
+        },
+        {
+          "text": "applause",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which number in this series appears a second time first? 6 - 4 - 5 - 3 - 7 - 0 - 9 - 5 - 9 - 8 - 8 - 6 - 5 - 4 - 7 - 3 - 0 - 8 - 9",
+      "type": 0,
+      "questionNumber": 24,
+      "options": [
+        {
+          "text": "5",
+          "isCorrect": true
+        },
+        {
+          "text": "6",
+          "isCorrect": false
+        },
+        {
+          "text": "8",
+          "isCorrect": false
+        },
+        {
+          "text": "9",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The moon relates to the Earth as the Earth relates to:",
+      "type": 0,
+      "questionNumber": 25,
+      "options": [
+        {
+          "text": "Mars",
+          "isCorrect": false
+        },
+        {
+          "text": "the Sun",
+          "isCorrect": true
+        },
+        {
+          "text": "clouds",
+          "isCorrect": false
+        },
+        {
+          "text": "the universe",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "What word is needed to make the following statement true? 'Parents are __________ more prudent than their children'",
+      "type": 0,
+      "questionNumber": 26,
+      "options": [
+        {
+          "text": "always",
+          "isCorrect": false
+        },
+        {
+          "text": "usually",
+          "isCorrect": true
+        },
+        {
+          "text": "very",
+          "isCorrect": false
+        },
+        {
+          "text": "rarely",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The opposite of clumsy is:",
+      "type": 0,
+      "questionNumber": 27,
+      "options": [
+        {
+          "text": "strong",
+          "isCorrect": false
+        },
+        {
+          "text": "pretty",
+          "isCorrect": false
+        },
+        {
+          "text": "skilled",
+          "isCorrect": true
+        },
+        {
+          "text": "fast",
+          "isCorrect": false
+        }
+      ]
+    },
+
+    {
+      "text": "'A mother is always __________ than her daughter'",
+      "type": 0,
+      "questionNumber": 28,
+      "options": [
+        {
+          "text": "wiser",
+          "isCorrect": false
+        },
+        {
+          "text": "taller",
+          "isCorrect": false
+        },
+        {
+          "text": "older",
+          "isCorrect": true
+        },
+        {
+          "text": "more wrinkled",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which of the five statements explains the meaning of the proverb 'Do good and keep quiet'?",
+      "type": 0,
+      "questionNumber": 29,
+      "options": [
+        {
+          "text": "Good should be done selflessly",
+          "isCorrect": false
+        },
+        {
+          "text": "Good deeds are never without some benefit",
+          "isCorrect": false
+        },
+        {
+          "text": "One must do good without publicizing it",
+          "isCorrect": true
+        },
+        {
+          "text": "The ungrateful repay good deeds with bad ones",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which of the statements in No. 29 explains the proverb: 'Do good without looking at whom'?",
+      "type": 0,
+      "questionNumber": 30,
+      "options": [
+        {
+          "text": "Good should be done selflessly",
+          "isCorrect": true
+        },
+        {
+          "text": "Good deeds are never without some benefit",
+          "isCorrect": false
+        },
+        {
+          "text": "One must do good without publicizing it",
+          "isCorrect": false
+        },
+        {
+          "text": "The ungrateful repay good deeds with bad ones",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which of the statements in No. 29 explains the proverb: 'Make good flour and don’t blow the horn'?",
+      "type": 0,
+      "questionNumber": 31,
+      "options": [
+        {
+          "text": "Good should be done selflessly",
+          "isCorrect": false
+        },
+        {
+          "text": "Good deeds are never without some benefit",
+          "isCorrect": false
+        },
+        {
+          "text": "One must do good without publicizing it",
+          "isCorrect": true
+        },
+        {
+          "text": "The ungrateful repay good deeds with bad ones",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "When an individual sells their property, it means:",
+      "type": 0,
+      "questionNumber": 32,
+      "options": [
+        {
+          "text": "they buy it",
+          "isCorrect": false
+        },
+        {
+          "text": "they sell it",
+          "isCorrect": true
+        },
+        {
+          "text": "they return it",
+          "isCorrect": false
+        },
+        {
+          "text": "they lend it",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "What is related to illness, as caution is related to accident?",
+      "type": 0,
+      "questionNumber": 33,
+      "options": [
+        {
+          "text": "doctor",
+          "isCorrect": false
+        },
+        {
+          "text": "surgery",
+          "isCorrect": false
+        },
+        {
+          "text": "medicine",
+          "isCorrect": true
+        },
+        {
+          "text": "hospital",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Of these five things, four are similar in some way. Which one does not belong in that group?",
+      "type": 0,
+      "questionNumber": 34,
+      "options": [
+        {
+          "text": "smuggling",
+          "isCorrect": false
+        },
+        {
+          "text": "theft",
+          "isCorrect": false
+        },
+        {
+          "text": "calm",
+          "isCorrect": true
+        },
+        {
+          "text": "fraud",
+          "isCorrect": false
+        }
+      ]
+    },
+
+    {
+      "text": "If ten boxes full of apples weigh four hundred kilograms, how much do only the apples weigh if each empty box weighs 4 kilograms?",
+      "type": 0,
+      "questionNumber": 35,
+      "options": [
+        {
+          "text": "360 kg",
+          "isCorrect": true
+        },
+        {
+          "text": "400 kg",
+          "isCorrect": false
+        },
+        {
+          "text": "380 kg",
+          "isCorrect": false
+        },
+        {
+          "text": "390 kg",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The opposite of hope is:",
+      "type": 0,
+      "questionNumber": 36,
+      "options": [
+        {
+          "text": "faith",
+          "isCorrect": false
+        },
+        {
+          "text": "discouragement",
+          "isCorrect": true
+        },
+        {
+          "text": "sadness",
+          "isCorrect": false
+        },
+        {
+          "text": "hatred",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If all the letters in odd-numbered positions were crossed out, what would be the tenth uncrossed letter? (Do not mark the alphabet). A B C D E F G H I J K L M N Ñ O P Q R S T U V W X Y Z",
+      "type": 0,
+      "questionNumber": 37,
+      "options": [
+        {
+          "text": "K",
+          "isCorrect": false
+        },
+        {
+          "text": "L",
+          "isCorrect": true
+        },
+        {
+          "text": "M",
+          "isCorrect": false
+        },
+        {
+          "text": "N",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which letter in the word METACRÓMICO occupies the same position counting from the beginning of the word and in the alphabet? (do not count 'Ch' as a letter).",
+      "type": 0,
+      "questionNumber": 38,
+      "options": [
+        {
+          "text": "M",
+          "isCorrect": true
+        },
+        {
+          "text": "C",
+          "isCorrect": false
+        },
+        {
+          "text": "O",
+          "isCorrect": false
+        },
+        {
+          "text": "T",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "What people say about a person constitutes their:",
+      "type": 0,
+      "questionNumber": 39,
+      "options": [
+        {
+          "text": "character",
+          "isCorrect": false
+        },
+        {
+          "text": "gossip",
+          "isCorrect": false
+        },
+        {
+          "text": "reputation",
+          "isCorrect": true
+        },
+        {
+          "text": "personality",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If 2½ meters of fabric cost 30 pesos, how much do 10 meters cost?",
+      "type": 0,
+      "questionNumber": 40,
+      "options": [
+        {
+          "text": "120 pesos",
+          "isCorrect": true
+        },
+        {
+          "text": "100 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "90 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "150 pesos",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If the following words were arranged to form a sentence, what letter would the third word begin with? (Write the letter in uppercase). bajo, contrario, significa, que, lo, alto.",
+      "type": 0,
+      "questionNumber": 41,
+      "options": [
+        {
+          "text": "S",
+          "isCorrect": true
+        },
+        {
+          "text": "B",
+          "isCorrect": false
+        },
+        {
+          "text": "C",
+          "isCorrect": false
+        },
+        {
+          "text": "L",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If the first two statements are true, the third is:\n'Jorge is older than Paco'\n'Jaime is older than Jorge'\n'Paco is younger than Jaime'",
+      "type": 0,
+      "questionNumber": 42,
+      "options": [
+        {
+          "text": "true",
+          "isCorrect": true
+        },
+        {
+          "text": "false",
+          "isCorrect": false
+        },
+        {
+          "text": "uncertain",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Assuming that in the word CONSTITUCIONAL, the first and second letters are swapped, and also the 3rd with the 4th, the 5th with the 6th, etc., what would be the 12th letter from left to right? (Write it in uppercase).",
+      "type": 0,
+      "questionNumber": 43,
+      "options": [
+        {
+          "text": "N",
+          "isCorrect": true
+        },
+        {
+          "text": "C",
+          "isCorrect": false
+        },
+        {
+          "text": "L",
+          "isCorrect": false
+        },
+        {
+          "text": "O",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "One number is incorrect in the following series. Which one should replace it? 0 -1 – 3 -6 – 10 -15 – 21 – 28 - 34",
+      "type": 0,
+      "questionNumber": 44,
+      "options": [
+        {
+          "text": "36",
+          "isCorrect": true
+        },
+        {
+          "text": "34",
+          "isCorrect": false
+        },
+        {
+          "text": "30",
+          "isCorrect": false
+        },
+        {
+          "text": "38",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If four and a half meters of fabric cost 90 pesos, how much will 2½ meters cost?",
+      "type": 0,
+      "questionNumber": 45,
+      "options": [
+        {
+          "text": "50 pesos",
+          "isCorrect": true
+        },
+        {
+          "text": "40 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "45 pesos",
+          "isCorrect": false
+        },
+        {
+          "text": "60 pesos",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "A man's influence in the community where he lives should depend on his:",
+      "type": 0,
+      "questionNumber": 46,
+      "options": [
+        {
+          "text": "wisdom",
+          "isCorrect": true
+        },
+        {
+          "text": "wealth",
+          "isCorrect": false
+        },
+        {
+          "text": "ambition",
+          "isCorrect": false
+        },
+        {
+          "text": "political power",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "Which of the following words has the same relationship to 'little' as ordinary has to 'exceptional'?",
+      "type": 0,
+      "questionNumber": 47,
+      "options": [
+        {
+          "text": "nothing",
+          "isCorrect": true
+        },
+        {
+          "text": "a lot",
+          "isCorrect": false
+        },
+        {
+          "text": "some",
+          "isCorrect": false
+        },
+        {
+          "text": "more",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "The opposite of traitor is:",
+      "type": 0,
+      "questionNumber": 48,
+      "options": [
+        {
+          "text": "friendly",
+          "isCorrect": false
+        },
+        {
+          "text": "brave",
+          "isCorrect": false
+        },
+        {
+          "text": "wise",
+          "isCorrect": false
+        },
+        {
+          "text": "loyal",
+          "isCorrect": true
+        }
+      ]
+    },
+    {
+      "text": "Which of the following five words is least related to the other four?",
+      "type": 0,
+      "questionNumber": 49,
+      "options": [
+        {
+          "text": "good",
+          "isCorrect": false
+        },
+        {
+          "text": "wide",
+          "isCorrect": false
+        },
+        {
+          "text": "red",
+          "isCorrect": true
+        },
+        {
+          "text": "road",
+          "isCorrect": false
+        },
+        {
+          "text": "thick",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "text": "If the first two statements are true, the third is:\n“Some of López's friends are from Córdoba”\n“Some of López's friends are dentists”\n“Some of López's friends are dentists from Córdoba”",
+      "type": 0,
+      "questionNumber": 50,
+      "options": [
+        {
+          "text": "true",
+          "isCorrect": false
+        },
+        {
+          "text": "false",
+          "isCorrect": false
+        },
+        {
+          "text": "unknown",
+          "isCorrect": true
+        }
+      ]
+    }
+
+
+  ]
+}

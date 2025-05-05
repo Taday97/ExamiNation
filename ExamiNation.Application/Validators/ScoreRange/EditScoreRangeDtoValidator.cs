@@ -1,8 +1,10 @@
 ﻿using ExamiNation.Application.DTOs.ScoreRange;
+using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Interfaces.Test;
 using FluentValidation;
 using FluentValidation.Results;
 using Nito.AsyncEx;
+using ScoreRangeEntity=ExamiNation.Domain.Entities.Test.ScoreRange;
 
 namespace ExamiNation.Application.Validators.ScoreRange
 {
@@ -35,7 +37,11 @@ namespace ExamiNation.Application.Validators.ScoreRange
 
         private async Task<bool> NotOverlapWithOtherRanges(EditScoreRangeDto dto, CancellationToken cancellationToken)
         {
-            var existingRanges = await _scoreRangeRepository.GetScoreRangesAsync(l => l.TestId == dto.TestId);
+            var options = new QueryOptions<ScoreRangeEntity>
+            {
+                Filter = l => l.TestId == dto.TestId,
+            };
+            var existingRanges = await _scoreRangeRepository.GetAllAsync();
 
             return existingRanges
                 .Where(r => r.Id != dto.Id)

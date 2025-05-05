@@ -113,7 +113,7 @@ namespace ExamiNation.API.Controllers.Test
             }
 
             editScoreRangeDto.Id = id;
-            var response = await _scoreRangeService.Update(editScoreRangeDto);
+            var response = await _scoreRangeService.UpdateAsync(editScoreRangeDto);
             if (!response.Success)
                 return BadRequest(response.Message);
             return Ok(response);
@@ -129,7 +129,7 @@ namespace ExamiNation.API.Controllers.Test
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _scoreRangeService.Delete(id);
+            var response = await _scoreRangeService.DeleteAsync(id);
 
             if (!response.Success)
                 return NotFound(response.Message);

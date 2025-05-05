@@ -13,6 +13,8 @@ namespace ExamiNation.Application.DTOs.Question
 
         public Guid TestId { get; set; }
 
+        public int? QuestionNumber { get; set; }
+
         public string TestName { get; set; }
 
     }

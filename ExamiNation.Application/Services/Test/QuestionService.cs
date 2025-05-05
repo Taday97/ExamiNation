@@ -4,9 +4,11 @@ using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.Question;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
+using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using System.Linq.Expressions;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -27,7 +29,16 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<QuestionDto>>> GetAllAsync()
         {
-            var questions = await _questionRepository.GetQuestionsAsync(null,true,l=>l.Test);
+            var options = new QueryOptions<Question>
+            {
+                OrderBy = q => q.OrderBy(p => p.QuestionNumber),
+                Includes = new List<Expression<Func<Question, object>>>
+                {
+                 l => l.Test
+                }
+            };
+
+            var questions = await _questionRepository.GetAllAsync(options);
 
             if (questions == null || !questions.Any())
             {
@@ -38,35 +49,47 @@ namespace ExamiNation.Application.Services.Test
 
             return ApiResponse<IEnumerable<QuestionDto>>.CreateSuccessResponse("Question retrieved successfully.", questionDtos);
         }
-        public async Task<ApiResponse<QuestionDtoWithOptions>> GetByIdAsync(Guid id)
+        public async Task<ApiResponse<QuestionDto>> GetByIdAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
-                return ApiResponse<QuestionDtoWithOptions>.CreateErrorResponse("Question ID must be a valid GUID.");
+                return ApiResponse<QuestionDto>.CreateErrorResponse("Question ID must be a valid GUID.");
             }
             var question = await _questionRepository.GetByIdAsync(guid, true, q => q.Options, q => q.Test);
             if (question == null)
             {
-                return ApiResponse<QuestionDtoWithOptions>.CreateErrorResponse($"Question with id {id} not found.");
+                return ApiResponse<QuestionDto>.CreateErrorResponse($"Question with id {id} not found.");
             }
 
             var questionDto = _mapper.Map<QuestionDtoWithOptions>(question);
-            return ApiResponse<QuestionDtoWithOptions>.CreateSuccessResponse("Question retrieved successfully.", questionDto);
+            return ApiResponse<QuestionDto>.CreateSuccessResponse("Question retrieved successfully.", questionDto);
         }
 
         public async Task<ApiResponse<IEnumerable<QuestionDto>>> GetByTestIdAsync(Guid testId)
         {
-            var questions = await _questionRepository.GetQuestionsAsync(l => l.TestId == testId,true, l=>l.Test);
+            if (testId == Guid.Empty)
+            {
+                return ApiResponse<IEnumerable<QuestionDto>>.CreateErrorResponse("Test ID is invalid.");
+            }
+
+            var options = new QueryOptions<Question>
+            {
+                Filter = q => q.TestId == testId,
+                OrderBy = q => q.OrderBy(p => p.QuestionNumber),
+            };
+
+            var questions = await _questionRepository.GetAllAsync(options);
 
             if (questions == null || !questions.Any())
             {
-                return ApiResponse<IEnumerable<QuestionDto>>.CreateErrorResponse("No questions found.");
+                return ApiResponse<IEnumerable<QuestionDto>>.CreateErrorResponse("No questions found for the specified test.");
             }
 
             var questionDtos = _mapper.Map<IEnumerable<QuestionDto>>(questions);
 
-            return ApiResponse<IEnumerable<QuestionDto>>.CreateSuccessResponse("Question retrieved successfully.", questionDtos);
+            return ApiResponse<IEnumerable<QuestionDto>>.CreateSuccessResponse("Questions retrieved successfully.", questionDtos);
         }
+
 
         public async Task<ApiResponse<QuestionDto>> AddAsync(CreateQuestionDto questionDto)
         {
@@ -85,7 +108,7 @@ namespace ExamiNation.Application.Services.Test
 
         }
 
-        public async Task<ApiResponse<QuestionDto>> Delete(Guid id)
+        public async Task<ApiResponse<QuestionDto>> DeleteAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
@@ -109,7 +132,7 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<QuestionDto>.CreateSuccessResponse("Question deleted successfully.", questionDto);
         }
 
-        public async Task<ApiResponse<QuestionDto>> Update(EditQuestionDto editQuestionDto)
+        public async Task<ApiResponse<QuestionDto>> UpdateAsync(EditQuestionDto editQuestionDto)
         {
             if (editQuestionDto == null)
             {

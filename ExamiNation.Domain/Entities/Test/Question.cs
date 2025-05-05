@@ -18,6 +18,7 @@ namespace ExamiNation.Domain.Entities.Test
         [Required]
         public Guid TestId { get;  set; }
         public Test Test { get;  set; }
+        public int? QuestionNumber { get; set; }
 
         public virtual ICollection<Option> Options { get;  set; }
         public virtual ICollection<Answer> Answers { get; set; }

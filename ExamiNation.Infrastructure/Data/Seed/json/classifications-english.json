@@ -1,0 +1,32 @@
+﻿[
+  {
+    "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "minScore": 41,
+    "maxScore": 50,
+    "classification": "Superior"
+  },
+  {
+    "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "minScore": 31,
+    "maxScore": 40,
+    "classification": "Above Average"
+  },
+  {
+    "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "minScore": 21,
+    "maxScore": 30,
+    "classification": "Average"
+  },
+  {
+    "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "minScore": 12,
+    "maxScore": 20,
+    "classification": "Below Average"
+  },
+  {
+    "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "minScore": 0,
+    "maxScore": 11,
+    "classification": "Low or Inferior"
+  }
+]

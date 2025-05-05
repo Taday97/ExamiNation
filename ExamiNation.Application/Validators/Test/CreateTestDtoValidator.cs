@@ -30,7 +30,7 @@ namespace ExamiNation.Application.Validators.Test
 
         private async Task<bool> NameMustBeUnique(CreateTestDto dto, string name, CancellationToken cancellation)
         {
-            var existingTest = await _testRepository.FindFirstTestEntityAsync(t => t.Name == name);
+            var existingTest = await _testRepository.FindFirstAsync(t => t.Name == name);
             return existingTest == null;
         }
 

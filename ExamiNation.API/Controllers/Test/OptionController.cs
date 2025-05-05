@@ -88,7 +88,7 @@ namespace ExamiNation.API.Controllers.Test
             }
 
             editOptionDto.Id = id;
-            var response = await _optionService.Update(editOptionDto);
+            var response = await _optionService.UpdateAsync(editOptionDto);
             if (!response.Success)
                 return BadRequest(response.Message);
             return Ok(response);
@@ -104,7 +104,7 @@ namespace ExamiNation.API.Controllers.Test
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _optionService.Delete(id);
+            var response = await _optionService.DeleteAsync(id);
 
             if (!response.Success)
                 return NotFound(response.Message);

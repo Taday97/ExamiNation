@@ -18,6 +18,13 @@ namespace ExamiNation.Infrastructure.Data.Seed
 
         public async Task SeedTestFromJsonAsync(string filePath, string filePathClassification)
         {
+            var existingTests = await _testRepository.GetAllAsync();
+            foreach (var existingTest in existingTests)
+            {
+                await _testRepository.DeleteAsync(existingTest.Id);
+            }
+
+
             var json = await File.ReadAllTextAsync(filePath);
             var dto = JsonSerializer.Deserialize<Test>(json, new JsonSerializerOptions
             {
@@ -34,6 +41,7 @@ namespace ExamiNation.Infrastructure.Data.Seed
                 {
                     Id = Guid.NewGuid(),
                     Text = q.Text,
+                    QuestionNumber = q.QuestionNumber,
                     Type = q.Type,
                     Options = q.Options?.Select(o => new Option
                     {
@@ -52,6 +60,15 @@ namespace ExamiNation.Infrastructure.Data.Seed
 
         public async Task SeedClassificationsFromJsonAsync(string filePath, Test test)
         {
+
+            
+            var existingClassifications = await _scoreRangeRepository.GetAllAsync();
+            foreach (var classification in existingClassifications)
+            {
+                await _scoreRangeRepository.DeleteAsync(classification.Id);
+            }
+
+
             var json = await File.ReadAllTextAsync(filePath);
             var classifications = JsonSerializer.Deserialize<List<ScoreRange>>(json, new JsonSerializerOptions
             {

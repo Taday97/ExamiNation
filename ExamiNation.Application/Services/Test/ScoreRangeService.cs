@@ -6,6 +6,7 @@ using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -26,7 +27,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<ScoreRangeDto>>> GetAllAsync()
         {
-            var scoreRanges = await _scoreRangeRepository.GetScoreRangesAsync();
+            var scoreRanges = await _scoreRangeRepository.GetAllAsync();
 
             if (scoreRanges == null || !scoreRanges.Any())
             {
@@ -70,7 +71,7 @@ namespace ExamiNation.Application.Services.Test
 
         }
 
-        public async Task<ApiResponse<ScoreRangeDto>> Delete(Guid id)
+        public async Task<ApiResponse<ScoreRangeDto>> DeleteAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
@@ -87,14 +88,14 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<ScoreRangeDto>.CreateErrorResponse($"ScoreRange with id {id} not found.");
             }
 
-            var rolDelete = await _scoreRangeRepository.DeleteAsync(guid);
+            var rolUpdateAsync = await _scoreRangeRepository.DeleteAsync(guid);
 
             var scoreRangeDto = _mapper.Map<ScoreRangeDto>(scoreRange);
 
             return ApiResponse<ScoreRangeDto>.CreateSuccessResponse("ScoreRange deleted successfully.", scoreRangeDto);
         }
 
-        public async Task<ApiResponse<ScoreRangeDto>> Update(EditScoreRangeDto editScoreRangeDto)
+        public async Task<ApiResponse<ScoreRangeDto>> UpdateAsync(EditScoreRangeDto editScoreRangeDto)
         {
             if (editScoreRangeDto == null)
             {
@@ -124,7 +125,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<string>.CreateErrorResponse("ScoreRange ID must be a valid GUID.");
             }
-            var scoreRange = await _scoreRangeRepository.FindFirstScoreRangeAsync(l => l.TestId == testId && l.MinScore > Score && l.MaxScore> Score);
+            var scoreRange = await _scoreRangeRepository.FindFirstAsync(l => l.TestId == testId && Score > l.MinScore  &&  Score < l.MaxScore );
             if (scoreRange == null)
             {
                 return ApiResponse<string>.CreateErrorResponse($"ScoreRange with id {testId.ToString()} not found.");

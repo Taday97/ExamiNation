@@ -26,7 +26,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<OptionDto>>> GetAllAsync()
         {
-            var options = await _optionRepository.GetOptionsAsync();
+            var options = await _optionRepository.GetAllAsync();
 
             if (options == null || !options.Any())
             {
@@ -70,7 +70,7 @@ namespace ExamiNation.Application.Services.Test
 
         }
 
-        public async Task<ApiResponse<OptionDto>> Delete(Guid id)
+        public async Task<ApiResponse<OptionDto>> DeleteAsync(Guid id)
         {
             if (!Guid.TryParse(id.ToString(), out var guid))
             {
@@ -94,7 +94,7 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<OptionDto>.CreateSuccessResponse("Option deleted successfully.", optionDto);
         }
 
-        public async Task<ApiResponse<OptionDto>> Update(EditOptionDto editOptionDto)
+        public async Task<ApiResponse<OptionDto>> UpdateAsync(EditOptionDto editOptionDto)
         {
             if (editOptionDto == null)
             {
@@ -117,8 +117,6 @@ namespace ExamiNation.Application.Services.Test
             OptionDto optionDto = _mapper.Map<OptionDto>(option);
             return ApiResponse<OptionDto>.CreateSuccessResponse("Option updated successfully.", optionDto);
         }
-
-
 
     }
 }
