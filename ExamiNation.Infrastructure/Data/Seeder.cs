@@ -3,7 +3,7 @@ using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Infrastructure.Repositories.Test;
 using System.Text.Json;
 
-namespace ExamiNation.Infrastructure.Data.Seed
+namespace ExamiNation.Infrastructure.Data
 {
     public class Seeder
     {
@@ -54,14 +54,14 @@ namespace ExamiNation.Infrastructure.Data.Seed
 
             await _testRepository.AddAsync(test);
 
-            await  SeedClassificationsFromJsonAsync(filePathClassification,test);
+            await SeedClassificationsFromJsonAsync(filePathClassification, test);
 
         }
 
         public async Task SeedClassificationsFromJsonAsync(string filePath, Test test)
         {
 
-            
+
             var existingClassifications = await _scoreRangeRepository.GetAllAsync();
             foreach (var classification in existingClassifications)
             {
@@ -77,10 +77,26 @@ namespace ExamiNation.Infrastructure.Data.Seed
 
             foreach (var classification in classifications)
             {
-                classification.Test= test;
+                classification.Test = test;
                 await _scoreRangeRepository.AddAsync(classification);
             }
         }
+
+        public string ResolveSeedPath(string filename)
+        {
+            var dockerPath = Path.Combine(AppContext.BaseDirectory, filename);
+
+            if (File.Exists(dockerPath))
+                return dockerPath;
+
+            var localPath = Path.Combine("Seed", filename);
+            if (File.Exists(localPath))
+                return localPath;
+
+            throw new FileNotFoundException($"Seed file '{filename}' not found in Docker or local path.");
+        }
+
+
     }
 
 }

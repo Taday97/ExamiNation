@@ -1,6 +1,5 @@
 ﻿using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Infrastructure.Data;
-using ExamiNation.Infrastructure.Data.Seed;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,14 +21,15 @@ namespace ExamiNation.API.Controllers.Test
         [HttpPost("seed-spanish")]
         public async Task<IActionResult> SeedTestAsync()
         {
-            var testFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\test-otis.json";
-            var scoreRangeFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\classifications.json";
+            //Docker path
+            var seedFilePath =  _testSeeder.ResolveSeedPath("test-otis.json");
+            var seedFileScoreRangePath = _testSeeder.ResolveSeedPath("classifications.json");
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    await _testSeeder.SeedTestFromJsonAsync(testFilePath, scoreRangeFilePath);
+                    await _testSeeder.SeedTestFromJsonAsync(seedFilePath, seedFileScoreRangePath);
                     await transaction.CommitAsync();
 
                     return Ok("Database populated successfully.");
@@ -38,7 +38,7 @@ namespace ExamiNation.API.Controllers.Test
                 {
                     await transaction.RollbackAsync();
 
-                    return StatusCode(500, $"There was an error while seeding the database: {ex.Message}");
+                    return StatusCode(500, $"There was an error while seeding the database: {ex.Message}, seedFilePath {seedFilePath}, seedFileScoreRangePath {seedFileScoreRangePath}");
                 }
             }
         }
@@ -46,14 +46,15 @@ namespace ExamiNation.API.Controllers.Test
         [HttpPost("seed-english")]
         public async Task<IActionResult> SeedTestEnglishAsync()
         {
-            var testFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\test-otis-english.json"; 
-            var scoreRangeFilePath = "..\\ExamiNation.Infrastructure\\Data\\Seed\\json\\classifications-english.json"; 
+            var seedFilePath = _testSeeder.ResolveSeedPath("test-otis-english.json");
+            var seedFileScoreRangePath = _testSeeder.ResolveSeedPath("classifications-english.json");
+
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    await _testSeeder.SeedTestFromJsonAsync(testFilePath, scoreRangeFilePath);
+                    await _testSeeder.SeedTestFromJsonAsync(seedFilePath, seedFileScoreRangePath);
                     await transaction.CommitAsync();
 
                     return Ok("Database populated successfully.");
@@ -62,7 +63,7 @@ namespace ExamiNation.API.Controllers.Test
                 {
                     await transaction.RollbackAsync();
 
-                    return StatusCode(500, $"There was an error while seeding the database: {ex.Message}");
+                    return StatusCode(500, $"There was an error while seeding the database: {ex.Message}, seedFilePath {seedFilePath}, seedFileScoreRangePath {seedFileScoreRangePath}");
                 }
             }
         }

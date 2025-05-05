@@ -7,6 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="classifications-english.json" />
+    <Content Remove="classifications.json" />
+    <Content Remove="test-otis-english.json" />
+    <Content Remove="test-otis.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Seed\classifications-english.json" />
+    <None Include="Seed\classifications.json" />
+    <None Include="Seed\test-otis-english.json" />
+    <None Include="Seed\test-otis.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />

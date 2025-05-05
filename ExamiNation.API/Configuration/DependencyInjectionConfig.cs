@@ -1,7 +1,7 @@
 ﻿using ExamiNation.Application;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
-using ExamiNation.Infrastructure.Data.Seed;
+using ExamiNation.Infrastructure.Data;
 using ExamiNation.Infrastructure.Helpers;
 using ExamiNation.Infrastructure.Repositories;
 using ExamiNation.Infrastructure.Repositories.Security;
