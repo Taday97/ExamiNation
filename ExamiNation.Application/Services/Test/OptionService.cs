@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Responses;
+using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
+using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -116,6 +121,38 @@ namespace ExamiNation.Application.Services.Test
 
             OptionDto optionDto = _mapper.Map<OptionDto>(option);
             return ApiResponse<OptionDto>.CreateSuccessResponse("Option updated successfully.", optionDto);
+        }
+
+        public async Task<ApiResponse<PagedResponse<OptionDto>>> GetAllPagedAsync(QueryParameters queryParameters)
+        {
+            var optionsQuery = new PagedQueryOptions<Option>
+            {
+                Filters = queryParameters.Filters,
+                SortBy = queryParameters.SortBy,
+                SortDescending = queryParameters.SortDescending,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize
+            };
+
+            var (options, totalCount) = await _optionRepository.GetPagedWithCountAsync(optionsQuery);
+
+            if (!options.Any())
+            {
+                return ApiResponse<PagedResponse<OptionDto>>.CreateErrorResponse("No options found.");
+            }
+
+            var optionDtos = _mapper.Map<IEnumerable<OptionDto>>(options);
+
+            var result = new PagedResponse<OptionDto>
+            {
+                Items = optionDtos,
+                TotalCount = totalCount,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize,
+                Filters = queryParameters.Filters,
+            };
+
+            return ApiResponse<PagedResponse<OptionDto>>.CreateSuccessResponse("Options retrieved successfully.", result);
         }
 
     }

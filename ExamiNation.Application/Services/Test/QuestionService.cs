@@ -2,12 +2,16 @@
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.Question;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Responses;
+using ExamiNation.Application.DTOs.Test;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
 using System.Linq.Expressions;
 
 namespace ExamiNation.Application.Services.Test
@@ -89,7 +93,38 @@ namespace ExamiNation.Application.Services.Test
 
             return ApiResponse<IEnumerable<QuestionDto>>.CreateSuccessResponse("Questions retrieved successfully.", questionDtos);
         }
+        public async Task<ApiResponse<PagedResponse<QuestionDto>>> GetAllPagedAsync(QueryParameters queryParameters)
+        {
+            var options = new PagedQueryOptions<Question>
+            {
+                Filters = queryParameters.Filters,
+                SortBy = queryParameters.SortBy,
+                SortDescending = queryParameters.SortDescending,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize,
+            };
 
+
+            var (questions, totalCount) = await _questionRepository.GetPagedWithCountAsync(options);
+
+            if (!questions.Any())
+            {
+                return ApiResponse<PagedResponse<QuestionDto>>.CreateErrorResponse("No questions found.");
+            }
+
+            var questionDtos = _mapper.Map<IEnumerable<QuestionDto>>(questions);
+
+            var result = new PagedResponse<QuestionDto>
+            {
+                Items = questionDtos,
+                TotalCount = totalCount,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize,
+                Filters = queryParameters.Filters,
+            };
+
+            return ApiResponse<PagedResponse<QuestionDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
+        }
 
         public async Task<ApiResponse<QuestionDto>> AddAsync(CreateQuestionDto questionDto)
         {

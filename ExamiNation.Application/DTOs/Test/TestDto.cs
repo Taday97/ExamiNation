@@ -14,5 +14,7 @@ namespace ExamiNation.Application.DTOs.Test
 
         public DateTime CreatedAt { get; set; }
 
+        public string ImageUrl { get; set; }
+
     }
 }

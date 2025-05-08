@@ -1,4 +1,5 @@
 ﻿using ExamiNation.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,5 +18,6 @@ namespace ExamiNation.Application.DTOs.Test
 
         [Required]
         public TestType Type { get; set; }
+        public IFormFile ImageUrl { get; set; }
     }
 }

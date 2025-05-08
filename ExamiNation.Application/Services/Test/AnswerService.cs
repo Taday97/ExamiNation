@@ -9,6 +9,11 @@ using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Application.Interfaces;
 using ExamiNation.Domain.Common;
 using System.Linq.Expressions;
+using ExamiNation.Application.DTOs.Responses;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
+using ExamiNation.Application.DTOs.Answer;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -40,15 +45,15 @@ namespace ExamiNation.Application.Services.Test
 
             return ApiResponse<IEnumerable<AnswerDto>>.CreateSuccessResponse("Answer retrieved successfully.", answerDtos);
         }
-        public async Task<ApiResponse<IEnumerable<AnswerDto>>> GetAllByTestAsync(Guid testId)
+        public async Task<ApiResponse<IEnumerable<AnswerDto>>> GetAllByTestAsync(Guid answerId)
         {
-            if (testId == Guid.Empty)
+            if (answerId == Guid.Empty)
             {
-                return ApiResponse<IEnumerable<AnswerDto>>.CreateErrorResponse("Invalid test ID.");
+                return ApiResponse<IEnumerable<AnswerDto>>.CreateErrorResponse("Invalid answer ID.");
             }
             var options = new QueryOptions<Answer>
             {
-                Filter = l => l.TestResult != null && l.TestResult.TestId == testId,
+                Filter = l => l.TestResult != null && l.TestResult.TestId == answerId,
                 AsNoTracking = true,
                 Includes = new List<Expression<Func<Answer, object>>>
                 {
@@ -147,6 +152,38 @@ namespace ExamiNation.Application.Services.Test
             var answerDto = _mapper.Map<AnswerDto>(answer);
 
             return ApiResponse<AnswerDto>.CreateSuccessResponse("Answer deleted successfully.", answerDto);
+        }
+
+        public async Task<ApiResponse<PagedResponse<AnswerDto>>> GetAllPagedAsync(QueryParameters queryParameters)
+        {
+            var optionsQuery = new PagedQueryOptions<Answer>
+            {
+                Filters = queryParameters.Filters,
+                SortBy = queryParameters.SortBy,
+                SortDescending = queryParameters.SortDescending,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize
+            };
+
+            var (answers, totalCount) = await _answerRepository.GetPagedWithCountAsync(optionsQuery);
+
+            if (!answers.Any())
+            {
+                return ApiResponse<PagedResponse<AnswerDto>>.CreateErrorResponse("No answers found.");
+            }
+
+            var answerDtos = _mapper.Map<IEnumerable<AnswerDto>>(answers);
+
+            var result = new PagedResponse<AnswerDto>
+            {
+                Items = answerDtos,
+                TotalCount = totalCount,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize,
+                Filters = queryParameters.Filters,
+            };
+
+            return ApiResponse<PagedResponse<AnswerDto>>.CreateSuccessResponse("Answeres retrieved successfully.", result);
         }
     }
 }

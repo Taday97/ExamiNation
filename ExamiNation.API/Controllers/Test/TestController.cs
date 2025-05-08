@@ -2,8 +2,10 @@
 using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
+using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Test;
 using ExamiNation.Application.Interfaces.Test;
+using ExamiNation.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +24,7 @@ namespace ExamiNation.API.Controllers.Test
             _mapper = mapper;
         }
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpGet]
         public async Task<IActionResult> GetAllTests()
         {
@@ -35,7 +37,34 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response);
         }
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        [HttpGet("by-type/{type}")]
+        public async Task<IActionResult> GetTestsByType(TestType type)
+        {
+            var response = await _testService.GetAllByTypeAsync(type);
+
+            if (!response.Success)
+                return NotFound(response.Message);
+
+            return Ok(response);
+        }
+
+
+        //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        [HttpGet("get-pages")]
+        public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _testService.GetAllPagedAsync(queryParameters);
+
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response);
+        }
+
+        //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTestById(Guid id)
         {
@@ -53,9 +82,10 @@ namespace ExamiNation.API.Controllers.Test
         }
 
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpPost]
-        public async Task<IActionResult> CreateTest([FromBody] CreateTestDto createTestDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateTest([FromQuery] CreateTestDto createTestDto)
         {
             if (createTestDto == null)
                 return BadRequest("Test data cannot be null.");
@@ -68,9 +98,10 @@ namespace ExamiNation.API.Controllers.Test
             return CreatedAtAction(nameof(GetTestById), new { id = response.Data.Id }, response.Data);
         }
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTest(Guid id, [FromBody] EditTestDto editTestDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateTest(Guid id, [FromQuery] EditTestDto editTestDto)
         {
             if (id == Guid.Empty)
             {
@@ -93,7 +124,7 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response);
         }
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTest(Guid id)
         {

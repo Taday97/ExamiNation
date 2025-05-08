@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
+using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
+using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace ExamiNation.Application.Services.Test
@@ -133,6 +138,38 @@ namespace ExamiNation.Application.Services.Test
 
             var scoreRangeDto = _mapper.Map<ScoreRangeDto>(scoreRange);
             return ApiResponse<string>.CreateSuccessResponse("ScoreRange retrieved successfully.", scoreRangeDto.Classification);
+        }
+
+        public async Task<ApiResponse<PagedResponse<ScoreRangeDto>>> GetAllPagedAsync(QueryParameters queryParameters)
+        {
+            var options = new PagedQueryOptions<ScoreRange>
+            {
+                Filters = queryParameters.Filters,
+                SortBy = queryParameters.SortBy,
+                SortDescending = queryParameters.SortDescending,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize
+            };
+
+            var (scoreRanges, totalCount) = await _scoreRangeRepository.GetPagedWithCountAsync(options);
+
+            if (!scoreRanges.Any())
+            {
+                return ApiResponse<PagedResponse<ScoreRangeDto>>.CreateErrorResponse("No scoreRanges found.");
+            }
+
+            var scoreRangeDtos = _mapper.Map<IEnumerable<ScoreRangeDto>>(scoreRanges);
+
+            var result = new PagedResponse<ScoreRangeDto>
+            {
+                Items = scoreRangeDtos,
+                TotalCount = totalCount,
+                PageNumber = queryParameters.PageNumber,
+                PageSize = queryParameters.PageSize,
+                Filters = queryParameters.Filters,
+            };
+
+            return ApiResponse<PagedResponse<ScoreRangeDto>>.CreateSuccessResponse("ScoreRanges retrieved successfully.", result);
         }
     }
 }
