@@ -3,7 +3,9 @@ using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.Question;
+using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.Interfaces.Test;
+using ExamiNation.Application.Services.Test;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,6 +60,20 @@ namespace ExamiNation.API.Controllers.Test
             var result = await _questionService.GetByTestIdAsync(testId);
             return Ok(result);
         }
+
+        [HttpGet("get-pages")]
+        public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _questionService.GetAllQuestionWithOptionsPagedAsync(queryParameters);
+
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response);
+        }
+
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpPost]

@@ -11,6 +11,7 @@ using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Infrastructure.Repositories.Test;
+using ExamiNation.Application.DTOs.Answer;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -125,14 +126,7 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<PagedResponse<OptionDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
-            var optionsQuery = new PagedQueryOptions<Option>
-            {
-                Filters = queryParameters.Filters,
-                SortBy = queryParameters.SortBy,
-                SortDescending = queryParameters.SortDescending,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize
-            };
+            var optionsQuery = _mapper.Map<PagedQueryOptions<Option>>(queryParameters);
 
             var (options, totalCount) = await _optionRepository.GetPagedWithCountAsync(optionsQuery);
 
@@ -143,14 +137,9 @@ namespace ExamiNation.Application.Services.Test
 
             var optionDtos = _mapper.Map<IEnumerable<OptionDto>>(options);
 
-            var result = new PagedResponse<OptionDto>
-            {
-                Items = optionDtos,
-                TotalCount = totalCount,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize,
-                Filters = queryParameters.Filters,
-            };
+            var result = _mapper.Map<PagedResponse<OptionDto>>(queryParameters);
+            result.Items = optionDtos;
+            result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<OptionDto>>.CreateSuccessResponse("Options retrieved successfully.", result);
         }

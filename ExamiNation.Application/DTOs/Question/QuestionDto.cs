@@ -15,7 +15,5 @@ namespace ExamiNation.Application.DTOs.Question
 
         public int? QuestionNumber { get; set; }
 
-        public string TestName { get; set; }
-
     }
 }

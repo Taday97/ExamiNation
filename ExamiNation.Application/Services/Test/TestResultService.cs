@@ -3,6 +3,7 @@ using ExamiNation.Application.DTOs.Answer;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
+using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Application.Interfaces.Security;
@@ -282,16 +283,9 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<PagedResponse<TestResultDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
-            var options = new PagedQueryOptions<TestResult>
-            {
-                Filters = queryParameters.Filters,
-                SortBy = queryParameters.SortBy,
-                SortDescending = queryParameters.SortDescending,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize
-            };
+            var optionsQuery = _mapper.Map<PagedQueryOptions<TestResult>>(queryParameters);
 
-            var (testResults, totalCount) = await _testResultRepository.GetPagedWithCountAsync(options);
+            var (testResults, totalCount) = await _testResultRepository.GetPagedWithCountAsync(optionsQuery);
 
             if (!testResults.Any())
             {
@@ -300,14 +294,9 @@ namespace ExamiNation.Application.Services.Test
 
             var testResultDtos = _mapper.Map<IEnumerable<TestResultDto>>(testResults);
 
-            var result = new PagedResponse<TestResultDto>
-            {
-                Items = testResultDtos,
-                TotalCount = totalCount,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize,
-                Filters = queryParameters.Filters,
-            };
+            var result = _mapper.Map<PagedResponse<TestResultDto>>(queryParameters);
+            result.Items = testResultDtos;
+            result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<TestResultDto>>.CreateSuccessResponse("TestResults retrieved successfully.", result);
         }

@@ -156,14 +156,15 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<PagedResponse<AnswerDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
-            var optionsQuery = new PagedQueryOptions<Answer>
-            {
-                Filters = queryParameters.Filters,
-                SortBy = queryParameters.SortBy,
-                SortDescending = queryParameters.SortDescending,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize
-            };
+            var optionsQuery = _mapper.Map<PagedQueryOptions<Answer>>(queryParameters);
+            //var optionsQuery = new PagedQueryOptions<Answer>
+            //{
+            //    Filters = queryParameters.Filters,
+            //    SortBy = queryParameters.SortBy,
+            //    SortDescending = queryParameters.SortDescending,
+            //    PageNumber = queryParameters.PageNumber ?? queryParameters.PageNumber.Value,
+            //    PageSize = queryParameters.PageSize ?? queryParameters.PageSize.Value,
+            //};
 
             var (answers, totalCount) = await _answerRepository.GetPagedWithCountAsync(optionsQuery);
 
@@ -173,15 +174,10 @@ namespace ExamiNation.Application.Services.Test
             }
 
             var answerDtos = _mapper.Map<IEnumerable<AnswerDto>>(answers);
+            var result = _mapper.Map<PagedResponse<AnswerDto>>(queryParameters);
 
-            var result = new PagedResponse<AnswerDto>
-            {
-                Items = answerDtos,
-                TotalCount = totalCount,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize,
-                Filters = queryParameters.Filters,
-            };
+            result.Items = answerDtos;
+            result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<AnswerDto>>.CreateSuccessResponse("Answeres retrieved successfully.", result);
         }

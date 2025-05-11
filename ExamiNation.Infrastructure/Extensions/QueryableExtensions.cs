@@ -21,17 +21,22 @@ namespace ExamiNation.Infrastructure.Extensions
 
                 if (property.PropertyType.IsEnum)
                 {
-                    var enumValue = Enum.GetValues(property.PropertyType)
-                                        .Cast<Enum>()
-                                        .FirstOrDefault(e => e.ToString().Equals(filter.Value, StringComparison.OrdinalIgnoreCase));
+                    var enumType = property.PropertyType;
 
-                    if (enumValue != null)
+                    if (Enum.TryParse(enumType, filter.Value, ignoreCase: true, out object? parsedEnum))
                     {
+                        var searchConstant = Expression.Constant(parsedEnum);
+                        filterCondition = Expression.Equal(propertyAccess, searchConstant);
+                    }
+                    else if (int.TryParse(filter.Value, out int enumNumericValue))
+                    {
+                        var enumValue = Enum.ToObject(enumType, enumNumericValue);
                         var searchConstant = Expression.Constant(enumValue);
                         filterCondition = Expression.Equal(propertyAccess, searchConstant);
                     }
                 }
-                    if (property.PropertyType == typeof(string))
+
+                if (property.PropertyType == typeof(string))
                 {
                     var searchConstant = Expression.Constant(filter.Value);
                     filterCondition = Expression.Call(propertyAccess, "Contains", null, searchConstant);

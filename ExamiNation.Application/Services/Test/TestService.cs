@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ExamiNation.Application.DTOs.Answer;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
@@ -70,16 +71,10 @@ namespace ExamiNation.Application.Services.Test
         }
         public async Task<ApiResponse<PagedResponse<TestDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
-            var options = new PagedQueryOptions<TestEntity>
-            {
-                Filters = queryParameters.Filters,
-                SortBy = queryParameters.SortBy,
-                SortDescending = queryParameters.SortDescending,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize
-            };
+            var optionsQuery = _mapper.Map<PagedQueryOptions<TestEntity>>(queryParameters);
 
-            var (tests, totalCount) = await _testRepository.GetPagedWithCountAsync(options);
+
+            var (tests, totalCount) = await _testRepository.GetPagedWithCountAsync(optionsQuery);
 
             if (!tests.Any())
             {
@@ -88,14 +83,10 @@ namespace ExamiNation.Application.Services.Test
 
             var testDtos = _mapper.Map<IEnumerable<TestDto>>(tests);
 
-            var result = new PagedResponse<TestDto>
-            {
-                Items = testDtos,
-                TotalCount = totalCount,
-                PageNumber = queryParameters.PageNumber,
-                PageSize = queryParameters.PageSize,
-                Filters = queryParameters.Filters,
-            };
+            var result = _mapper.Map<PagedResponse<TestDto>>(queryParameters);
+           
+            result.Items = testDtos;
+            result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<TestDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
         }

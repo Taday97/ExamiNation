@@ -18,6 +18,6 @@ namespace ExamiNation.Application.DTOs.Test
 
         [Required]
         public TestType Type { get; set; }
-        public IFormFile ImageUrl { get; set; }
+        public IFormFile? ImageUrl { get; set; }
     }
 }

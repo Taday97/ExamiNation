@@ -61,20 +61,35 @@ namespace ExamiNation.Infrastructure.Repositories
             if (options.AsNoTracking)
                 query = query.AsNoTracking();
 
+            if (options?.Includes != null)
+            {
+                foreach (var include in options.Includes)
+                {
+                    query = query.Include(include);
+                }
+            }
 
-            query = query.ApplyFilters(options.Filters);
+            if (options?.Filters != null && options.Filters.Any())
+            {
+                query = query.ApplyFilters(options.Filters); 
+            }
 
-            query = query.ApplyOrdering(options.SortBy, options.SortDescending);
+            if (!string.IsNullOrEmpty(options?.SortBy))
+            {
+                query = query.ApplyOrdering(options.SortBy, options.SortDescending);
+            }
 
             var totalCount = await query.CountAsync();
 
-            
+           
             query = query
-                .Skip((options.PageNumber - 1) * options.PageSize)
-                .Take(options.PageSize);
+                .Skip(((options.PageNumber ?? 1) - 1) * (options.PageSize ?? int.MaxValue)) 
+                .Take(options.PageSize ?? int.MaxValue); 
 
             return (await query.ToListAsync(), totalCount);
         }
+
+
 
 
 

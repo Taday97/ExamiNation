@@ -21,8 +21,6 @@ namespace ExamiNation.Application.Validators.Question
             RuleFor(x => x.TestId)
                 .NotEmpty().WithMessage("Test ID is required.");
 
-            RuleFor(x => x.TestName)
-                .NotEmpty().WithMessage("Test name is required.");
 
         }
     }
