@@ -54,6 +54,7 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response.Data);
         }
 
+        [Authorize(Roles = RoleGroups.All)]
         [HttpGet("test/{testId}")]
         public async Task<IActionResult> GetQuestionsByTest(Guid testId)
         {
@@ -61,10 +62,26 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(result);
         }
 
-        [HttpGet("get-pages")]
-        public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
+        [Authorize(Roles = RoleGroups.All)]
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPagedQuestions([FromQuery] QueryParameters queryParameters)
         {
             var response = await _questionService.GetAllQuestionWithOptionsPagedAsync(queryParameters);
+
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response);
+        }
+
+
+        [Authorize(Roles = RoleGroups.All)]
+        [HttpGet("paged-with-test")]
+        public async Task<IActionResult> GetPagedQuestionWhitOptionTest([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _questionService.GetAllQuestionWithOptionsTestPagedAsync(queryParameters);
 
             if (!response.Success)
             {

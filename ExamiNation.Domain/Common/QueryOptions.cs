@@ -8,7 +8,7 @@ namespace ExamiNation.Domain.Common
         public bool AsNoTracking { get; set; } = true;
         public Func<IQueryable<T>, IOrderedQueryable<T>>? OrderBy { get; set; }
         public List<Expression<Func<T, object>>> Includes { get; set; } = new();
-
+        public List<Func<IQueryable<T>, IQueryable<T>>> ThenIncludes { get; set; } = new();
 
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExamiNation.Application.Validators.Option
 {
-    public class QuestionOptionDtoValidator : AbstractValidator<QuestionOptionDto>
+    public class QuestionOptionDtoValidator : AbstractValidator<OptionQuestionDto>
     {
 
         public QuestionOptionDtoValidator()

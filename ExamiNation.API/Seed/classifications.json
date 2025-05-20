@@ -3,30 +3,45 @@
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 41,
     "maxScore": 50,
-    "classification": "Superior"
+    "classification": "Superior",
+    "shortDescription": "Tu puntuación te ubica en el rango de inteligencia Superior.",
+    "detailedExplanation": "Esto indica que posees habilidades cognitivas excepcionales, significativamente por encima de la población general. Eres capaz de procesar información compleja rápidamente y hacer conexiones profundas entre distintos temas. Las personas en este rango suelen pensar de manera abstracta, razonar lógicamente y resolver problemas con estrategias avanzadas. Probablemente sobresales en ambientes intelectualmente exigentes y eres considerado un pensador crítico por los demás.",
+    "recommendations": "Te desenvuelves muy bien en entornos intelectualmente demandantes. Considera carreras o áreas que desafíen tu razonamiento y pensamiento estratégico, como la investigación, matemáticas avanzadas, ingeniería, medicina o roles de liderazgo."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 31,
     "maxScore": 40,
-    "classification": "Superior al Término Medio"
+    "classification": "Superior al Término Medio",
+    "shortDescription": "Tu puntuación te ubica en el rango Superior al Término Medio.",
+    "detailedExplanation": "Esto sugiere que tienes habilidades mentales fuertes y por encima del promedio. Probablemente captas nuevos conceptos rápidamente y eres capaz de analizar situaciones desde múltiples perspectivas. Las personas en este rango suelen demostrar creatividad, curiosidad y una sólida capacidad para razonar sobre ideas abstractas. Es probable que rindas bien en tareas estructuradas que requieren pensamiento lógico y planificación.",
+    "recommendations": "Sigue desarrollando tus habilidades participando en actividades que estimulen tu capacidad mental, como juegos estratégicos, cursos avanzados o proyectos de liderazgo. Eres apto para áreas como análisis de negocios, educación, tecnología y diseño."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 21,
     "maxScore": 30,
-    "classification": "Término Medio"
+    "classification": "Término Medio",
+    "shortDescription": "Tu puntuación está dentro del rango Término Medio.",
+    "detailedExplanation": "Posees un nivel equilibrado de capacidad de razonamiento y comprensión general. Eres capaz de manejar tareas cotidianas que requieren lógica, reconocimiento de patrones y solución práctica de problemas. Las personas en esta categoría suelen beneficiarse de la repetición y el aprendizaje estructurado para dominar ideas complejas. Con constancia y motivación, eres completamente capaz de rendir bien en ambientes académicos y laborales.",
+    "recommendations": "Enfócate en fortalecer tus estrategias de aprendizaje y gestión del tiempo. Puedes crecer significativamente estableciendo metas claras, manteniendo la constancia y desarrollando buenos hábitos de estudio o trabajo."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 12,
     "maxScore": 20,
-    "classification": "Inferior al Término Medio"
+    "classification": "Inferior al Término Medio",
+    "shortDescription": "Tu puntuación indica un desempeño cognitivo Inferior al Término Medio.",
+    "detailedExplanation": "Este rango sugiere cierta dificultad con el razonamiento abstracto y la resolución lógica de problemas. Probablemente aprendes mejor a través de experiencias prácticas, concretas y explicaciones visuales claras. Con el apoyo adecuado y estrategias personalizadas, puedes construir confianza y mejorar tu desempeño de forma constante. Recuerda que la inteligencia es multifacética, y esta puntuación refleja solo un aspecto de tus habilidades.",
+    "recommendations": "Trabaja en fortalecer tu confianza mediante entornos de aprendizaje estructurados. La repetición, instrucciones claras y aplicaciones prácticas ayudarán a reforzar tu comprensión. Busca apoyo cuando lo necesites y celebra tus pequeños logros."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 0,
     "maxScore": 11,
-    "classification": "Bajo ó Inferior"
+    "classification": "Bajo o Inferior",
+    "shortDescription": "Tu puntuación se encuentra en el rango Bajo o Inferior.",
+    "detailedExplanation": "Esto puede reflejar dificultades significativas en el pensamiento abstracto y el procesamiento cognitivo. Es posible que te resulte más fácil comprender ideas concretas que teóricas, y te beneficies de la práctica repetida y la instrucción guiada. Es importante saber que los tests de inteligencia no capturan todas las formas de inteligencia, como la emocional, creativa o práctica. Muchas personas con puntuaciones bajas destacan cuando se les brindan las herramientas, el apoyo y las condiciones adecuadas para aprender.",
+    "recommendations": "Enfócate en métodos de aprendizaje personalizados que desarrollen habilidades prácticas y aumenten tu autoestima. Los entornos de apoyo, la paciencia y el estímulo son claves. Considera trabajar con un tutor o mentor para identificar tus fortalezas y estilo de aprendizaje."
   }
 ]

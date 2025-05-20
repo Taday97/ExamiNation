@@ -49,10 +49,10 @@ namespace ExamiNation.Api.IntegrationTests.Tests
                 await AppDbContextSeed.SeedDatabaseAsync(context, userManager, scopedServices.GetRequiredService<RoleManager<Role>>(), _factory.Services.GetRequiredService<IConfiguration>(), scopedServices.GetRequiredService<ILogger<AppDbContextSeed>>(), _jwtService);
 
 
-                var adminUser = await userManager.FindByNameAsync("admin");
+                var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
                 AdminToken = await _jwtService.GenerateTokenAsync(adminUser);
 
-                var testUser = await userManager.FindByNameAsync("test");
+                var testUser = await userManager.FindByEmailAsync("test@admin.com");
                 TestToken = await _jwtService.GenerateTokenAsync(testUser);
             }
 
@@ -124,18 +124,18 @@ namespace ExamiNation.Api.IntegrationTests.Tests
         [Test]
         public async Task Login_Should_Return_Ok_When_Valid_Credentials()
         {
-            var existingUserName = $"testuser_{Guid.NewGuid()}";
+            var existingEmail = $"testuser_{Guid.NewGuid()}";
             var requestBody = new RegisterModelDto
             {
-                Username = existingUserName,
+                Email = $"{existingEmail}@example.com",
+                Username = existingEmail,
                 Password = "Test@123",
-                Email = $"{existingUserName}@example.com"
             };
             await _client.PostAsJsonAsync("/api/auth/register", requestBody);
 
             var loginRequestBody = new LoginModelDto
             {
-                Username = existingUserName,
+                Email = $"{existingEmail}@example.com",
                 Password = "Test@123"
             };
 
@@ -154,7 +154,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             // Arrange
             var requestBody = new LoginModelDto
             {
-                Username = "",
+                Email = "",
                 Password = ""
             };
 
@@ -165,8 +165,8 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var validationProblem = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
             validationProblem.Should().NotBeNull();
-            validationProblem.Errors.Should().ContainKey("Username");
-            validationProblem.Errors["Username"].Should().Contain("Username is required.");
+            validationProblem.Errors.Should().ContainKey("Email");
+            validationProblem.Errors["Email"].Should().Contain("Email is required.");
             validationProblem.Errors.Should().ContainKey("Password");
             validationProblem.Errors["Password"].Should().Contain("Password is required.");
         }
@@ -176,7 +176,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
         {
             var requestBody = new LoginModelDto
             {
-                Username = "nonexistentuser",
+                Email = "nonexistentuser@gmail.com",
                 Password = "WrongPassword"
             };
 

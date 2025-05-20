@@ -21,7 +21,7 @@ namespace ExamiNation.Domain.Entities.Test
         public int? QuestionNumber { get; set; }
 
         public virtual ICollection<Option> Options { get;  set; }
-        public virtual ICollection<Answer> Answers { get; set; }
+        public virtual ICollection<Answer> Answers { get;  set; }
     }
 
 

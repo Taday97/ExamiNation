@@ -12,7 +12,7 @@ namespace ExamiNation.Application.Profiles.Test
             CreateMap<CreateOptionDto, Option>();
             CreateMap<EditOptionDto, Option>().ReverseMap();
 
-            CreateMap<Option,QuestionOptionDto>().ReverseMap();
+            CreateMap<Option,OptionQuestionDto>().ReverseMap();
 
         }
     }

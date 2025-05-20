@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
@@ -10,10 +9,7 @@ using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
-using ExamiNation.Infrastructure.Repositories.Test;
-using static System.Formats.Asn1.AsnWriter;
-using ExamiNation.Application.DTOs.Answer;
-using ExamiNation.Application.DTOs.Question;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -126,20 +122,24 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<ScoreRangeDto>.CreateSuccessResponse("ScoreRange updated successfully.", scoreRangeDto);
         }
 
-        public async Task<ApiResponse<string>> GetClasificationAsync(Guid testId, int Score)
+        public async Task<ApiResponse<ScoreRangeDto>> GetClasificationAsync(Guid testId, decimal Score)
         {
             if (!Guid.TryParse(testId.ToString(), out var guid))
             {
-                return ApiResponse<string>.CreateErrorResponse("ScoreRange ID must be a valid GUID.");
+                return ApiResponse<ScoreRangeDto>.CreateErrorResponse("ScoreRange ID must be a valid GUID.");
             }
-            var scoreRange = await _scoreRangeRepository.FindFirstAsync(l => l.TestId == testId && Score > l.MinScore  &&  Score < l.MaxScore );
+            var scoreRange = await _scoreRangeRepository.FindFirstAsync(l =>
+            l.TestId == testId &&
+            Score >= l.MinScore &&
+            Score <= l.MaxScore,asNoTracking:true,l=>l.Include(m=>m.Test));
+
             if (scoreRange == null)
             {
-                return ApiResponse<string>.CreateErrorResponse($"ScoreRange with id {testId.ToString()} not found.");
+                return ApiResponse<ScoreRangeDto>.CreateErrorResponse($"ScoreRange with id {testId.ToString()} not found.");
             }
 
             var scoreRangeDto = _mapper.Map<ScoreRangeDto>(scoreRange);
-            return ApiResponse<string>.CreateSuccessResponse("ScoreRange retrieved successfully.", scoreRangeDto.Classification);
+            return ApiResponse<ScoreRangeDto>.CreateSuccessResponse("ScoreRange retrieved successfully.", scoreRangeDto);
         }
 
         public async Task<ApiResponse<PagedResponse<ScoreRangeDto>>> GetAllPagedAsync(QueryParameters queryParameters)

@@ -67,7 +67,7 @@ namespace ExamiNation.Infrastructure.Repositories.Security
             return existingUser;
         }
 
-        public async Task<ApplicationUser> DeleteAsync(string id)
+        public async Task<ApplicationUser> DeleteAsync(Guid id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)

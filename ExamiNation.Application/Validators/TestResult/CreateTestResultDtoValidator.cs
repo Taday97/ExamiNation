@@ -20,8 +20,6 @@ namespace ExamiNation.Application.Validators.TestResult
             RuleFor(x => x.TestId)
                 .NotEmpty().WithMessage("Test ID is required.");
 
-            RuleFor(x => x.Score)
-                .GreaterThanOrEqualTo(0).WithMessage("Score must be a non-negative number.");
 
             RuleFor(x => x.CompletedAt)
                .GreaterThan(x => x.StartedAt)

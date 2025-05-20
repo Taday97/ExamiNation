@@ -14,10 +14,6 @@ namespace ExamiNation.Application.DTOs.TestResult
         [Required]
         public Guid TestId { get; set; }
 
-        [Required]
-        [Precision(10, 4)]
-        public decimal Score { get; set; }
-
         public List<CreateAnswerDto>? Answers { get; set; }
 
         public DateTime? StartedAt { get;  set; }

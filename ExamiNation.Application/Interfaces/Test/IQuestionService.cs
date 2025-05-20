@@ -9,5 +9,6 @@ namespace ExamiNation.Application.Interfaces.Test
     {
         Task<ApiResponse<IEnumerable<QuestionDto>>> GetByTestIdAsync(Guid testId);
         Task<ApiResponse<PagedResponse<QuestionDtoWithOptions>>> GetAllQuestionWithOptionsPagedAsync(QueryParameters queryParameters);
+        Task<ApiResponse<QuestionsPagedWithTestDto>> GetAllQuestionWithOptionsTestPagedAsync(QueryParameters queryParameters);
     }
 }

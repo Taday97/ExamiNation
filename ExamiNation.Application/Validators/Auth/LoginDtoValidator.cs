@@ -15,11 +15,14 @@ namespace ExamiNation.Application.Validators.Auth
             RuleFor(x => x)
                .NotNull().WithMessage("LoginModelDto cannot be null.");
 
-            RuleFor(x => x.Username)
-                .NotEmpty().WithMessage("Username is required.");
+            RuleFor(x => x.Email)
+           .NotEmpty().WithMessage("Email is required.")
+           .EmailAddress().WithMessage("Invalid email format.")
+           .MaximumLength(100).WithMessage("Email must not exceed 100 characters.");
+
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Password is required.");
+             .NotEmpty().WithMessage("Password is required.");
         }
     }
 }

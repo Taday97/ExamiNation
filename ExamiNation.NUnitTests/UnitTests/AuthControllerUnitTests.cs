@@ -75,7 +75,7 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task Register_ServiceSuccess_ReturnsOk()
         {
             // Arrange
-            var dto = new RegisterModelDto { Username = "test", Email = "test@test.com", Password = "Password123!" };
+            var dto = new RegisterModelDto { Username = "test", Email = "test@admin.com", Password = "Password123!" };
 
             var expectedResponse = ApiResponse<string>.CreateSuccessResponse("User registered successfully.");
 
@@ -156,7 +156,7 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task Login_FailedAuthentication_ReturnsUnauthorized()
         {
             // Arrange
-            var dto = new LoginModelDto { Username = "Test1", Password = "wrongpass" };
+            var dto = new LoginModelDto { Email = "Test1@admin.com", Password = "wrongpass" };
             var expectedResponse = ApiResponse<LoginResultDto>.CreateErrorResponse("Invalid credentials.");
             _mockUserService.Setup(s => s.LoginAsync(dto))
                 .ReturnsAsync(expectedResponse);
@@ -171,7 +171,7 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task Login_SuccessfulAuthentication_ReturnsOkWithToken()
         {
             // Arrange
-            var dto = new LoginModelDto { Username = "Test1", Password = "Password123!" };
+            var dto = new LoginModelDto { Email = "Test1@admin.com", Password = "Password123!" };
             var tokenData = new LoginResultDto { Token = "mocked-token" };
             var expectedResponse = ApiResponse<LoginResultDto>.CreateSuccessResponse("Login successful.", tokenData);
 

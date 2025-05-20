@@ -132,7 +132,6 @@ namespace ExamiNation.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
@@ -209,11 +208,23 @@ namespace ExamiNation.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("DetailedExplanation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaxScore")
                         .HasColumnType("int");
 
                     b.Property<int>("MinScore")
                         .HasColumnType("int");
+
+                    b.Property<string>("Recommendations")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TestId")
                         .HasColumnType("uniqueidentifier");
@@ -455,7 +466,7 @@ namespace ExamiNation.Infrastructure.Migrations
                     b.HasOne("ExamiNation.Domain.Entities.Test.Test", "Test")
                         .WithMany("TestResults")
                         .HasForeignKey("TestId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ExamiNation.Domain.Entities.Security.ApplicationUser", "User")

@@ -17,8 +17,6 @@ namespace ExamiNation.Application.DTOs.TestResult
         [Required]
         public Guid TestId { get; set; }
 
-        [Required]
-        [Precision(10, 4)]
         public decimal Score { get; set; }
 
         public TestResultStatus Status { get; set; }

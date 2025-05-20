@@ -17,13 +17,13 @@ COPY . .
 WORKDIR /src/ExamiNation.API
 RUN dotnet publish -c Release -o /app/publish
 
-# Etapa 2: Runtime
+# Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
 
-# Copia el archivo de seed a una ruta accesible
+# Sedd
 COPY ExamiNation.API/Seed/classifications.json /app/
 COPY ExamiNation.API/Seed/test-otis.json /app/
 COPY ExamiNation.API/Seed/test-otis-english.json /app/

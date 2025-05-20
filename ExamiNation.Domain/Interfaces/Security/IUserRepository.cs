@@ -13,7 +13,7 @@ namespace ExamiNation.Domain.Interfaces.Security
 
         Task<ApplicationUser> UpdateAsync(ApplicationUser user);
 
-        Task<ApplicationUser> DeleteAsync(string id);
+        Task<ApplicationUser> DeleteAsync(Guid id);
 
         Task<bool> AssignRolesToUserAsync(ApplicationUser user, IEnumerable<Role> rolesEntities);
 

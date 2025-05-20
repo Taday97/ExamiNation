@@ -18,15 +18,15 @@ namespace ExamiNation.Infrastructure.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async Task<T?> GetByIdAsync(Guid id, bool asNoTracking = true, params Expression<Func<T, object>>[] includes)
+        public async Task<T?> GetByIdAsync(Guid id, bool asNoTracking = true, Func<IQueryable<T>, IQueryable<T>>? includes = null)
         {
             IQueryable<T> query = _dbSet;
 
             if (asNoTracking)
                 query = query.AsNoTracking();
 
-            foreach (var include in includes)
-                query = query.Include(include);
+            if (includes != null)
+                query = includes(query);
 
             return await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
         }
@@ -43,6 +43,13 @@ namespace ExamiNation.Infrastructure.Repositories
                 foreach (var include in options.Includes)
                 {
                     query = query.Include(include);
+                }
+            }
+            if (options?.ThenIncludes != null)
+            {
+                foreach (var thenInclude in options.ThenIncludes)
+                {
+                    query = thenInclude(query);
                 }
             }
 
@@ -66,6 +73,13 @@ namespace ExamiNation.Infrastructure.Repositories
                 foreach (var include in options.Includes)
                 {
                     query = query.Include(include);
+                }
+            }
+            if (options?.ThenIncludes != null)
+            {
+                foreach (var thenInclude in options.ThenIncludes)
+                {
+                    query = thenInclude(query);
                 }
             }
 
@@ -93,15 +107,15 @@ namespace ExamiNation.Infrastructure.Repositories
 
 
 
-        public async Task<T?> FindFirstAsync(Expression<Func<T, bool>> filter, bool asNoTracking = true, params Expression<Func<T, object>>[] includes)
+        public async Task<T?> FindFirstAsync(Expression<Func<T, bool>> filter, bool asNoTracking = true, Func<IQueryable<T>, IQueryable<T>>? includes = null)
         {
             IQueryable<T> query = _dbSet;
 
             if (asNoTracking)
                 query = query.AsNoTracking();
 
-            foreach (var include in includes)
-                query = query.Include(include);
+            if (includes != null)
+                query = includes(query);
 
             return await query.FirstOrDefaultAsync(filter);
         }

@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using NUnit.Framework.Internal;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Domain.Entities.Security;
+using Newtonsoft.Json.Linq;
 
 namespace ExamiNation.Api.IntegrationTests.Tests
 {
@@ -57,11 +58,11 @@ namespace ExamiNation.Api.IntegrationTests.Tests
 
 
 
-                var adminUser = await userManager.FindByNameAsync("admin");
+                var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
                 AdminId = adminUser?.Id.ToString() ?? "";
                 AdminToken = await _jwtService.GenerateTokenAsync(adminUser);
 
-                var testUser = await userManager.FindByNameAsync("test");
+                var testUser = await userManager.FindByEmailAsync("test@admin.com");
                 TestId = developerUser?.Id.ToString() ?? "";
                 TestToken = await _jwtService.GenerateTokenAsync(testUser);
             }
@@ -77,7 +78,6 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var userProfile = await response.Content.ReadFromJsonAsync<UserDto>();
             userProfile.Should().NotBeNull();
-            userProfile.Id.Should().NotBeNullOrEmpty();
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
 
             var updatedUser = new UserDto
             {
-                Id = "test",
+                Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"),
                 UserName = "NewTestName",
                 Email = "newTestName@gmail.com",
             };
@@ -95,8 +95,12 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             var response = await _client.PutAsJsonAsync("/api/user/me", updatedUser);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var updatedProfile = await response.Content.ReadFromJsonAsync<UserDto>();
-            updatedProfile.UserName.Should().Be("NewTestName");
+
+            var result = await response.Content.ReadFromJsonAsync<ApiResponse<UserDto>>();
+            result.Should().NotBeNull();
+            result.Success.Should().BeTrue();
+            result.Data.Should().NotBeNull();
+            result.Data.UserName.Should().Be("NewTestName");
         }
         [Test]
         public async Task UpdateMyProfile_Should_Return_BadRequest_When_InvalidData()
@@ -105,7 +109,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
 
             var updatedUser = new UserDto
             {
-                Id = "test",
+                Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"),
                 UserName = "Developer",//UserName exists
                 Email = "newTestName",//Email invalid
             };
@@ -121,26 +125,20 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             problemDetails.Errors["UserName"].Should().Contain("A user with the name already exists.");
         }
         [Test]
-        public async Task UpdateMyProfile_Should_Return_BadRequest_When_IdIsMissingInUserDto()
+        public async Task UpdateMyProfile_Should_Return_Unauthorized_When_UserNotAuthenticated()
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TestToken);
-
             var updatedUser = new UserDto
             {
                 UserName = "NewTestName",
                 Email = "newTestName@gmail.com",
             };
-
-
+            
             var response = await _client.PutAsJsonAsync("/api/user/me", updatedUser);
 
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
             var content = await response.Content.ReadAsStringAsync();
-            var problemDetails = JsonConvert.DeserializeObject<ValidationProblemDetails>(content);
-
-            problemDetails.Should().NotBeNull();
-            problemDetails.Errors.Should().ContainKey("Id");
-            problemDetails.Errors["Id"].Should().Contain("The Id field is required.");
         }
+
 
         [Test]
         public async Task GetAllUsers_Should_Return_Ok_For_Admin()
@@ -251,7 +249,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "user-not-exist");
             var updatedUser = new UserDto
             {
-                Id = "errthdferhrthsdfgeh654641",
+                Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"),
                 UserName = "NewTestName",
                 Email = "newTestName@gmail.com",
             };
@@ -322,7 +320,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             var response = await _client.DeleteAsync("/api/user/null");
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Test]

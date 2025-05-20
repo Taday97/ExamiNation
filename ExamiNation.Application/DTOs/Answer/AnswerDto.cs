@@ -13,12 +13,12 @@ namespace ExamiNation.Application.DTOs.Answer
 
         [Required]
         public Guid QuestionId { get; set; }
-        public string QuestionText { get; set; }
+        public string? QuestionText { get; set; }
 
         public Guid? OptionId { get; set; }
-        public string OptionText { get; set; }
+        public string? OptionText { get; set; }
 
         [StringLength(1000)]
-        public string Text { get; set; }
+        public string? Text { get; set; }
     }
 }

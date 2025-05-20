@@ -48,10 +48,10 @@ namespace ExamiNation.Api.IntegrationTests.Tests
                 ExistingRoleId = context.Roles.FirstOrDefault(r => r.Name == "Admin")?.Id.ToString() ?? "";
                 RoleDeveloperId = context.Roles.FirstOrDefault(r => r.Name == "Developer")?.Id.ToString() ?? "";
 
-                var adminUser = await userManager.FindByNameAsync("admin");
+                var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
                 AdminToken = await _jwtService.GenerateTokenAsync(adminUser);
 
-                var testUser = await userManager.FindByNameAsync("test");
+                var testUser = await userManager.FindByEmailAsync("test@admin.com");
                 TestToken = await _jwtService.GenerateTokenAsync(testUser);
             }
 

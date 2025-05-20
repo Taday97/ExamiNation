@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
@@ -7,6 +8,7 @@ using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ExamiNation.API.Controllers.Test
 {
@@ -113,6 +115,43 @@ namespace ExamiNation.API.Controllers.Test
 
             return CreatedAtAction(nameof(GetTestResultById), new { id = response.Data.Id }, response.Data);
         }
+
+        [Authorize(Roles = RoleGroups.All)]
+        [HttpPost("submit-answer")]
+        public async Task<IActionResult> SubmitAnswer([FromBody] SubmitAnswerDto submitAnswerDto)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+                return Unauthorized(new { message = "User not authenticated or ID is invalid." });
+
+            if (submitAnswerDto == null)
+                return BadRequest("TestResult data cannot be null.");
+
+            var response = await _testResultService.AddSubmitAnswerAsync(submitAnswerDto, userId);
+
+            if (!response.Success)
+                return BadRequest(response.Message);
+
+            return CreatedAtAction(nameof(GetTestResultById), new { id = response.Data.Id }, response.Data);
+        }
+
+        [HttpGet("{id}/summary")]
+        public async Task<IActionResult> GetTestResultSummary(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("The TestResult ID is invalid.");
+            }
+
+            var response = await _testResultService.GetSummaryAsync(id);
+
+            if (!response.Success)
+                return BadRequest(response.Message);
+
+            return Ok(response);
+        }
+
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpPut("{id}")]

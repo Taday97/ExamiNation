@@ -15,18 +15,21 @@ namespace ExamiNation.Application.DTOs.TestResult
 
         [Required]
         public Guid UserId { get; set; }
-        public UserDto User { get; set; }
+        public string UserEmail { get; set; }
 
         [Required]
         public Guid TestId { get; set; }
-        public TestDto Test { get; set; }
+        public string TestName { get; set; }
 
         [Required]
         [Precision(10, 4)]
         public decimal Score { get; set; }
 
+        public DateTime? CompletedAt { get;  set; }
+        public DateTime? StartedAt { get;  set; }
+
+
         public TestResultStatus Status { get; set; }
 
-        public List<AnswerDto> Answers { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace ExamiNation.Application.DTOs.User
 {
     public class UserDto
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]

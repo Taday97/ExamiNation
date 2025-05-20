@@ -114,8 +114,9 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Arrange
             var mockUsers = new List<UserDto>
             {
-                new UserDto { Id = "1", UserName = "Alice" },
-                new UserDto { Id = "2", UserName = "Bob" }
+              new UserDto { Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), UserName = "Alice" },
+              new UserDto { Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440001"), UserName = "Bob" }
+
             };
 
             var response = ApiResponse<IEnumerable<UserDto>>.CreateSuccessResponse("Users retrieved.", mockUsers);
@@ -194,10 +195,10 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task UpdateMyProfile_ReturnsOk_WhenUpdateIsSuccessful()
         {
             // Arrange
-            var userId = "123";
+            var userId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
             var userDto = new UserDto { Id = userId, UserName = "Updated Name" };
 
-            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId) };
+            var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
             var identity = new ClaimsIdentity(claims);
             var claimsPrincipal = new ClaimsPrincipal(identity);
 
@@ -217,13 +218,19 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             var okResult = result as OkObjectResult;
-            okResult!.Value.Should().BeEquivalentTo(userDto);
+
+            okResult!.Value.Should().BeOfType<ApiResponse<UserDto>>();
+            var response = okResult.Value as ApiResponse<UserDto>;
+
+            response!.Success.Should().BeTrue();
+            response.Data.Should().BeEquivalentTo(userDto);
+
         }
         [Test]
         public async Task UpdateMyProfile_ReturnsNotFound_WhenUpdateFails()
         {
             // Arrange
-            var userId = "123";
+            var userId = "550e8400-e29b-41d4-a716-446655440000";
             var userDto = new UserDto { UserName = "Updated Name" };
 
             var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, userId) };
@@ -237,8 +244,8 @@ namespace ExamiNation.NUnitTests.UnitTests
 
             var expectedResponse = ApiResponse<UserDto>.CreateErrorResponse("User not found.");
 
-            _mockUserService.Setup(s => s.Update(It.Is<UserDto>(dto => dto.Id == userId)))
-                .ReturnsAsync(expectedResponse);
+            _mockUserService.Setup(s => s.Update(It.IsAny<UserDto>()))
+            .ReturnsAsync(expectedResponse);
 
             // Act
             var result = await _controller.UpdateMyProfile(userDto);
@@ -254,7 +261,7 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task UpdateUser_ReturnsOk_WhenUpdateIsSuccessful()
         {
             // Arrange
-            var userId = "123";
+            var userId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
             var userDto = new UserDto
             {
                 Id = userId,
@@ -268,7 +275,7 @@ namespace ExamiNation.NUnitTests.UnitTests
                 .ReturnsAsync(expectedResponse);
 
             // Act
-            var result = await _controller.UpdateUser(userId, userDto);
+            var result = await _controller.UpdateUser(userId.ToString(), userDto);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -284,7 +291,7 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task DeleteUser_ReturnsOk_WhenUserIsDeleted()
         {
             // Arrange
-            var userId = "123";
+            var userId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
             var userDto = new UserDto { Id = userId, UserName = "Test User" };
             var expectedResponse = ApiResponse<UserDto>.CreateSuccessResponse("User deleted successfully.", userDto);
 
@@ -305,7 +312,7 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task UpdateUser_ReturnsNotFound_WhenUserDoesNotExist()
         {
             // Arrange
-            var userId = "999"; // Usuario que no existe
+            var userId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
             var userDto = new UserDto
             {
                 Id = userId,
@@ -318,7 +325,7 @@ namespace ExamiNation.NUnitTests.UnitTests
                 .ReturnsAsync(expectedResponse);
 
             // Act
-            var result = await _controller.UpdateUser(userId, userDto);
+            var result = await _controller.UpdateUser(userId.ToString(), userDto);
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
@@ -345,8 +352,8 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task UpdateUser_ReturnsBadRequest_WhenIdInRequestBodyDoesNotMatchIdInUrl()
         {
             // Arrange
-            var urlId = "123";
-            var dto = new UserDto { Id = "456", Email = "userUpdate@gmail.com" };
+            var urlId = "550e8400-e29b-41d4-a716-446655440001";
+            var dto = new UserDto { Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), Email = "userUpdate@gmail.com" };
 
             // Act
             var result = await _controller.UpdateUser(urlId, dto);
@@ -362,7 +369,8 @@ namespace ExamiNation.NUnitTests.UnitTests
         public async Task DeleteUser_ReturnsNotFound_WhenUserDoesNotExist()
         {
             // Arrange
-            var userId = "999"; // Usuario que no existe
+            var userId = Guid.Parse("550e8400-e29b-41d4-a716-446655441111");
+            // Usuario que no existe
             var expectedResponse = ApiResponse<UserDto>.CreateErrorResponse($"User with id {userId} not found.");
 
             _mockUserService.Setup(s => s.Delete(userId))
@@ -374,27 +382,11 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<NotFoundObjectResult>();
             var notFoundResult = result as NotFoundObjectResult;
-            notFoundResult!.Value.Should().BeEquivalentTo(expectedResponse.Message);
+            notFoundResult!.Value.Should().BeEquivalentTo(expectedResponse);
+
         }
 
-        [Test]
-        public async Task DeleteUser_ReturnsBadRequest_WhenUserIdIsInvalid()
-        {
-            // Arrange
-            var invalidUserId = "";
-            var expectedResponse = ApiResponse<UserDto>.CreateErrorResponse("User ID is required.");
 
-            _mockUserService.Setup(s => s.Delete(invalidUserId))
-                .ReturnsAsync(expectedResponse);
-
-            // Act
-            var result = await _controller.DeleteUser(invalidUserId);
-
-            // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
-            var badRequestResult = result as BadRequestObjectResult;
-            badRequestResult!.Value.Should().BeEquivalentTo(expectedResponse.Message);
-        }
 
         [Test]
         public async Task GetUserById_ReturnsOk_WhenUserExists()

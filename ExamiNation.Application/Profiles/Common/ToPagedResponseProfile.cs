@@ -4,9 +4,9 @@ using ExamiNation.Application.DTOs.Responses;
 
 namespace ExamiNation.Application.Profiles.Common
 {
-    public class QueryParametersToPagedResponseProfile : Profile
+    public class ToPagedResponseProfile : Profile
     {
-        public QueryParametersToPagedResponseProfile()
+        public ToPagedResponseProfile()
         {
             CreateMap(typeof(QueryParameters), typeof(PagedResponse<>))
                 .ForMember("PageNumber", opt => opt.MapFrom((src, dest) => ((QueryParameters)src).PageNumber))

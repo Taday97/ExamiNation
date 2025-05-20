@@ -20,9 +20,6 @@ namespace ExamiNation.Application.Validators.Answer
             RuleFor(x => x.OptionId)
                 .Must(BeAValidGuid).When(x => x.OptionId.HasValue).WithMessage("Option ID must be a valid GUID.");
 
-
-            RuleFor(x => x.Text)
-                .MaximumLength(1000).WithMessage("Text cannot exceed 1000 characters.");
         }
 
         private bool BeAValidGuid(Guid? id)

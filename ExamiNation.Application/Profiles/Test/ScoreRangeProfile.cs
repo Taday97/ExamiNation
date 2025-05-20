@@ -10,6 +10,7 @@ namespace ExamiNation.Application.Profiles.Test
         {
             CreateMap<ScoreRange, ScoreRangeDto>().ReverseMap();
             CreateMap<CreateScoreRangeDto, ScoreRange>();
+            CreateMap<ScoreRangeDto, ScoreRangeDetailsDto>().ReverseMap();
             CreateMap<EditScoreRangeDto, ScoreRange>().ReverseMap();
 
 

@@ -4,7 +4,7 @@
   "type": 0,
   "questions": [
     {
-      "text": "1. Lo opuesto al odio es:",
+      "text": "Lo opuesto al odio es:",
       "type": 0,
       "questionNumber": 1,
       "options": [
@@ -27,17 +27,17 @@
       ]
     },
     {
-      "text": "2. Si tres lápices cuestan cinco pesos ¿Cuántos lápices podré comprar con cincuenta pesos?",
+      "text": "Si tres lápices cuestan cinco pesos ¿Cuántos lápices podré comprar con cincuenta pesos?",
       "type": 0,
       "questionNumber": 2,
       "options": [
         {
           "text": "30",
-          "isCorrect": false
+          "isCorrect": true
         },
         {
           "text": "33",
-          "isCorrect": true
+          "isCorrect": false
         },
         {
           "text": "25",
@@ -50,7 +50,7 @@
       ]
     },
     {
-      "text": "3. Un pájaro no siempre tiene:",
+      "text": "Un pájaro no siempre tiene:",
       "type": 0,
       "questionNumber": 3,
       "options": [
@@ -73,7 +73,7 @@
       ]
     },
     {
-      "text": "4. Lo opuesto a honor es:",
+      "text": "Lo opuesto a honor es:",
       "type": 0,
       "questionNumber": 4,
       "options": [
@@ -96,7 +96,7 @@
       ]
     },
     {
-      "text": "5. El zorro se parece más a:",
+      "text": "El zorro se parece más a:",
       "type": 0,
       "questionNumber": 5,
       "options": [
@@ -119,7 +119,7 @@
       ]
     },
     {
-      "text": "6. El silencio tiene la misma relación con el sonido que la oscuridad con:",
+      "text": "El silencio tiene la misma relación con el sonido que la oscuridad con:",
       "type": 0,
       "questionNumber": 6,
       "options": [
@@ -142,13 +142,13 @@
       ]
     },
     {
-      "text": "7. Un grupo consistía en dos matrimonios, dos hermanos y dos hermanas ¿Cuál es el número mínimo de personas que podrían componer el grupo?",
+      "text": "Un grupo consistía en dos matrimonios, dos hermanos y dos hermanas ¿Cuál es el número mínimo de personas que podrían componer el grupo?",
       "type": 0,
       "questionNumber": 7,
       "options": [
         {
           "text": "6",
-          "isCorrect": true
+          "isCorrect": false
         },
         {
           "text": "8",
@@ -156,7 +156,7 @@
         },
         {
           "text": "4",
-          "isCorrect": false
+          "isCorrect": true
         },
         {
           "text": "7",
@@ -166,7 +166,7 @@
     },
 
     {
-      "text": "8. Un árbol siempre tiene:",
+      "text": "Un árbol siempre tiene:",
       "type": 0,
       "questionNumber": 8,
       "options": [
@@ -189,7 +189,7 @@
       ]
     },
     {
-      "text": "9. Lo opuesto de lo económico es:",
+      "text": "Lo opuesto de lo económico es:",
       "type": 0,
       "questionNumber": 9,
       "options": [
@@ -212,7 +212,7 @@
       ]
     },
     {
-      "text": "10. La plata es más cara que el hierro porque es:",
+      "text": "La plata es más cara que el hierro porque es:",
       "type": 0,
       "questionNumber": 10,
       "options": [
@@ -235,7 +235,7 @@
       ]
     },
     {
-      "text": "11. ¿Cuál de las seis razones expresa el significado del refrán: “Comida hecha compañía deshecha”?",
+      "text": "¿Cuál de las seis razones expresa el significado del refrán: “Comida hecha compañía deshecha”?",
       "type": 0,
       "questionNumber": 11,
       "options": [
@@ -258,7 +258,7 @@
       ]
     },
     {
-      "text": "12. ¿Cuál de las seis razones dadas en el No. 11 expresa el significado de este proverbio?: “Obra empezada, medio acabada”",
+      "text": "¿Cuál de las seis razones dadas en el No. 11 expresa el significado de este proverbio?: “Obra empezada, medio acabada”",
       "type": 0,
       "questionNumber": 12,
       "options": [
@@ -281,7 +281,7 @@
       ]
     },
     {
-      "text": "13. ¿Cuál de las seis razones dadas en el No. 11 explica el proverbio “Antes son mis dientes que mis parientes.”?",
+      "text": "¿Cuál de las seis razones dadas en el No. 11 explica el proverbio “Antes son mis dientes que mis parientes.”?",
       "type": 0,
       "questionNumber": 13,
       "options": [
@@ -1131,7 +1131,7 @@
       ]
     },
     {
-      "text": "Si las dos primeras proposiciones son verdaderas, la tercera es:\\n\\“Algunos de los amigos de López son cordobeses\\”\\n\\“Algunos de los amigos de López son dentistas\\”\\n\\“Algunos de los amigos de López son dentistas cordobeses\\”",
+      "text": "Si las dos primeras proposiciones son verdaderas, la tercera es: “Algunos de los amigos de López son cordobeses”, “Algunos de los amigos de López son dentistas”, “Algunos de los amigos de López son dentistas cordobeses”",
       "type": 0,
       "questionNumber": 50,
       "options": [

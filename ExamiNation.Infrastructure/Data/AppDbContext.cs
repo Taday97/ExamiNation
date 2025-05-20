@@ -21,13 +21,11 @@ namespace ExamiNation.Infrastructure.Data
                 .HasForeignKey(a => a.TestResultId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             modelBuilder.Entity<Answer>()
                 .HasOne(a => a.Question)
                 .WithMany(q => q.Answers)
                 .HasForeignKey(a => a.QuestionId)
                 .OnDelete(DeleteBehavior.Restrict);
-
 
             modelBuilder.Entity<Answer>()
                 .HasOne(a => a.Option)
@@ -35,13 +33,11 @@ namespace ExamiNation.Infrastructure.Data
                 .HasForeignKey(a => a.OptionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<Option>()
                 .HasOne(o => o.Question)
                 .WithMany(q => q.Options)
                 .HasForeignKey(o => o.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
-
 
             modelBuilder.Entity<Question>()
                 .HasOne(q => q.Test)
@@ -49,12 +45,11 @@ namespace ExamiNation.Infrastructure.Data
                 .HasForeignKey(q => q.TestId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             modelBuilder.Entity<TestResult>()
                 .HasOne(tr => tr.Test)
                 .WithMany(t => t.TestResults)
                 .HasForeignKey(tr => tr.TestId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TestResult>()
                 .HasOne(tr => tr.User)
@@ -63,9 +58,8 @@ namespace ExamiNation.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
-
-
         }
+
         public DbSet<Answer> Answeres { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<Question> Questions { get; set; }

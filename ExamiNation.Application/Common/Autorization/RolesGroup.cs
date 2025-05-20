@@ -6,6 +6,7 @@ namespace ExamiNation.Application.Common.Autorization
     {
         public const string AdminOrDev = $"{RoleNames.Admin},{RoleNames.Developer}";
         public const string AdminOrDevOrCreator = $"{RoleNames.Admin},{RoleNames.Developer},{RoleNames.TestCreator}";
+        public const string All = $"{RoleNames.Admin},{RoleNames.Developer},{RoleNames.TestCreator},{RoleNames.Guest},{RoleNames.User}";
 
     }
 

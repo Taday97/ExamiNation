@@ -3,30 +3,45 @@
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 41,
     "maxScore": 50,
-    "classification": "Superior"
+    "classification": "Superior",
+    "shortDescription": "Your score places you in the Superior intelligence range.",
+    "detailedExplanation": "This indicates that you possess exceptional cognitive abilities, significantly above the general population. You are capable of processing complex information quickly and making insightful connections across different topics. People in this range often think abstractly, reason logically, and solve problems with advanced strategies. You likely excel in intellectually challenging environments and are seen as a critical thinker by others.",
+    "recommendations": "You thrive in intellectually demanding environments. Consider careers or fields that challenge your reasoning and strategic thinking, such as research, advanced mathematics, engineering, medicine, or leadership roles."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 31,
     "maxScore": 40,
-    "classification": "Above Average"
+    "classification": "Above Average",
+    "shortDescription": "Your score places you in the Above Average intelligence range.",
+    "detailedExplanation": "This suggests that you have strong mental capabilities and above-average problem-solving skills. You likely pick up new concepts quickly and are able to analyze situations from multiple perspectives. Individuals in this range often demonstrate creativity, curiosity, and a solid ability to reason through abstract ideas. You’re likely to perform well in structured tasks that require logical thinking and planning.",
+    "recommendations": "Continue developing your abilities by engaging in activities that stretch your mental capacity—such as strategic games, advanced coursework, or leadership projects. You're well-suited for fields like business analysis, education, technology, and design."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 21,
     "maxScore": 30,
-    "classification": "Average"
+    "classification": "Average",
+    "shortDescription": "Your score falls within the Average intelligence range.",
+    "detailedExplanation": "You possess a balanced level of reasoning ability and general understanding. You are capable of handling everyday tasks that require logic, pattern recognition, and practical problem-solving. People in this category often benefit from repetition and structured learning to master complex ideas. With consistency and motivation, you are fully capable of performing well in academic and work settings.",
+    "recommendations": "Focus on strengthening your learning strategies and time management. You can grow significantly by setting clear goals, staying consistent, and building strong study or work habits."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 12,
     "maxScore": 20,
-    "classification": "Below Average"
+    "classification": "Below Average",
+    "shortDescription": "Your score indicates Below Average cognitive performance.",
+    "detailedExplanation": "This range suggests some difficulty with abstract reasoning and logical problem-solving. You might learn best through practical, hands-on experiences and clear, visual explanations. With proper support and personalized strategies, you can build confidence and steadily improve performance. Remember that intelligence is multifaceted, and this score reflects just one aspect of your abilities.",
+    "recommendations": "Work on building confidence through structured learning environments. Repetition, clear instructions, and practical applications will help reinforce your understanding. Seek support when needed and celebrate small wins."
   },
   {
     "testId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "minScore": 0,
     "maxScore": 11,
-    "classification": "Low or Inferior"
+    "classification": "Low or Inferior",
+    "shortDescription": "Your score falls in the Low or Inferior intelligence range.",
+    "detailedExplanation": "This may indicate significant challenges in abstract thinking and cognitive processing. You may find it easier to grasp concrete ideas rather than theoretical ones, and benefit from repeated practice and guided instruction. It's important to know that intelligence tests do not capture all forms of intelligence—such as emotional, creative, or practical intelligence. Many individuals with lower scores excel when given the right tools, encouragement, and learning conditions.",
+    "recommendations": "Focus on personalized learning approaches that build practical skills and boost self-esteem. Supportive environments, patience, and encouragement are key. Consider working with a tutor or mentor to help identify your strengths and learning style."
   }
 ]

@@ -5,7 +5,10 @@ namespace ExamiNation.Application.DTOs.Question
 {
     public class QuestionDtoWithOptions : QuestionDto
     {
-        public List<QuestionOptionDto>? Options { get; set; }
+        public List<OptionQuestionDto>? Options { get; set; }
+
+        public Guid? SelectedOptionId { get; set; }
+
     }
 
 }

@@ -30,6 +30,7 @@ namespace ExamiNation.API.Controllers.Test
                 try
                 {
                     await _testSeeder.SeedTestFromJsonAsync(seedFilePath, seedFileScoreRangePath);
+                    await _testSeeder.SeedPredefinedTestsAsync();
                     await transaction.CommitAsync();
 
                     return Ok("Database populated successfully.");
@@ -55,6 +56,7 @@ namespace ExamiNation.API.Controllers.Test
                 try
                 {
                     await _testSeeder.SeedTestFromJsonAsync(seedFilePath, seedFileScoreRangePath);
+                    await _testSeeder.SeedPredefinedTestsAsync();
                     await transaction.CommitAsync();
 
                     return Ok("Database populated successfully.");

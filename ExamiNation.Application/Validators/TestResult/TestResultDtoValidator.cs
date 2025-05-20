@@ -24,10 +24,6 @@ namespace ExamiNation.Application.Validators.TestResult
             RuleFor(x => x.Status)
                 .IsInEnum();
 
-
-            RuleFor(x => x.Answers)
-                .NotNull()
-                .Must(ContainAtLeastOneAnswer);
         }
 
         private bool BeAValidGuid(Guid id)

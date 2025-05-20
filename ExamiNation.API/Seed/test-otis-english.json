@@ -33,11 +33,11 @@
       "options": [
         {
           "text": "30",
-          "isCorrect": false
+          "isCorrect": true
         },
         {
           "text": "33",
-          "isCorrect": true
+          "isCorrect": false
         },
         {
           "text": "25",
@@ -149,7 +149,7 @@
       "options": [
         {
           "text": "6",
-          "isCorrect": true
+          "isCorrect": false
         },
         {
           "text": "8",
@@ -157,7 +157,7 @@
         },
         {
           "text": "4",
-          "isCorrect": false
+          "isCorrect": true
         },
         {
           "text": "7",
@@ -1132,7 +1132,7 @@
       ]
     },
     {
-      "text": "If the first two statements are true, the third is:\n“Some of López's friends are from Córdoba”\n“Some of López's friends are dentists”\n“Some of López's friends are dentists from Córdoba”",
+      "text": "If the first two statements are true, the third is: “Some of López's friends are from Córdoba”, “Some of López's friends are dentists”, “Some of López's friends are dentists from Córdoba”",
       "type": 0,
       "questionNumber": 50,
       "options": [

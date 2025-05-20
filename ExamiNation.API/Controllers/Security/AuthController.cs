@@ -1,6 +1,11 @@
-﻿using ExamiNation.Application.DTOs.Auth;
+﻿using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.Auth;
+using ExamiNation.Application.DTOs.User;
 using ExamiNation.Application.Interfaces.Security;
+using ExamiNation.Domain.Entities.Security;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -76,6 +81,35 @@ namespace ExamiNation.API.Controllers.Security
             return Ok(response.Data);
         }
 
+        [HttpGet("check-status")]
+        public IActionResult CheckStatus()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized(new { message = "Not authenticated" });
+
+            var user = new UserLoginResponseDto
+            {
+                Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                Email = User.FindFirst(ClaimTypes.Email)?.Value,
+                UserName = User.Identity?.Name,
+                Roles = User.Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value)
+                            .ToList()
+            };
+
+            var authHeader = Request.Headers["Authorization"].ToString();
+            var token = authHeader.StartsWith("Bearer ") ? authHeader.Substring("Bearer ".Length) : null;
+
+            var result = new LoginResultDto
+            {
+                Token = token,
+                User = user
+            };
+
+            return Ok(result);
+        }
+
         [AllowAnonymous]
         [HttpPost("send-reset-link")]
         public async Task<IActionResult> SendResetLink([FromBody] SendResetLinkModelDto model)
@@ -128,6 +162,27 @@ namespace ExamiNation.API.Controllers.Security
 
             return Ok(response.Message);
         }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
+        {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (string.IsNullOrWhiteSpace(dto.IdToken))
+            {
+                return BadRequest(ApiResponse<string>.CreateErrorResponse("Invalid Google ID token."));
+            }
+
+            var response = await _userService.GoogleLoginAsync(dto);
+
+            if (!response.Success)
+                return Unauthorized(new { message = response.Message });
+
+            return Ok(response.Data);
+        }
+       
 
 
     }

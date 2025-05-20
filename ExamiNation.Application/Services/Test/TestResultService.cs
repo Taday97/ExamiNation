@@ -5,7 +5,6 @@ using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.DTOs.TestResult;
-using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Common;
@@ -13,25 +12,36 @@ using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
-using ExamiNation.Infrastructure.Repositories.Test;
+using ExamiNation.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamiNation.Application.Services.Test
 {
     public class TestResultService : ITestResultService
     {
         private readonly ITestResultRepository _testResultRepository;
+        private readonly IQuestionRepository _questionRepository;
         private readonly ITestRepository _testRepository;
+        private readonly IAnswerService _answerService;
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IScoreCalculator _scoreCalculator;
+        private readonly IScoreRangeService _scoreRangeService;
+        private readonly AppDbContext _context;
 
-        public TestResultService(ITestResultRepository testResultRepository, ITestRepository testRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
+        public TestResultService(ITestResultRepository testResultRepository, IQuestionRepository questionRepository, ITestRepository testRepository, IAnswerService answerService, IUserRepository userRepository, IUserService userService, IMapper mapper, IScoreCalculator scoreCalculator, IScoreRangeService scoreRangeService, AppDbContext context)
         {
             _testResultRepository = testResultRepository;
+            _questionRepository = questionRepository;
             _testRepository = testRepository;
+            _answerService = answerService;
             _userRepository = userRepository;
             _userService = userService;
             _mapper = mapper;
+            _scoreCalculator = scoreCalculator;
+            _scoreRangeService = scoreRangeService;
+            _context = context;
         }
 
         public async Task<ApiResponse<IEnumerable<TestResultDto>>> GetAllAsync()
@@ -128,8 +138,11 @@ namespace ExamiNation.Application.Services.Test
 
             var testResultEntity = _mapper.Map<TestResult>(testResultDto);
 
-            
-            var test = await _testRepository.GetByIdAsync(testResultDto.TestId);
+
+            var test = await _testRepository.GetByIdAsync(testResultDto.TestId, true,
+               include: 
+               t => t.Include(t => t.Questions)
+              .ThenInclude(question => question.Options));
 
             if (test == null)
             {
@@ -137,22 +150,18 @@ namespace ExamiNation.Application.Services.Test
             }
 
             var totalQuestions = test.Questions.Count;
-            var answeredQuestions = testResultDto.Answers.Count;
+            var answeredQuestions = testResultDto.Answers?.Count;
 
-            if (answeredQuestions == 0)
-            {
-                testResultEntity.Status = TestResultStatus.Abandoned;
-            }
-            else if (answeredQuestions < totalQuestions)
-            {
-                testResultEntity.Status = TestResultStatus.InProgress;
-            }
-            else
-            {
-                testResultEntity.Status = TestResultStatus.Completed;
-                testResultEntity.Score = await CalcularScoreAsync(testResultDto.Answers, test.Questions);
-            }
 
+            testResultEntity.Status = answeredQuestions switch
+            {
+                0 => TestResultStatus.Abandoned,
+                _ when answeredQuestions < totalQuestions => TestResultStatus.InProgress,
+                _ => TestResultStatus.Completed
+            };
+
+            testResultEntity.Score = _scoreCalculator.CalculateScore(testResultEntity.Answers, test.Questions);
+            testResultEntity.CompletedAt = DateTime.UtcNow;
             var createdTestResult = await _testResultRepository.AddAsync(testResultEntity);
 
             var createdTestResultDto = _mapper.Map<TestResultDto>(createdTestResult);
@@ -160,23 +169,96 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<TestResultDto>.CreateSuccessResponse("TestResult created successfully.", createdTestResultDto);
         }
 
-        private async Task<decimal> CalcularScoreAsync(List<CreateAnswerDto> answers, ICollection<Question> questions)
+        public async Task<ApiResponse<TestResultDto>> AddSubmitAnswerAsync(SubmitAnswerDto submitAnswerDto, Guid userId)
         {
-            int correctCount = 0;
+            if (submitAnswerDto == null)
+                return ApiResponse<TestResultDto>.CreateErrorResponse("SubmitAnswer data cannot be null.");
 
-            foreach (var question in questions)
+            var question = await _questionRepository.GetByIdAsync(submitAnswerDto.QuestionId);
+            if (question == null)
+                return ApiResponse<TestResultDto>.CreateErrorResponse("Question not found.");
+
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                var correctOption = question.Options.Where(o => o.IsCorrect);
-                var userAnswer = answers.FirstOrDefault(a => a.QuestionId == question.Id);
+                var testResult = await _testResultRepository
+                    .FindFirstAsync(
+                        x => x.TestId == question.TestId && x.UserId == userId,
+                        asNoTracking: false,
+                        include: q => q.Include(t => t.Answers)
+                       .Include(t => t.Test)
+                       .ThenInclude(test => test.Questions)
+                       .ThenInclude(question => question.Options)
+                    );
 
-                if (userAnswer != null && correctOption.Any(L=>L.Id.Equals(userAnswer.OptionId)))
+                if (testResult == null)
                 {
-                    correctCount++;
-                }
-            }
+                    var testResultAdd = new CreateTestResultDto();
+                    testResultAdd.TestId = question.TestId;
+                    testResultAdd.UserId = userId;
+                    testResultAdd.StartedAt = DateTime.UtcNow;
+                    testResultAdd.Answers = new List<CreateAnswerDto>();
 
-            return questions.Count == 0 ? 0 : (decimal)correctCount / questions.Count * 100;
+                    var result = await AddAsync(testResultAdd);
+                    if (!result.Success)
+                        throw new Exception("Failed to create TestResult.");
+
+                    testResult = await _testResultRepository
+                        .FindFirstAsync(x => x.Id == result.Data.Id, asNoTracking: false, include: q => q.Include(t => t.Answers)
+                       .Include(t => t.Test)
+                       .ThenInclude(test => test.Questions)
+                       .ThenInclude(question => question.Options));
+                }
+                else
+                {
+                    var answerExisting = testResult.Answers.FirstOrDefault(a => a.QuestionId == question.Id);
+                    if (answerExisting != null)
+                    {
+                        var answerEdit = new EditAnswerDto
+                        {
+                            Id = answerExisting.Id,
+                            QuestionId = submitAnswerDto.QuestionId,
+                            OptionId = submitAnswerDto.SelectedOptionId,
+                            TestResultId = answerExisting.TestResultId,
+                        };
+                        var answerResult = await _answerService.UpdateAsync(answerEdit);
+                        if (!answerResult.Success)
+                            throw new Exception("Failed to update answer.");
+                    }
+                    else
+                    {
+                        var answer = new CreateAnswerDto
+                        {
+                            QuestionId = question.Id,
+                            OptionId = submitAnswerDto.SelectedOptionId,
+                            TestResultId = testResult.Id
+                        };
+
+                        var answerResult = await _answerService.AddAsync(answer);
+                        if (!answerResult.Success)
+                            throw new Exception("Failed to save answer.");
+                    }
+
+
+                    await UpdateTestStatusAndScoreAsync(testResult);
+
+
+                }
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                var testResultDto = _mapper.Map<TestResultDto>(testResult);
+                return ApiResponse<TestResultDto>.CreateSuccessResponse("Answer submitted successfully.", testResultDto);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return ApiResponse<TestResultDto>.CreateErrorResponse($"Error submitting answer: {ex.Message}");
+            }
         }
+
+
 
         public async Task<ApiResponse<TestResultDto>> DeleteAsync(Guid id)
         {
@@ -214,40 +296,47 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<TestResultDto>.CreateErrorResponse("TestResult ID must be a valid GUID.");
             }
 
-            var testResult = await _testResultRepository.FindFirstAsync(l=>l.Id== guid); 
+            var testResult = await _testResultRepository.FindFirstAsync(l => l.Id == guid);
             if (testResult == null)
             {
                 return ApiResponse<TestResultDto>.CreateErrorResponse($"TestResult with id {editTestResultDto.Id} not found.");
             }
 
             _mapper.Map(editTestResultDto, testResult);
-
             SyncAnswers(testResult, editTestResultDto.Answers);
 
-            var test = await _testRepository.FindFirstAsync(l=>l.Id== testResult.TestId,asNoTracking:true,l=>l.Questions);
-
-            var totalQuestions = test.Questions.Count;
-            var answeredQuestions = testResult.Answers.Count;
-
-            if (answeredQuestions == 0)
-            {
-                testResult.Status = TestResultStatus.Abandoned;
-            }
-            else if (answeredQuestions < totalQuestions)
-            {
-                testResult.Status = TestResultStatus.InProgress;
-            }
-            else
-            {
-                testResult.Status = TestResultStatus.Completed;
-                var createAnswerDto = _mapper.Map <List< CreateAnswerDto>>(testResult.Answers);
-                testResult.Score = await CalcularScoreAsync(createAnswerDto, test.Questions.ToList());
-            }
-
-            await _testResultRepository.UpdateAsync(testResult);
+            await UpdateTestStatusAndScoreAsync(testResult);
 
             var testResultDto = _mapper.Map<TestResultDto>(testResult);
             return ApiResponse<TestResultDto>.CreateSuccessResponse("TestResult updated successfully.", testResultDto);
+        }
+
+        public async Task UpdateTestStatusAndScoreAsync(TestResult testResult)
+        {
+            var test = await _testRepository.FindFirstAsync(
+                t => t.Id == testResult.TestId,
+                asNoTracking: true,
+                q => q.Include(t => t.Questions)
+               .ThenInclude(q => q.Options)
+            );
+
+            if (test == null)
+                throw new InvalidOperationException($"Test with ID {testResult.TestId} was not found.");
+
+            int totalQuestions = test.Questions.Count;
+            int answeredQuestions = testResult.Answers.Count;
+
+            testResult.Status = answeredQuestions switch
+            {
+                0 => TestResultStatus.Abandoned,
+                _ when answeredQuestions < totalQuestions => TestResultStatus.InProgress,
+                _ => TestResultStatus.Completed
+            };
+
+            testResult.Score = _scoreCalculator.CalculateScore(testResult.Answers, test.Questions);
+            testResult.CompletedAt = DateTime.UtcNow;
+
+           await _testResultRepository.UpdateAsync(testResult);
         }
 
 
@@ -299,6 +388,34 @@ namespace ExamiNation.Application.Services.Test
             result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<TestResultDto>>.CreateSuccessResponse("TestResults retrieved successfully.", result);
+        }
+
+        public async Task<ApiResponse<ScoreRangeDetailsDto>> GetSummaryAsync(Guid id)
+        {
+            if (!Guid.TryParse(id.ToString(), out var guid))
+            {
+                return ApiResponse<ScoreRangeDetailsDto>.CreateErrorResponse("TestResult ID must be a valid GUID.");
+            }
+            var testResult = await _testResultRepository.GetByIdAsync(guid, asNoTracking: true, include:l=>l.Include(m => m.Answers).Include(m=>m.Test).ThenInclude(n=>n.Questions) );
+
+            if (testResult == null)
+            {
+                return ApiResponse<ScoreRangeDetailsDto>.CreateErrorResponse($"TestResult with id {id} not found.");
+            }
+
+            var scoreRange = await _scoreRangeService.GetClasificationAsync(testResult.TestId, testResult.Score);
+
+            if (!scoreRange.Success )
+            {
+                return ApiResponse<ScoreRangeDetailsDto>.CreateErrorResponse($"ScoreRange with id {testResult.TestId.ToString()} not found.");
+            }
+            var testScoreRangeDetailsDto = _mapper.Map<ScoreRangeDetailsDto>(scoreRange.Data);
+            testScoreRangeDetailsDto.TestResultDto = _mapper.Map<TestResultDto>(testResult);
+            testScoreRangeDetailsDto.CountQuestions = testResult.Test.Questions.Count();
+            testScoreRangeDetailsDto.CountAnswers = testResult.Answers.Count();
+           
+
+            return ApiResponse<ScoreRangeDetailsDto>.CreateSuccessResponse("Summary retrieved successfully.", testScoreRangeDetailsDto);
         }
     }
 }

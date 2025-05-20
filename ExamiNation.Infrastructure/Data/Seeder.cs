@@ -1,4 +1,5 @@
 ﻿using ExamiNation.Domain.Entities.Test;
+using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Infrastructure.Repositories.Test;
 using System.Text.Json;
@@ -9,20 +10,62 @@ namespace ExamiNation.Infrastructure.Data
     {
         private readonly ITestRepository _testRepository;
         private readonly IScoreRangeRepository _scoreRangeRepository;
+        private readonly IAnswerRepository _answerRepository;
+        private readonly IOptionRepository _optionRepository;
+        private readonly IQuestionRepository _questionRepository;
+        private readonly ITestResultRepository _testResultRepository;
 
-        public Seeder(ITestRepository testRepository, IScoreRangeRepository scoreRangeRepository)
+        public Seeder(ITestRepository testRepository, IScoreRangeRepository scoreRangeRepository, IAnswerRepository answerRepository, IOptionRepository optionRepository, IQuestionRepository questionRepository, ITestResultRepository testResultRepository)
         {
             _testRepository = testRepository;
             _scoreRangeRepository = scoreRangeRepository;
+            _answerRepository = answerRepository;
+            _optionRepository = optionRepository;
+            _questionRepository = questionRepository;
+            _testResultRepository = testResultRepository;
         }
 
         public async Task SeedTestFromJsonAsync(string filePath, string filePathClassification)
         {
-            var existingTests = await _testRepository.GetAllAsync();
+            var query = new Domain.Common.QueryOptions<Test>
+            {
+                AsNoTracking = false
+            };
+            query.Includes.Add(t => t.TestResults);
+            query.Includes.Add(t => t.Questions);
+
+            var existingTests = await _testRepository.GetAllAsync(query);
+
             foreach (var existingTest in existingTests)
             {
-                await _testRepository.DeleteAsync(existingTest.Id);
+                try
+                {
+                    foreach (var testResult in existingTest.TestResults)
+                    {
+                        var answers = await _answerRepository.GetByIdAsync(testResult.Id);
+                        if (answers != null)
+                            await _answerRepository.DeleteAsync(answers.Id);
+
+                        await _testResultRepository.DeleteAsync(testResult.Id);
+                    }
+
+                    foreach (var question in existingTest.Questions)
+                    {
+                        var options = await _optionRepository.GetByIdAsync(question.Id);
+                        if (options != null)
+                            await _optionRepository.DeleteAsync(options.Id);
+
+                        await _questionRepository.DeleteAsync(question.Id);
+                    }
+
+                    await _testRepository.DeleteAsync(existingTest.Id);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
+
 
 
             var json = await File.ReadAllTextAsync(filePath);
@@ -37,6 +80,7 @@ namespace ExamiNation.Infrastructure.Data
                 Description = dto.Description,
                 Type = dto.Type,
                 CreatedAt = DateTime.UtcNow,
+                ImageUrl = "uploads/test/a14ada58c7aba0481349f0ec6476d63d.jpg",
                 Questions = dto.Questions.Select(q => new Question
                 {
                     Id = Guid.NewGuid(),
@@ -53,6 +97,7 @@ namespace ExamiNation.Infrastructure.Data
             };
 
             await _testRepository.AddAsync(test);
+
 
             await SeedClassificationsFromJsonAsync(filePathClassification, test);
 
@@ -96,6 +141,73 @@ namespace ExamiNation.Infrastructure.Data
             throw new FileNotFoundException($"Seed file '{filename}' not found in Docker or local path.");
         }
 
+        public async Task SeedPredefinedTestsAsync()
+        {
+            var predefinedTests = new List<Test>
+    {
+        new Test
+        {
+            Name = "Comprehensive IQ Assessment",
+            Description = "Evaluate your cognitive abilities across multiple dimensions including logical reasoning, pattern recognition, and spatial awareness.",
+            Type = TestType.IQ,
+            CreatedAt = DateTime.UtcNow,
+            ImageUrl = "uploads/test/a14ada58c7aba0481349f0ec6476d63d.jpg",
+            Questions = new List<Question>() 
+
+        },
+        new Test
+        {
+            Name = "Big Five Personality Test",
+            Description = "Discover your personality traits across five dimensions: openness, conscientiousness, extraversion, agreeableness, and neuroticism.",
+            Type = TestType.Personality,
+            CreatedAt = DateTime.UtcNow,
+            ImageUrl = "uploads/test/1615d0fb9299d9baef80ea3db8535612.jpg",
+            Questions = new List<Question>()
+        },
+        new Test
+        {
+            Name = "Career Path Finder",
+            Description = "Identify your professional strengths, interests, and values to discover career paths that align with your natural talents and preferences.",
+            Type = TestType.Skills,
+            CreatedAt = DateTime.UtcNow,
+            ImageUrl = "uploads/test/6921a2fbb8344565d10f6c1df8abfa28.jpg",
+            Questions = new List<Question>()
+        },
+        new Test
+        {
+
+            Name = "Emotional Intelligence Assessment",
+            Description = "Measure your ability to recognize, understand and manage emotions in yourself and others, a key factor in personal and professional success.",
+            Type = TestType.Other,
+            CreatedAt = DateTime.UtcNow,
+            ImageUrl = "uploads/test/823394bee9086a231ed455ae1a53e067.jpg",
+            Questions = new List<Question>()
+        },
+        new Test
+        {
+            Name = "Leadership Style Assessment",
+            Description = "Identify your natural leadership approach and learn how to leverage your strengths to effectively guide teams and inspire others.",
+            Type = TestType.Skills,
+            CreatedAt = DateTime.UtcNow,
+            ImageUrl = "uploads/test/d9c496f27db6d3a02aab446987c1a118.jpg",
+            Questions = new List<Question>()
+        },
+        new Test
+        {
+            Name = "Learning Style Identifier",
+            Description = "Discover whether you're a visual, auditory, reading/writing, or kinesthetic learner to optimize your learning strategies and improve retention.",
+            Type = TestType.Skills,
+            CreatedAt = DateTime.UtcNow,
+            ImageUrl = "uploads/test/4e80daca615db77cd5925c0a8a4cde6e.jpg",
+            Questions = new List<Question>()
+        }
+    };
+
+            foreach (var test in predefinedTests)
+            {
+                await _testRepository.AddAsync(test);
+            }
+        }
 
     }
 

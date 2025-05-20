@@ -1,17 +1,12 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ExamiNation.Application.Profiles.Common
 {
-    public class QueryParametersToPagedQueryOptionsProfile : Profile
+    public class ToPagedOptionsProfile : Profile
     {
-        public QueryParametersToPagedQueryOptionsProfile()
+        public ToPagedOptionsProfile()
         {
             CreateMap(typeof(QueryParameters), typeof(PagedQueryOptions<>))
                        .ForMember("PageNumber", opt => opt.MapFrom(src => ((QueryParameters)src).PageNumber ))

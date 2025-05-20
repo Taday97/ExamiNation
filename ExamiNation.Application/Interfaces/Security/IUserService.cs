@@ -9,7 +9,7 @@ namespace ExamiNation.Application.Interfaces.Security
     {
         Task<ApiResponse<IEnumerable<UserDto>>> GetAllAsync();
         Task<ApiResponse<UserPorfileDto>> GetByIdAsync(string id);
-        Task<ApiResponse<UserDto>> Delete(string id);
+        Task<ApiResponse<UserDto>> Delete(Guid id);
         Task<ApiResponse<UserDto>> Update(UserDto userDto);
 
         Task<ApiResponse<string>> RegisterUser(RegisterModelDto model);
@@ -26,5 +26,6 @@ namespace ExamiNation.Application.Interfaces.Security
         Task<ApiResponse<List<string>>> GetUserRolesAsync(string userId);
         Task<ApiResponse<bool>> AssignRolesToUserAsync(string userId, List<string> roles);
         Task<ApiResponse<bool>> RemoveRolesFromUserAsync(string userId, List<string> roles);
+        Task<ApiResponse<LoginResultDto>> GoogleLoginAsync(GoogleLoginDto idToken);
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExamiNation.Infrastructure.Extensions
@@ -10,6 +7,8 @@ namespace ExamiNation.Infrastructure.Extensions
     {
         public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, Dictionary<string, string> filters)
         {
+            int appliedFilters = 0;
+
             foreach (var filter in filters)
             {
                 var property = typeof(T).GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
@@ -17,51 +16,52 @@ namespace ExamiNation.Infrastructure.Extensions
 
                 var parameter = Expression.Parameter(typeof(T), "x");
                 var propertyAccess = Expression.Property(parameter, property);
-                Expression filterCondition = null;
+                Expression? filterCondition = null;
 
-                if (property.PropertyType.IsEnum)
+                Type propertyType = property.PropertyType;
+                Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+                if (underlyingType.IsEnum)
                 {
-                    var enumType = property.PropertyType;
-
-                    if (Enum.TryParse(enumType, filter.Value, ignoreCase: true, out object? parsedEnum))
+                    if (Enum.TryParse(underlyingType, filter.Value, ignoreCase: true, out object? parsedEnum))
                     {
-                        var searchConstant = Expression.Constant(parsedEnum);
+                        var searchConstant = Expression.Constant(parsedEnum, propertyType);
                         filterCondition = Expression.Equal(propertyAccess, searchConstant);
                     }
                     else if (int.TryParse(filter.Value, out int enumNumericValue))
                     {
-                        var enumValue = Enum.ToObject(enumType, enumNumericValue);
-                        var searchConstant = Expression.Constant(enumValue);
+                        var enumValue = Enum.ToObject(underlyingType, enumNumericValue);
+                        var searchConstant = Expression.Constant(enumValue, propertyType);
                         filterCondition = Expression.Equal(propertyAccess, searchConstant);
                     }
                 }
-
-                if (property.PropertyType == typeof(string))
+                else if (underlyingType == typeof(string))
                 {
-                    var searchConstant = Expression.Constant(filter.Value);
+                    var searchConstant = Expression.Constant(filter.Value, typeof(string));
                     filterCondition = Expression.Call(propertyAccess, "Contains", null, searchConstant);
                 }
-                else if (property.PropertyType == typeof(Guid))
+                else if (underlyingType == typeof(Guid))
                 {
                     if (Guid.TryParse(filter.Value, out var guidResult))
                     {
-                        var searchConstant = Expression.Constant(guidResult);
+                        var searchConstant = Expression.Constant(guidResult, propertyType);
                         filterCondition = Expression.Equal(propertyAccess, searchConstant);
                     }
                 }
-                else if (property.PropertyType == typeof(DateTime))
+                else if (underlyingType == typeof(DateTime))
                 {
                     if (DateTime.TryParse(filter.Value, out var dateResult))
                     {
-                        var searchConstant = Expression.Constant(dateResult);
+                        var searchConstant = Expression.Constant(dateResult, propertyType);
                         filterCondition = Expression.Equal(propertyAccess, searchConstant);
                     }
                 }
-                else if (property.PropertyType == typeof(int) || property.PropertyType == typeof(long) || property.PropertyType == typeof(float) || property.PropertyType == typeof(double))
+                else if (new[] { typeof(int), typeof(long), typeof(float), typeof(double), typeof(decimal) }.Contains(underlyingType))
                 {
                     if (double.TryParse(filter.Value, out var numberResult))
                     {
-                        var searchConstant = Expression.Constant(Convert.ChangeType(numberResult, property.PropertyType));
+                        var convertedValue = Convert.ChangeType(numberResult, underlyingType);
+                        var searchConstant = Expression.Constant(convertedValue, propertyType);
                         filterCondition = Expression.Equal(propertyAccess, searchConstant);
                     }
                 }
@@ -70,11 +70,18 @@ namespace ExamiNation.Infrastructure.Extensions
                 {
                     var lambda = Expression.Lambda<Func<T, bool>>(filterCondition, parameter);
                     query = query.Where(lambda);
+                    appliedFilters++;
                 }
+            }
+
+            if (filters.Count > 0 && appliedFilters == 0)
+            {
+                return query.Where(_ => false); 
             }
 
             return query;
         }
+
 
 
         public static IQueryable<T> ApplyOrdering<T>(this IQueryable<T> query, string? sortBy, bool descending)

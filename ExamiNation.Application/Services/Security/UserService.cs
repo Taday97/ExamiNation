@@ -4,9 +4,11 @@ using ExamiNation.Application.DTOs.Auth;
 using ExamiNation.Application.DTOs.User;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Domain.Entities.Security;
+using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Infrastructure.Helpers;
 using ExamiNation.Infrastructure.Repositories;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -46,9 +48,9 @@ namespace ExamiNation.Application.Services.Security
         }
 
 
-        public async Task<ApiResponse<UserDto>> Delete(string id)
+        public async Task<ApiResponse<UserDto>> Delete(Guid id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetByIdAsync(id.ToString());
             if (user == null)
             {
                 return ApiResponse<UserDto>.CreateErrorResponse($"User with id {id} not found.");
@@ -89,7 +91,7 @@ namespace ExamiNation.Application.Services.Security
             {
                 return ApiResponse<UserDto>.CreateErrorResponse($"User with id {userDto.Id} not found.");
             }
-            var existingUserWithEmail = await _userRepository.GetUsersAsync(l => (l.Email == userDto.Email || l.UserName == userDto.UserName) && l.Id.ToString() != userDto.Id);
+            var existingUserWithEmail = await _userRepository.GetUsersAsync(l => (l.Email == userDto.Email || l.UserName == userDto.UserName) && l.Id != userDto.Id);
             if (existingUserWithEmail.Any())
             {
                 return ApiResponse<UserDto>.CreateErrorResponse("Email or username is already in use."); ;
@@ -126,12 +128,20 @@ namespace ExamiNation.Application.Services.Security
                 return ApiResponse<string>.CreateErrorResponse("User registration failed.", errors);
             }
 
+            var response = await AssignRolesToUserAsync(user.Id.ToString(), new List<string> { RoleEnum.User.ToString() });
+
+            if (!response.Success)
+            {
+                var errors = response.Errors.ToList();
+                return ApiResponse<string>.CreateErrorResponse("User registration failed.", errors);
+            }
+
             return ApiResponse<string>.CreateSuccessResponse("User registered successfully.");
         }
 
         public async Task<ApiResponse<LoginResultDto>> LoginAsync(LoginModelDto model)
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 return ApiResponse<LoginResultDto>.CreateErrorResponse("Invalid credentials.");
@@ -365,6 +375,58 @@ namespace ExamiNation.Application.Services.Security
             return ApiResponse<List<string>>.CreateSuccessResponse("Roles retrieved successfully.", roles.ToList());
         }
 
+        public async Task<ApiResponse<LoginResultDto>> GoogleLoginAsync(GoogleLoginDto googleLoginDto)
+        {
+            if (string.IsNullOrWhiteSpace(googleLoginDto.IdToken))
+                return ApiResponse<LoginResultDto>.CreateErrorResponse("Invalid Google ID token.");
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginDto.IdToken, new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new[] { "685435682005-6354qioaa2qtluergi1mrmndst7etrj1.apps.googleusercontent.com" }
+            });
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    EmailConfirmed = true
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    var errors = string.Join("; ", createResult.Errors.Select(e => e.Description));
+                    return ApiResponse<LoginResultDto>.CreateErrorResponse($"Failed to create user: {errors}");
+                }
+                var response = await AssignRolesToUserAsync(user.Id.ToString(), new List<string> { RoleEnum.User.ToString() });
+
+                if (!response.Success)
+                {
+                    var errors = response.Errors.ToList();
+                    return ApiResponse<LoginResultDto>.CreateErrorResponse("User registration failed.", errors);
+                }
+            }
+
+            var fullUser = await _userRepository.GetByIdAsync(user.Id.ToString());
+            if (fullUser == null)
+                return ApiResponse<LoginResultDto>.CreateErrorResponse("User not found in repository.");
+
+            var token = await _jwtService.GenerateTokenAsync(fullUser);
+            var roles = await _userManager.GetRolesAsync(user);
+            var userDto = _mapper.Map<UserLoginResponseDto>(user);
+            userDto.Roles = roles.ToList();
+
+            var result = new LoginResultDto
+            {
+                Token = token,
+                User = userDto
+            };
+
+            return ApiResponse<LoginResultDto>.CreateSuccessResponse("Login successful.", result);
+        }
 
     }
 }

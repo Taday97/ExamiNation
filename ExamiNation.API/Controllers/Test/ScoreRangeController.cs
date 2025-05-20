@@ -56,7 +56,7 @@ namespace ExamiNation.API.Controllers.Test
 
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpGet("classification")]
-        public async Task<IActionResult> GetClassificationAsync([FromQuery] Guid testId, [FromQuery] int score)
+        public async Task<IActionResult> GetClassificationAsync([FromQuery] Guid testId, [FromQuery] decimal score)
         {
             if (testId == Guid.Empty)
             {

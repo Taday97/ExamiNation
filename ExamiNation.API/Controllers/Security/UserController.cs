@@ -39,18 +39,24 @@ namespace ExamiNation.API.Controllers.Security
 
         [Authorize]
         [HttpPut("me")]
-        public async Task<IActionResult> UpdateMyProfile([FromBody] UserDto dto)
+        public async Task<IActionResult> UpdateMyProfile(UserDto dto)
         {
-            dto.Id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(dto.Id))
+            if (string.IsNullOrWhiteSpace(userIdClaim))
                 return Unauthorized("User ID not found.");
 
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                return BadRequest("Invalid user ID format.");
+
+            dto.Id = userId;
+
             var response = await _userService.Update(dto);
+
             if (!response.Success)
                 return NotFound(response.Message);
 
-            return Ok(response.Data);
+            return Ok(response);
         }
         [Authorize(Roles = RoleGroups.AdminOrDev)]
         [HttpGet]
@@ -83,11 +89,11 @@ namespace ExamiNation.API.Controllers.Security
             {
                 return BadRequest("User data cannot be null.");
             }
-            if (dto.Id != id)
+            if (dto.Id.ToString() != id)
             {
                 return BadRequest("User ID in the request body does not match the ID in the URL.");
             }
-            dto.Id = id;
+            dto.Id = Guid.Parse( id);
 
             var response = await _userService.Update(dto);
             if (!response.Success)
@@ -97,20 +103,24 @@ namespace ExamiNation.API.Controllers.Security
 
         [Authorize(Roles = RoleGroups.AdminOrDev)]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (id == Guid.Empty)
             {
                 var errorResponse = ApiResponse<RoleDto>.CreateErrorResponse("User ID is required.");
-                return BadRequest(errorResponse.Message);
+                return BadRequest(errorResponse);
             }
+
             var response = await _userService.Delete(id);
 
             if (!response.Success)
-                return NotFound(response.Message);
+            {
+                return NotFound(response);
+            }
 
             return Ok(response);
         }
+
 
         [Authorize(Roles = RoleGroups.AdminOrDev)]
         [HttpGet("{userId}/roles")]

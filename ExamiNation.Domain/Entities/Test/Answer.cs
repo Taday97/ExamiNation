@@ -20,7 +20,7 @@ namespace ExamiNation.Domain.Entities.Test
         public Option Option { get;  set; }
 
         [StringLength(1000)]
-        public string Text { get;  set; }
+        public string? Text { get;  set; }
     }
 
 }
