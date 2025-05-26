@@ -6,6 +6,7 @@ using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.DTOs.TestResult;
+using ExamiNation.Application.Interfaces.Reports;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Common;
@@ -30,9 +31,10 @@ namespace ExamiNation.Application.Services.Test
         private readonly IMapper _mapper;
         private readonly IScoreCalculator _scoreCalculator;
         private readonly IScoreRangeService _scoreRangeService;
+        private readonly ITestResultReportService _testResultReportService;
         private readonly AppDbContext _context;
 
-        public TestResultService(ITestResultRepository testResultRepository, IQuestionRepository questionRepository, ITestRepository testRepository, IAnswerService answerService, IUserRepository userRepository, IUserService userService, IMapper mapper, IScoreCalculator scoreCalculator, IScoreRangeService scoreRangeService, AppDbContext context)
+        public TestResultService(ITestResultRepository testResultRepository, IQuestionRepository questionRepository, ITestRepository testRepository, IAnswerService answerService, IUserRepository userRepository, IUserService userService, IMapper mapper, IScoreCalculator scoreCalculator, IScoreRangeService scoreRangeService, ITestResultReportService testResultReportService, AppDbContext context)
         {
             _testResultRepository = testResultRepository;
             _questionRepository = questionRepository;
@@ -43,6 +45,7 @@ namespace ExamiNation.Application.Services.Test
             _mapper = mapper;
             _scoreCalculator = scoreCalculator;
             _scoreRangeService = scoreRangeService;
+            _testResultReportService = testResultReportService;
             _context = context;
         }
 
@@ -126,16 +129,6 @@ namespace ExamiNation.Application.Services.Test
             var query = new QueryOptions<TestResult>
             {
                 Filter = l => l.UserId == userId,
-                Includes = new List<Expression<Func<TestResult, object>>>
-                {
-                     t => t.Test,
-                     t => t.Answers,
-                },
-                ThenIncludes = new List<Func<IQueryable<TestResult>, IQueryable<TestResult>>>
-                {
-                  q=> q.Include(x => x.Test).ThenInclude(a => a.Questions).ThenInclude(l=>l.Answers).ThenInclude(l=>l.Option),
-                  q=> q.Include(x => x.Test).ThenInclude(a => a.Questions).ThenInclude(l=>l.Options),
-                }
             };
 
             var testResult = await _testResultRepository.GetAllAsync(query);
@@ -145,83 +138,13 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<IEnumerable<TestResultReportDto>>.CreateErrorResponse("No TestResult found.");
             }
 
-            List<TestResultReportDto> dtos =await TestResultsReportsMapping(testResult);
+            List<TestResultReportDto> dtos =await _testResultReportService.TestResultsReportsMapping(testResult);
 
 
             return ApiResponse<IEnumerable<TestResultReportDto>>.CreateSuccessResponse("TestResult retrieved successfully.", dtos);
         }
 
-        private async Task<List<TestResultReportDto>> TestResultsReportsMapping(IEnumerable<TestResult> testResult)
-        {
-            List<TestResultReportDto> dtos = new List<TestResultReportDto>();
-            foreach (var result in testResult)
-            {
-                var answeredQuestionIds = result.Answers.Select(a => a.QuestionId).ToHashSet();
-                var orderedQuestions = result.Test.Questions.OrderBy(q => q.QuestionNumber).ToList();
 
-                var nextQuestion = result.Test.Questions
-                    .OrderBy(q => q.QuestionNumber)
-                    .FirstOrDefault(q => !answeredQuestionIds.Contains(q.Id));
-
-                var dto = _mapper.Map<TestResultReportDto>(result);
-                dto.QuestionCount = result.Test.Questions.Count;
-                dto.AnsweredCount = answeredQuestionIds.Count;
-                var categoryResults = await CalculateCategoryResults(result);
-
-                dto.CategoryResults = categoryResults;
-                if (nextQuestion != null)
-                {
-                    dto.NextQuestionPage = orderedQuestions.FindIndex(q => q.Id == nextQuestion.Id) + 1;
-                }
-
-                dtos.Add(dto);
-            }
-            return dtos;
-        }
-        private async Task<List<CognitiveCategoryResultDto>> CalculateCategoryResults(TestResult result)
-        {
-            var query = new QueryOptions<Question>
-            {
-                Filter = q => q.Test.Id == result.TestId && q.CognitiveCategoryId!=null,
-                Includes = new List<Expression<Func<Question, object>>>
-                {
-                   q => q.CognitiveCategory,
-                   q => q.Options
-                }
-            };
-
-            var questions = await _questionRepository.GetAllAsync(query);
-
-            var answeredQuestionIds = result.Answers.Select(a => a.QuestionId).ToHashSet();
-
-            var categoryResults = questions
-                .Where(q => q.CognitiveCategory != null)
-                .GroupBy(q => q.CognitiveCategory.Code)
-                .Select(g =>
-                {
-                    var questionsInCategory = g.ToList();
-
-                    var totalQuestions = questionsInCategory.Count;
-                    var answeredInCategory = questionsInCategory.Count(q => answeredQuestionIds.Contains(q.Id));
-                    var correctInCategory = questionsInCategory.Sum( q =>
-                        result.Answers.Any(a =>
-                            a.QuestionId == q.Id &&
-                            q.Options.Any(o => o.Id == a.OptionId && o.IsCorrect))
-                        ? q.Score : 0);
-                    var firstCategory = questionsInCategory.First().CognitiveCategory;
-                    return new CognitiveCategoryResultDto
-                    {
-                        Code = firstCategory.Code,
-                        Name = firstCategory.Name,
-                        TotalQuestions = totalQuestions,
-                        AnsweredQuestions = answeredInCategory,
-                        CorrectAnswers = correctInCategory
-                    };
-                })
-                .ToList();
-
-            return categoryResults;
-        }
 
 
         public async Task<ApiResponse<TestResultDto>> AddAsync(CreateTestResultDto testResultDto)
@@ -508,7 +431,7 @@ namespace ExamiNation.Application.Services.Test
             testScoreRangeDetailsDto.TestResultDto = _mapper.Map<TestResultDto>(testResult);
             testScoreRangeDetailsDto.CountQuestions = testResult.Test.Questions.Count();
             testScoreRangeDetailsDto.CountAnswers = testResult.Answers.Count();
-
+            testScoreRangeDetailsDto.CategoryResults = await _testResultReportService.CalculateCategoryResults(testResult);
 
             return ApiResponse<ScoreRangeDetailsDto>.CreateSuccessResponse("Summary retrieved successfully.", testScoreRangeDetailsDto);
         }

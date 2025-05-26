@@ -16,11 +16,11 @@ namespace ExamiNation.Application.DTOs.ScoreRange
         public string Classification { get; set; }
 
         [Required]
-        public string ShortDescription { get; set; }  // "Your score places you in the Superior intelligence range."
+        public string ShortDescription { get; set; }  
 
         [Required]
-        public string DetailedExplanation { get; set; } // List of strengths, insights, and expanded description
+        public string DetailedExplanation { get; set; } 
 
-        public string Recommendations { get; set; } // Optional: personal or professional development suggestions
+        public string Recommendations { get; set; } 
     }
 }

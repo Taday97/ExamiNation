@@ -1,4 +1,5 @@
-﻿using ExamiNation.Application.DTOs.TestResult;
+﻿using ExamiNation.Application.DTOs.CognitiveCategory;
+using ExamiNation.Application.DTOs.TestResult;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace ExamiNation.Application.DTOs.ScoreRange
         public TestResultDto TestResultDto { get; set; }
         public int CountQuestions { get; set; }
         public int CountAnswers { get; set; }
+        public List<CognitiveCategoryResultDto> CategoryResults { get; set; }
     }
 }
