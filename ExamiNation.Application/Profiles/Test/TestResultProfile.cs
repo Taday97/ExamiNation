@@ -12,6 +12,8 @@ namespace ExamiNation.Application.Profiles.Test
             CreateMap<TestResult, TestResultDto>()
              .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
             .ForMember(dest => dest.TestName, opt => opt.MapFrom(src => src.Test.Name)).ReverseMap();
+            CreateMap<TestResult, TestResultReportDto>();
+
             CreateMap<CreateTestResultDto, TestResult>()
             .ForMember(dest => dest.Answers, opt => opt.MapFrom(src => src.Answers));
             CreateMap<EditTestResultDto, TestResult>().ReverseMap();

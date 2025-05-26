@@ -1,5 +1,6 @@
 ﻿using ExamiNation.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExamiNation.Domain.Entities.Test
 {
@@ -21,6 +22,9 @@ namespace ExamiNation.Domain.Entities.Test
         public DateTime CreatedAt { get;  set; }
 
         public string? ImageUrl { get; set; }
+
+        public decimal MaxScore => Questions?.Sum(q => q.Score) ?? 0m;
+
         public virtual ICollection<Question> Questions { get;  set; }
         public virtual ICollection<TestResult> TestResults { get;  set; }
         public virtual ICollection<ScoreRange> ScoreRanges { get;  set; }

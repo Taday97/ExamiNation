@@ -9,15 +9,17 @@ namespace ExamiNation.Infrastructure.Data
     public class Seeder
     {
         private readonly ITestRepository _testRepository;
+        private readonly ICognitiveCategoryRepository _cognitiveCategoryRepository;
         private readonly IScoreRangeRepository _scoreRangeRepository;
         private readonly IAnswerRepository _answerRepository;
         private readonly IOptionRepository _optionRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly ITestResultRepository _testResultRepository;
 
-        public Seeder(ITestRepository testRepository, IScoreRangeRepository scoreRangeRepository, IAnswerRepository answerRepository, IOptionRepository optionRepository, IQuestionRepository questionRepository, ITestResultRepository testResultRepository)
+        public Seeder(ITestRepository testRepository, ICognitiveCategoryRepository cognitiveCategoryRepository, IScoreRangeRepository scoreRangeRepository, IAnswerRepository answerRepository, IOptionRepository optionRepository, IQuestionRepository questionRepository, ITestResultRepository testResultRepository)
         {
             _testRepository = testRepository;
+            _cognitiveCategoryRepository = cognitiveCategoryRepository;
             _scoreRangeRepository = scoreRangeRepository;
             _answerRepository = answerRepository;
             _optionRepository = optionRepository;
@@ -35,6 +37,7 @@ namespace ExamiNation.Infrastructure.Data
             query.Includes.Add(t => t.Questions);
 
             var existingTests = await _testRepository.GetAllAsync(query);
+            var congniteCategories = await _cognitiveCategoryRepository.GetAllAsync();
 
             foreach (var existingTest in existingTests)
             {
@@ -59,21 +62,29 @@ namespace ExamiNation.Infrastructure.Data
                     }
 
                     await _testRepository.DeleteAsync(existingTest.Id);
+
+                    foreach (var category in congniteCategories)
+                    {
+                        await _cognitiveCategoryRepository.DeleteAsync(category.Id);
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     throw;
                 }
             }
+           
+            await GetPredefinedIQCognitiveCategories();
 
-
+            var cognitiveCategories = await _cognitiveCategoryRepository.GetAllAsync();
+            var listCognitiveCategories= cognitiveCategories.Where(c => c.TestTypeId == (int)TestType.IQ).ToList();
 
             var json = await File.ReadAllTextAsync(filePath);
             var dto = JsonSerializer.Deserialize<Test>(json, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
-
             var test = new Test
             {
                 Name = dto.Name,
@@ -81,19 +92,24 @@ namespace ExamiNation.Infrastructure.Data
                 Type = dto.Type,
                 CreatedAt = DateTime.UtcNow,
                 ImageUrl = "uploads/test/a14ada58c7aba0481349f0ec6476d63d.jpg",
-                Questions = dto.Questions.Select(q => new Question
+                Questions = dto.Questions.Select(q =>
                 {
-                    Id = Guid.NewGuid(),
-                    Text = q.Text,
-                    QuestionNumber = q.QuestionNumber,
-                    Type = q.Type,
-                    Options = q.Options?.Select(o => new Option
+                    return new Question
                     {
                         Id = Guid.NewGuid(),
-                        Text = o.Text,
-                        IsCorrect = o.IsCorrect
-                    }).ToList()
+                        Text = q.Text,
+                        QuestionNumber = q.QuestionNumber,
+                        Type = q.Type,
+                        CognitiveCategoryId = listCognitiveCategories.FirstOrDefault(l=>l.Code==q.CognitiveCategoryCode)?.Id,
+                        Options = q.Options?.Select(o => new Option
+                        {
+                            Id = Guid.NewGuid(),
+                            Text = o.Text,
+                            IsCorrect = o.IsCorrect
+                        }).ToList()
+                    };
                 }).ToList()
+               
             };
 
             await _testRepository.AddAsync(test);
@@ -152,7 +168,7 @@ namespace ExamiNation.Infrastructure.Data
             Type = TestType.IQ,
             CreatedAt = DateTime.UtcNow,
             ImageUrl = "uploads/test/a14ada58c7aba0481349f0ec6476d63d.jpg",
-            Questions = new List<Question>() 
+            Questions = new List<Question>()
 
         },
         new Test
@@ -206,6 +222,67 @@ namespace ExamiNation.Infrastructure.Data
             foreach (var test in predefinedTests)
             {
                 await _testRepository.AddAsync(test);
+            }
+
+        }
+
+        public async Task GetPredefinedIQCognitiveCategories()
+        {
+            var predefinedCategories = new List<CognitiveCategory>
+    {
+        new CognitiveCategory
+        {
+            Name = "Logical Reasoning",
+            Code = "LOGIC",
+            Description = "Ability to analyze patterns, sequences, and relationships logically.",
+            TestTypeId = (int)TestType.IQ
+        },
+        new CognitiveCategory
+        {
+            Name = "Mathematical Ability",
+            Code = "MATH",
+            Description = "Skill in understanding and working with numbers and mathematical concepts.",
+            TestTypeId = (int)TestType.IQ
+        },
+        new CognitiveCategory
+        {
+            Name = "Verbal Reasoning",
+            Code = "VERBAL",
+            Description = "Capability to understand and reason using concepts framed in words.",
+            TestTypeId = (int)TestType.IQ
+        },
+        new CognitiveCategory
+        {
+            Name = "Spatial Awareness",
+            Code = "SPATIAL",
+            Description = "Ability to visualize and manipulate objects in space.",
+            TestTypeId = (int)TestType.IQ
+        },
+        new CognitiveCategory
+        {
+            Name = "Memory",
+            Code = "MEMORY",
+            Description = "Capacity to store, retain, and recall information effectively.",
+            TestTypeId = (int)TestType.IQ
+        },
+        new CognitiveCategory
+        {
+            Name = "Processing Speed",
+            Code = "SPEED",
+            Description = "Speed at which cognitive tasks are performed.",
+            TestTypeId = (int)TestType.IQ
+        },
+        new CognitiveCategory
+        {
+            Name = "Attention to Detail",
+            Code = "ATTENTION",
+            Description = "Ability to focus and notice small details accurately.",
+            TestTypeId = (int)TestType.IQ
+        }
+    };
+            foreach (var category in predefinedCategories)
+            {
+                await _cognitiveCategoryRepository.AddAsync(category);
             }
         }
 

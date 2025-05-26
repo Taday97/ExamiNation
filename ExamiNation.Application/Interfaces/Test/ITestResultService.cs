@@ -10,7 +10,7 @@ namespace ExamiNation.Application.Interfaces.Test
         Task<ApiResponse<TestResultDto>> AddSubmitAnswerAsync(SubmitAnswerDto submitAnswerDto, Guid userId);
         Task<ApiResponse<IEnumerable<TestResultDto>>> GetAllByStatusUserIdAsync(TestResultStatus status, Guid usertId);
         Task<ApiResponse<IEnumerable<TestResultDto>>> GetByTestIdAsync(Guid testId);
-        Task<ApiResponse<IEnumerable<TestResultDto>>> GetByUserIdAsync(Guid userId);
+        Task<ApiResponse<IEnumerable<TestResultReportDto>>> GetByUserIdAsync(Guid userId);
         Task<ApiResponse<ScoreRangeDetailsDto>> GetSummaryAsync(Guid id);
     }
 }

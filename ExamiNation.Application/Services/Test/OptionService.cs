@@ -3,15 +3,12 @@ using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
-using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
-using ExamiNation.Infrastructure.Repositories.Test;
-using ExamiNation.Application.DTOs.Answer;
 
 namespace ExamiNation.Application.Services.Test
 {

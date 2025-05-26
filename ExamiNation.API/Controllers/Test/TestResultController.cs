@@ -38,7 +38,7 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response);
         }
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        [Authorize(Roles = RoleGroups.All)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTestResultById(Guid id)
         {
@@ -55,7 +55,7 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response.Data);
         }
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        [Authorize(Roles = RoleGroups.All)]
         [HttpGet("test/{testId}")]
         public async Task<IActionResult> GetTestResultsByTest(Guid testId)
         {
@@ -67,21 +67,21 @@ namespace ExamiNation.API.Controllers.Test
             var result = await _testResultService.GetByTestIdAsync(testId);
             return Ok(result);
         }
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        [Authorize(Roles = RoleGroups.All)]
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetTestResultsByUser(Guid userId)
         {
             if (userId == Guid.Empty)
             {
-                var errorResponse = ApiResponse<OptionDto>.CreateErrorResponse("User ID must be a valid non-empty GUID.");
+                var errorResponse = ApiResponse<TestResultReportDto>.CreateErrorResponse("User ID must be a valid non-empty GUID.");
                 return BadRequest(errorResponse.Message);
             }
             var result = await _testResultService.GetByUserIdAsync(userId);
             return Ok(result);
         }
 
-        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
-        [HttpGet("status/{status}")]//GET /api/tucontrolador/status/1?userId=123e4567-e89b-12d3-a456-426614174000
+        [Authorize(Roles = RoleGroups.All)]
+        [HttpGet("status/{status}")]
         public async Task<IActionResult> GetTestResultsByStatus([FromRoute] int status, [FromQuery] Guid userId)
         {
             if (userId == Guid.Empty)
@@ -136,6 +136,7 @@ namespace ExamiNation.API.Controllers.Test
             return CreatedAtAction(nameof(GetTestResultById), new { id = response.Data.Id }, response.Data);
         }
 
+        [Authorize(Roles = RoleGroups.All)]
         [HttpGet("{id}/summary")]
         public async Task<IActionResult> GetTestResultSummary(Guid id)
         {

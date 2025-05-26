@@ -16,6 +16,7 @@ namespace ExamiNation.Application.DTOs.Question
         public Guid TestId { get; set; }
 
         public int? QuestionNumber { get; set; }
+        public decimal Score { get; set; } = 1.0m;
 
         public List<CreateOptionDto>? Options { get; set; }
     }

@@ -12,6 +12,7 @@ namespace ExamiNation.Application.DTOs.Question
         public QuestionType Type { get; set; }
 
         public Guid TestId { get; set; }
+        public decimal Score { get; set; } = 1.0m;
 
         public int? QuestionNumber { get; set; }
 

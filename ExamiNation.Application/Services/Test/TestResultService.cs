@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.Answer;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.CognitiveCategory;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.ScoreRange;
@@ -14,6 +15,7 @@ using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -115,19 +117,112 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<IEnumerable<TestResultDto>>.CreateSuccessResponse("TestResult retrieved successfully.", testResultDtos);
         }
 
-        public async Task<ApiResponse<IEnumerable<TestResultDto>>> GetByUserIdAsync(Guid userId)
+        public async Task<ApiResponse<IEnumerable<TestResultReportDto>>> GetByUserIdAsync(Guid userId)
         {
-            var testResult = await _testResultRepository.GetAllAsync(new QueryOptions<TestResult> { Filter = l => l.UserId == userId });
+            if (userId == Guid.Empty)
+            {
+                return ApiResponse<IEnumerable<TestResultReportDto>>.CreateErrorResponse("Invalid user ID.");
+            }
+            var query = new QueryOptions<TestResult>
+            {
+                Filter = l => l.UserId == userId,
+                Includes = new List<Expression<Func<TestResult, object>>>
+                {
+                     t => t.Test,
+                     t => t.Answers,
+                },
+                ThenIncludes = new List<Func<IQueryable<TestResult>, IQueryable<TestResult>>>
+                {
+                  q=> q.Include(x => x.Test).ThenInclude(a => a.Questions).ThenInclude(l=>l.Answers).ThenInclude(l=>l.Option),
+                  q=> q.Include(x => x.Test).ThenInclude(a => a.Questions).ThenInclude(l=>l.Options),
+                }
+            };
+
+            var testResult = await _testResultRepository.GetAllAsync(query);
 
             if (testResult == null || !testResult.Any())
             {
-                return ApiResponse<IEnumerable<TestResultDto>>.CreateErrorResponse("No TestResult found.");
+                return ApiResponse<IEnumerable<TestResultReportDto>>.CreateErrorResponse("No TestResult found.");
             }
 
-            var testResultDtos = _mapper.Map<IEnumerable<TestResultDto>>(testResult);
+            List<TestResultReportDto> dtos =await TestResultsReportsMapping(testResult);
 
-            return ApiResponse<IEnumerable<TestResultDto>>.CreateSuccessResponse("TestResult retrieved successfully.", testResultDtos);
+
+            return ApiResponse<IEnumerable<TestResultReportDto>>.CreateSuccessResponse("TestResult retrieved successfully.", dtos);
         }
+
+        private async Task<List<TestResultReportDto>> TestResultsReportsMapping(IEnumerable<TestResult> testResult)
+        {
+            List<TestResultReportDto> dtos = new List<TestResultReportDto>();
+            foreach (var result in testResult)
+            {
+                var answeredQuestionIds = result.Answers.Select(a => a.QuestionId).ToHashSet();
+                var orderedQuestions = result.Test.Questions.OrderBy(q => q.QuestionNumber).ToList();
+
+                var nextQuestion = result.Test.Questions
+                    .OrderBy(q => q.QuestionNumber)
+                    .FirstOrDefault(q => !answeredQuestionIds.Contains(q.Id));
+
+                var dto = _mapper.Map<TestResultReportDto>(result);
+                dto.QuestionCount = result.Test.Questions.Count;
+                dto.AnsweredCount = answeredQuestionIds.Count;
+                var categoryResults = await CalculateCategoryResults(result);
+
+                dto.CategoryResults = categoryResults;
+                if (nextQuestion != null)
+                {
+                    dto.NextQuestionPage = orderedQuestions.FindIndex(q => q.Id == nextQuestion.Id) + 1;
+                }
+
+                dtos.Add(dto);
+            }
+            return dtos;
+        }
+        private async Task<List<CognitiveCategoryResultDto>> CalculateCategoryResults(TestResult result)
+        {
+            var query = new QueryOptions<Question>
+            {
+                Filter = q => q.Test.Id == result.TestId && q.CognitiveCategoryId!=null,
+                Includes = new List<Expression<Func<Question, object>>>
+                {
+                   q => q.CognitiveCategory,
+                   q => q.Options
+                }
+            };
+
+            var questions = await _questionRepository.GetAllAsync(query);
+
+            var answeredQuestionIds = result.Answers.Select(a => a.QuestionId).ToHashSet();
+
+            var categoryResults = questions
+                .Where(q => q.CognitiveCategory != null)
+                .GroupBy(q => q.CognitiveCategory.Code)
+                .Select(g =>
+                {
+                    var questionsInCategory = g.ToList();
+
+                    var totalQuestions = questionsInCategory.Count;
+                    var answeredInCategory = questionsInCategory.Count(q => answeredQuestionIds.Contains(q.Id));
+                    var correctInCategory = questionsInCategory.Sum( q =>
+                        result.Answers.Any(a =>
+                            a.QuestionId == q.Id &&
+                            q.Options.Any(o => o.Id == a.OptionId && o.IsCorrect))
+                        ? q.Score : 0);
+                    var firstCategory = questionsInCategory.First().CognitiveCategory;
+                    return new CognitiveCategoryResultDto
+                    {
+                        Code = firstCategory.Code,
+                        Name = firstCategory.Name,
+                        TotalQuestions = totalQuestions,
+                        AnsweredQuestions = answeredInCategory,
+                        CorrectAnswers = correctInCategory
+                    };
+                })
+                .ToList();
+
+            return categoryResults;
+        }
+
 
         public async Task<ApiResponse<TestResultDto>> AddAsync(CreateTestResultDto testResultDto)
         {
@@ -140,7 +235,7 @@ namespace ExamiNation.Application.Services.Test
 
 
             var test = await _testRepository.GetByIdAsync(testResultDto.TestId, true,
-               include: 
+               include:
                t => t.Include(t => t.Questions)
               .ThenInclude(question => question.Options));
 
@@ -157,7 +252,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 0 => TestResultStatus.Abandoned,
                 _ when answeredQuestions < totalQuestions => TestResultStatus.InProgress,
-                _ => TestResultStatus.Completed
+                _ when answeredQuestions == totalQuestions => TestResultStatus.Completed,
             };
 
             testResultEntity.Score = _scoreCalculator.CalculateScore(testResultEntity.Answers, test.Questions);
@@ -184,7 +279,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 var testResult = await _testResultRepository
                     .FindFirstAsync(
-                        x => x.TestId == question.TestId && x.UserId == userId,
+                        x => x.TestId == question.TestId && x.UserId == userId && x.Status != TestResultStatus.Completed,
                         asNoTracking: false,
                         include: q => q.Include(t => t.Answers)
                        .Include(t => t.Test)
@@ -330,13 +425,13 @@ namespace ExamiNation.Application.Services.Test
             {
                 0 => TestResultStatus.Abandoned,
                 _ when answeredQuestions < totalQuestions => TestResultStatus.InProgress,
-                _ => TestResultStatus.Completed
+                _ when answeredQuestions == totalQuestions => TestResultStatus.Completed,
             };
 
             testResult.Score = _scoreCalculator.CalculateScore(testResult.Answers, test.Questions);
             testResult.CompletedAt = DateTime.UtcNow;
 
-           await _testResultRepository.UpdateAsync(testResult);
+            await _testResultRepository.UpdateAsync(testResult);
         }
 
 
@@ -396,7 +491,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<ScoreRangeDetailsDto>.CreateErrorResponse("TestResult ID must be a valid GUID.");
             }
-            var testResult = await _testResultRepository.GetByIdAsync(guid, asNoTracking: true, include:l=>l.Include(m => m.Answers).Include(m=>m.Test).ThenInclude(n=>n.Questions) );
+            var testResult = await _testResultRepository.GetByIdAsync(guid, asNoTracking: true, include: l => l.Include(m => m.Answers).Include(m => m.Test).ThenInclude(n => n.Questions));
 
             if (testResult == null)
             {
@@ -405,7 +500,7 @@ namespace ExamiNation.Application.Services.Test
 
             var scoreRange = await _scoreRangeService.GetClasificationAsync(testResult.TestId, testResult.Score);
 
-            if (!scoreRange.Success )
+            if (!scoreRange.Success)
             {
                 return ApiResponse<ScoreRangeDetailsDto>.CreateErrorResponse($"ScoreRange with id {testResult.TestId.ToString()} not found.");
             }
@@ -413,7 +508,7 @@ namespace ExamiNation.Application.Services.Test
             testScoreRangeDetailsDto.TestResultDto = _mapper.Map<TestResultDto>(testResult);
             testScoreRangeDetailsDto.CountQuestions = testResult.Test.Questions.Count();
             testScoreRangeDetailsDto.CountAnswers = testResult.Answers.Count();
-           
+
 
             return ApiResponse<ScoreRangeDetailsDto>.CreateSuccessResponse("Summary retrieved successfully.", testScoreRangeDetailsDto);
         }

@@ -20,6 +20,8 @@ namespace ExamiNation.Application.DTOs.TestResult
         [Required]
         public Guid TestId { get; set; }
         public string TestName { get; set; }
+        public TestType TestType { get; set; }
+        public decimal TestMaxScore { get; set; }
 
         [Required]
         [Precision(10, 4)]

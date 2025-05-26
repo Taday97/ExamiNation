@@ -7,6 +7,7 @@
       "text": "The opposite of hate is:",
       "type": 0,
       "questionNumber": 1,
+      "cognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "enemy",
@@ -30,6 +31,7 @@
       "text": "If three pencils cost five pesos, how many pencils can I buy with fifty pesos?",
       "type": 0,
       "questionNumber": 2,
+      "CognitiveCategoryCode": "MATH",
       "options": [
         {
           "text": "30",
@@ -53,6 +55,7 @@
       "text": "A bird does not always have:",
       "type": 0,
       "questionNumber": 3,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "wings",
@@ -76,6 +79,7 @@
       "text": "The opposite of honor is:",
       "type": 0,
       "questionNumber": 4,
+      "CognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "defeat",
@@ -99,6 +103,7 @@
       "text": "The fox most resembles:",
       "type": 0,
       "questionNumber": 5,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "the wolf",
@@ -122,6 +127,7 @@
       "text": "Silence has the same relation to sound as darkness to:",
       "type": 0,
       "questionNumber": 6,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "basement",
@@ -146,6 +152,7 @@
       "text": "A group consisted of two married couples, two brothers, and two sisters. What is the minimum number of people that could make up the group?",
       "type": 0,
       "questionNumber": 7,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "6",
@@ -169,6 +176,7 @@
       "text": "A tree always has:",
       "type": 0,
       "questionNumber": 8,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "leaves",
@@ -192,6 +200,7 @@
       "text": "The opposite of economical is:",
       "type": 0,
       "questionNumber": 9,
+      "CognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "cheap",
@@ -215,6 +224,7 @@
       "text": "Silver is more expensive than iron because it is:",
       "type": 0,
       "questionNumber": 10,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "heavier",
@@ -238,6 +248,7 @@
       "text": "Which of the six reasons expresses the meaning of the proverb: “Meal finished, company diminished”?",
       "type": 0,
       "questionNumber": 11,
+      "CognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "One should not forget a received benefit and distance oneself from the one who provided it",
@@ -262,6 +273,7 @@
       "text": "Which of the six reasons from No. 11 expresses the meaning of this proverb?: “Work started is half finished”",
       "type": 0,
       "questionNumber": 12,
+      "CognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "The greatest difficulty in anything usually lies in getting started",
@@ -285,6 +297,7 @@
       "text": "Which of the six reasons given in No. 11 explains the proverb: 'My teeth come before my relatives'?",
       "type": 0,
       "questionNumber": 13,
+      "CognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "Everyone should look after themselves before others",
@@ -308,6 +321,7 @@
       "text": "An electric light relates to a candle as a car relates to:",
       "type": 0,
       "questionNumber": 14,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "a carriage",
@@ -331,6 +345,7 @@
       "text": "If a horse can run 6 meters in ¼ of a second, how many meters does it run in 10 seconds?",
       "type": 0,
       "questionNumber": 15,
+      "CognitiveCategoryCode": "MATH",
       "options": [
         {
           "text": "60",
@@ -354,6 +369,7 @@
       "text": "A meal always implies:",
       "type": 0,
       "questionNumber": 16,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "table",
@@ -377,6 +393,7 @@
       "text": "Of the following five words, four are alike. Which one is not like the others?",
       "type": 0,
       "questionNumber": 17,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "dessert",
@@ -400,6 +417,7 @@
       "text": "The opposite of never is:",
       "type": 0,
       "questionNumber": 18,
+      "CognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "often",
@@ -423,6 +441,7 @@
       "text": "A clock relates to time in the same way a thermometer relates to:",
       "type": 0,
       "questionNumber": 19,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "a clock",
@@ -446,6 +465,7 @@
       "text": "Which of the following words should be placed in the blank to make the statement true: '_____________ men are shorter than their wives'?",
       "type": 0,
       "questionNumber": 20,
+      "CognitiveCategoryCode": "VERBAL",
       "options": [
         {
           "text": "always",
@@ -470,6 +490,7 @@
       "text": "In the following series there is one incorrect number. Which number should take its place? 1 - 4 - 2 - 5 - 3 - 6 - 4 - 7 - 5 - 9 - 6 - 9",
       "type": 0,
       "questionNumber": 21,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "8",
@@ -493,6 +514,7 @@
       "text": "If the first two statements are true, the third is: ‘All members of this club are Argentine’, ‘González is not Argentine’, ‘González is a member of this club’",
       "type": 0,
       "questionNumber": 22,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "true",
@@ -512,6 +534,7 @@
       "text": "A fight always has:",
       "type": 0,
       "questionNumber": 23,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "referee",
@@ -535,6 +558,7 @@
       "text": "Which number in this series appears a second time first? 6 - 4 - 5 - 3 - 7 - 0 - 9 - 5 - 9 - 8 - 8 - 6 - 5 - 4 - 7 - 3 - 0 - 8 - 9",
       "type": 0,
       "questionNumber": 24,
+      "CognitiveCategoryCode": "MEMORY",
       "options": [
         {
           "text": "5",
@@ -558,6 +582,7 @@
       "text": "The moon relates to the Earth as the Earth relates to:",
       "type": 0,
       "questionNumber": 25,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "Mars",
@@ -581,6 +606,7 @@
       "text": "What word is needed to make the following statement true? 'Parents are __________ more prudent than their children'",
       "type": 0,
       "questionNumber": 26,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "always",
@@ -604,6 +630,7 @@
       "text": "The opposite of clumsy is:",
       "type": 0,
       "questionNumber": 27,
+      "CognitiveCategoryCode": "KNOWLEDGE",
       "options": [
         {
           "text": "strong",
@@ -628,6 +655,7 @@
       "text": "'A mother is always __________ than her daughter'",
       "type": 0,
       "questionNumber": 28,
+      "CognitiveCategoryCode": "KNOWLEDGE",
       "options": [
         {
           "text": "wiser",
@@ -651,6 +679,7 @@
       "text": "Which of the five statements explains the meaning of the proverb 'Do good and keep quiet'?",
       "type": 0,
       "questionNumber": 29,
+      "CognitiveCategoryCode": "COMPREHENSION",
       "options": [
         {
           "text": "Good should be done selflessly",
@@ -674,6 +703,7 @@
       "text": "Which of the statements in No. 29 explains the proverb: 'Do good without looking at whom'?",
       "type": 0,
       "questionNumber": 30,
+      "CognitiveCategoryCode": "COMPREHENSION",
       "options": [
         {
           "text": "Good should be done selflessly",
@@ -697,6 +727,7 @@
       "text": "Which of the statements in No. 29 explains the proverb: 'Make good flour and don’t blow the horn'?",
       "type": 0,
       "questionNumber": 31,
+      "CognitiveCategoryCode": "COMPREHENSION",
       "options": [
         {
           "text": "Good should be done selflessly",
@@ -720,6 +751,7 @@
       "text": "When an individual sells their property, it means:",
       "type": 0,
       "questionNumber": 32,
+      "CognitiveCategoryCode": "KNOWLEDGE",
       "options": [
         {
           "text": "they buy it",
@@ -743,6 +775,7 @@
       "text": "What is related to illness, as caution is related to accident?",
       "type": 0,
       "questionNumber": 33,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "doctor",
@@ -766,6 +799,7 @@
       "text": "Of these five things, four are similar in some way. Which one does not belong in that group?",
       "type": 0,
       "questionNumber": 34,
+      "CognitiveCategoryCode": "ANALYSIS",
       "options": [
         {
           "text": "smuggling",
@@ -790,6 +824,7 @@
       "text": "If ten boxes full of apples weigh four hundred kilograms, how much do only the apples weigh if each empty box weighs 4 kilograms?",
       "type": 0,
       "questionNumber": 35,
+      "CognitiveCategoryCode": "APPLICATION",
       "options": [
         {
           "text": "360 kg",
@@ -813,6 +848,7 @@
       "text": "The opposite of hope is:",
       "type": 0,
       "questionNumber": 36,
+      "CognitiveCategoryCode": "KNOWLEDGE",
       "options": [
         {
           "text": "faith",
@@ -836,6 +872,7 @@
       "text": "If all the letters in odd-numbered positions were crossed out, what would be the tenth uncrossed letter? (Do not mark the alphabet). A B C D E F G H I J K L M N Ñ O P Q R S T U V W X Y Z",
       "type": 0,
       "questionNumber": 37,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "K",
@@ -859,6 +896,7 @@
       "text": "Which letter in the word METACRÓMICO occupies the same position counting from the beginning of the word and in the alphabet? (do not count 'Ch' as a letter).",
       "type": 0,
       "questionNumber": 38,
+      "CognitiveCategoryCode": "KNOWLEDGE",
       "options": [
         {
           "text": "M",
@@ -882,6 +920,7 @@
       "text": "What people say about a person constitutes their:",
       "type": 0,
       "questionNumber": 39,
+      "CognitiveCategoryCode": "KNOWLEDGE",
       "options": [
         {
           "text": "character",
@@ -905,6 +944,7 @@
       "text": "If 2½ meters of fabric cost 30 pesos, how much do 10 meters cost?",
       "type": 0,
       "questionNumber": 40,
+      "CognitiveCategoryCode": "APPLICATION",
       "options": [
         {
           "text": "120 pesos",
@@ -928,6 +968,7 @@
       "text": "If the following words were arranged to form a sentence, what letter would the third word begin with? (Write the letter in uppercase). bajo, contrario, significa, que, lo, alto.",
       "type": 0,
       "questionNumber": 41,
+      "CognitiveCategoryCode": "COMPREHENSION",
       "options": [
         {
           "text": "S",
@@ -951,6 +992,7 @@
       "text": "If the first two statements are true, the third is:\n'Jorge is older than Paco'\n'Jaime is older than Jorge'\n'Paco is younger than Jaime'",
       "type": 0,
       "questionNumber": 42,
+      "CognitiveCategoryCode": "LOGIC",
       "options": [
         {
           "text": "true",
@@ -970,6 +1012,7 @@
       "text": "Assuming that in the word CONSTITUCIONAL, the first and second letters are swapped, and also the 3rd with the 4th, the 5th with the 6th, etc., what would be the 12th letter from left to right? (Write it in uppercase).",
       "type": 0,
       "questionNumber": 43,
+      "CognitiveCategoryCode": "APPLICATION",
       "options": [
         {
           "text": "N",
@@ -993,6 +1036,7 @@
       "text": "One number is incorrect in the following series. Which one should replace it? 0 -1 – 3 -6 – 10 -15 – 21 – 28 - 34",
       "type": 0,
       "questionNumber": 44,
+      "CognitiveCategoryCode": "ANALYSIS",
       "options": [
         {
           "text": "36",
@@ -1016,6 +1060,7 @@
       "text": "If four and a half meters of fabric cost 90 pesos, how much will 2½ meters cost?",
       "type": 0,
       "questionNumber": 45,
+      "CognitiveCategoryCode": "APPLICATION",
       "options": [
         {
           "text": "50 pesos",
@@ -1039,6 +1084,7 @@
       "text": "A man's influence in the community where he lives should depend on his:",
       "type": 0,
       "questionNumber": 46,
+      "CognitiveCategoryCode": "EVALUATION",
       "options": [
         {
           "text": "wisdom",
@@ -1062,6 +1108,7 @@
       "text": "Which of the following words has the same relationship to 'little' as ordinary has to 'exceptional'?",
       "type": 0,
       "questionNumber": 47,
+      "CognitiveCategoryCode": "ANALYSIS",
       "options": [
         {
           "text": "nothing",
@@ -1085,6 +1132,7 @@
       "text": "The opposite of traitor is:",
       "type": 0,
       "questionNumber": 48,
+      "CognitiveCategoryCode": "KNOWLEDGE",
       "options": [
         {
           "text": "friendly",
@@ -1108,6 +1156,7 @@
       "text": "Which of the following five words is least related to the other four?",
       "type": 0,
       "questionNumber": 49,
+      "CognitiveCategoryCode": "ANALYSIS",
       "options": [
         {
           "text": "good",
@@ -1135,6 +1184,7 @@
       "text": "If the first two statements are true, the third is: “Some of López's friends are from Córdoba”, “Some of López's friends are dentists”, “Some of López's friends are dentists from Córdoba”",
       "type": 0,
       "questionNumber": 50,
+      "CognitiveCategoryCode": "EVALUATION",
       "options": [
         {
           "text": "true",

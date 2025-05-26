@@ -19,6 +19,7 @@ namespace ExamiNation.API.Configuration
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             
+            services.AddScoped<ICognitiveCategoryRepository, CognitiveCategoryRepository>();
             services.AddScoped<IOptionRepository, OptionRepository>();
             services.AddScoped<IAnswerRepository, AnswerRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();

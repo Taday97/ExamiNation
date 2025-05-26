@@ -1,4 +1,5 @@
-﻿using ExamiNation.Domain.Enums;
+﻿using ExamiNation.Domain.Entities.Test;
+using ExamiNation.Domain.Enums;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,6 +14,7 @@ namespace ExamiNation.Application.DTOs.Test
         public TestType Type { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public decimal MaxScore { get; set; }
 
         public string ImageUrl { get; set; }
 

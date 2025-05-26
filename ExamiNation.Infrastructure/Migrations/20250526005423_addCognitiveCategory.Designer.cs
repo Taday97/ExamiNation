@@ -4,6 +4,7 @@ using ExamiNation.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamiNation.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250526005423_addCognitiveCategory")]
+    partial class addCognitiveCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -482,7 +485,7 @@ namespace ExamiNation.Infrastructure.Migrations
             modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Question", b =>
                 {
                     b.HasOne("ExamiNation.Domain.Entities.Test.CognitiveCategory", "CognitiveCategory")
-                        .WithMany("Questions")
+                        .WithMany()
                         .HasForeignKey("CognitiveCategoryId");
 
                     b.HasOne("ExamiNation.Domain.Entities.Test.Test", "Test")
@@ -575,11 +578,6 @@ namespace ExamiNation.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ExamiNation.Domain.Entities.Test.CognitiveCategory", b =>
-                {
-                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Option", b =>

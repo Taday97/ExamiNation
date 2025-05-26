@@ -4,6 +4,7 @@ using ExamiNation.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExamiNation.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250525155257_addPropertyQuestionScore")]
+    partial class addPropertyQuestionScore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,37 +149,6 @@ namespace ExamiNation.Infrastructure.Migrations
                     b.ToTable("Answeres");
                 });
 
-            modelBuilder.Entity("ExamiNation.Domain.Entities.Test.CognitiveCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("TestType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TestTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CognitiveCategory");
-                });
-
             modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Option", b =>
                 {
                     b.Property<Guid>("Id")
@@ -207,9 +179,6 @@ namespace ExamiNation.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CognitiveCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int?>("QuestionNumber")
                         .HasColumnType("int");
 
@@ -229,8 +198,6 @@ namespace ExamiNation.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CognitiveCategoryId");
 
                     b.HasIndex("TestId");
 
@@ -481,17 +448,11 @@ namespace ExamiNation.Infrastructure.Migrations
 
             modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Question", b =>
                 {
-                    b.HasOne("ExamiNation.Domain.Entities.Test.CognitiveCategory", "CognitiveCategory")
-                        .WithMany("Questions")
-                        .HasForeignKey("CognitiveCategoryId");
-
                     b.HasOne("ExamiNation.Domain.Entities.Test.Test", "Test")
                         .WithMany("Questions")
                         .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CognitiveCategory");
 
                     b.Navigation("Test");
                 });
@@ -575,11 +536,6 @@ namespace ExamiNation.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ExamiNation.Domain.Entities.Test.CognitiveCategory", b =>
-                {
-                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("ExamiNation.Domain.Entities.Test.Option", b =>

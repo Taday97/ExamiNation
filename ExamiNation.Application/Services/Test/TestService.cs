@@ -12,6 +12,7 @@ using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TestEntity = ExamiNation.Domain.Entities.Test.Test;
 
@@ -36,7 +37,14 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<TestDto>>> GetAllAsync()
         {
-            var tests = await _testRepository.GetAllAsync();
+            var QueryOptions = new QueryOptions<TestEntity>
+            {
+                Includes = new List<Expression<Func<TestEntity, object>>>
+                {
+                   l => l.Questions,
+                }
+            };
+            var tests = await _testRepository.GetAllAsync(QueryOptions);
 
             if (tests == null || !tests.Any())
             {
@@ -56,7 +64,12 @@ namespace ExamiNation.Application.Services.Test
 
             var options = new QueryOptions<TestEntity>
             {
-                Filter = l => l.Type == type
+                Filter = l => l.Type == type,
+                Includes = new List<Expression<Func<TestEntity, object>>>
+                {
+                   l => l.Questions,
+                }
+
             };
             var tests = await _testRepository.GetAllAsync(options);
 
@@ -98,7 +111,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<TestDto>.CreateErrorResponse("Test ID must be a valid GUID.");
             }
-            var test = await _testRepository.GetByIdAsync(guid);
+            var test = await _testRepository.GetByIdAsync(guid,true,l=>l.Include(m=>m.Questions));
             if (test == null)
             {
                 return ApiResponse<TestDto>.CreateErrorResponse($"Test with id {id} not found.");
