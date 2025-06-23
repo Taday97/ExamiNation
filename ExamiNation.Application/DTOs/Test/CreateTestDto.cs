@@ -10,7 +10,7 @@ namespace ExamiNation.Application.DTOs.Test
         public string Name { get; set; }
 
         [StringLength(500)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public TestType Type { get; set; }

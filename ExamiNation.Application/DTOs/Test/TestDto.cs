@@ -9,14 +9,14 @@ namespace ExamiNation.Application.DTOs.Test
     {
         public Guid Id { get; private set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public TestType Type { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public decimal MaxScore { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
     }
 }

@@ -51,6 +51,7 @@ namespace ExamiNation.Application.Services.Reports
 
                 var dto = _mapper.Map<TestResultReportDto>(result);
                 dto.QuestionCount = questions.Count();
+                dto.ScoreMax = questions.Sum(q => q.Score);
                 dto.AnsweredCount = answeredQuestionIds.Count;
                 dto.CategoryResults = await CalculateCategoryResults(result);
 

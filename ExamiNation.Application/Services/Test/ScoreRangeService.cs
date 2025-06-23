@@ -10,6 +10,7 @@ using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -146,6 +147,10 @@ namespace ExamiNation.Application.Services.Test
         {
             var optionsQuery = _mapper.Map<PagedQueryOptions<ScoreRange>>(queryParameters);
 
+            optionsQuery.Includes = new List<Expression<Func<ScoreRange, object>>>
+            {
+               l => l.Test,
+            };
             var (scoreRanges, totalCount) = await _scoreRangeRepository.GetPagedWithCountAsync(optionsQuery);
 
             if (!scoreRanges.Any())

@@ -1,5 +1,7 @@
 ﻿using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Auth;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.User;
 using ExamiNation.Domain.Entities;
 
@@ -27,5 +29,6 @@ namespace ExamiNation.Application.Interfaces.Security
         Task<ApiResponse<bool>> AssignRolesToUserAsync(string userId, List<string> roles);
         Task<ApiResponse<bool>> RemoveRolesFromUserAsync(string userId, List<string> roles);
         Task<ApiResponse<LoginResultDto>> GoogleLoginAsync(GoogleLoginDto idToken);
+        Task<ApiResponse<PagedResponse<UserDto>>> GetAllPagedAsync(QueryParameters queryParameters);
     }
 }

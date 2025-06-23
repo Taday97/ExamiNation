@@ -10,7 +10,8 @@ namespace ExamiNation.Application.Profiles.Test
         public TestResultProfile()
         {
             CreateMap<TestResult, TestResultDto>()
-             .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
+            .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
             .ForMember(dest => dest.TestName, opt => opt.MapFrom(src => src.Test.Name)).ReverseMap();
             CreateMap<TestResult, TestResultReportDto>();
 

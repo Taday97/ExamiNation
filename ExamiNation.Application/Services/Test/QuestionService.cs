@@ -100,11 +100,6 @@ namespace ExamiNation.Application.Services.Test
 
             var (questions, totalCount) = await _questionRepository.GetPagedWithCountAsync(optionsQuery);
 
-            if (!questions.Any())
-            {
-                return ApiResponse<PagedResponse<QuestionDto>>.CreateErrorResponse("No questions found.");
-            }
-
             var questionDtos = _mapper.Map<IEnumerable<QuestionDtoWithOptions>>(questions);
 
             var result = _mapper.Map<PagedResponse<QuestionDto>>(queryParameters);
@@ -114,29 +109,26 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<PagedResponse<QuestionDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
 
         }
-        public async Task<ApiResponse<PagedResponse<QuestionDtoWithOptions>>> GetAllQuestionWithOptionsPagedAsync(QueryParameters queryParameters)
+        public async Task<ApiResponse<PagedResponse<QuestionViewDto>>> GetAllQuestionPagedAsync(QueryParameters queryParameters)
         {
             var optionsQuery = _mapper.Map<PagedQueryOptions<Question>>(queryParameters);
 
             optionsQuery.Includes = new List<Expression<Func<Question, object>>>
             {
-                l => l.Options
+               l => l.CognitiveCategory,
+               l => l.Test,
             };
 
             var (questions, totalCount) = await _questionRepository.GetPagedWithCountAsync(optionsQuery);
 
-            if (!questions.Any())
-            {
-                return ApiResponse<PagedResponse<QuestionDtoWithOptions>>.CreateErrorResponse("No questions found.");
-            }
 
-            var questionDtos = _mapper.Map<IEnumerable<QuestionDtoWithOptions>>(questions);
+            var questionDtos = _mapper.Map<IEnumerable<QuestionViewDto>>(questions);
 
-            var result = _mapper.Map<PagedResponse<QuestionDtoWithOptions>>(queryParameters);
+            var result = _mapper.Map<PagedResponse<QuestionViewDto>>(queryParameters);
             result.Items = questionDtos;
             result.TotalCount = totalCount;
 
-            return ApiResponse<PagedResponse<QuestionDtoWithOptions>>.CreateSuccessResponse("Tests retrieved successfully.", result);
+            return ApiResponse<PagedResponse<QuestionViewDto>>.CreateSuccessResponse("Questions retrieved successfully.", result);
 
         }
 
@@ -153,11 +145,6 @@ namespace ExamiNation.Application.Services.Test
             optionsQuery.ThenIncludes.Add(q => q.Include(x => x.Answers).ThenInclude(a => a.TestResult));
 
             var (questions, totalCount) = await _questionRepository.GetPagedWithCountAsync(optionsQuery);
-
-            if (!questions.Any())
-            {
-                return ApiResponse<QuestionsPagedWithTestDto>.CreateErrorResponse("No questions found.");
-            }
 
             var questionDtos = _mapper.Map<IEnumerable<QuestionDtoWithOptions>>(questions);
            

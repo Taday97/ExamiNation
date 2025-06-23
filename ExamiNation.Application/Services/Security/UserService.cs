@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Auth;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Responses;
+using ExamiNation.Application.DTOs.Test;
 using ExamiNation.Application.DTOs.User;
 using ExamiNation.Application.Interfaces.Security;
+using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Security;
 using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Security;
@@ -428,5 +432,23 @@ namespace ExamiNation.Application.Services.Security
             return ApiResponse<LoginResultDto>.CreateSuccessResponse("Login successful.", result);
         }
 
+        public async Task<ApiResponse<PagedResponse<UserDto>>> GetAllPagedAsync(QueryParameters queryParameters)
+        {
+            var optionsQuery = _mapper.Map<PagedQueryOptions<ApplicationUser>>(queryParameters);
+
+
+            var (tests, totalCount) = await _userRepository.GetPagedWithCountAsync(optionsQuery);
+
+            var testDtos = _mapper.Map<IEnumerable<UserDto>>(tests);
+
+            var result = _mapper.Map<PagedResponse<UserDto>>(queryParameters);
+
+            result.Items = testDtos;
+            result.TotalCount = totalCount;
+
+            return ApiResponse<PagedResponse<UserDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
+        }
+
     }
+
 }

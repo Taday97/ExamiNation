@@ -61,12 +61,12 @@ namespace ExamiNation.API.Controllers.Test
             var result = await _questionService.GetByTestIdAsync(testId);
             return Ok(result);
         }
-
+                                  
         [Authorize(Roles = RoleGroups.All)]
-        [HttpGet("paged")]
+        [HttpGet("pages")]
         public async Task<IActionResult> GetPagedQuestions([FromQuery] QueryParameters queryParameters)
         {
-            var response = await _questionService.GetAllQuestionWithOptionsPagedAsync(queryParameters);
+            var response = await _questionService.GetAllQuestionPagedAsync(queryParameters);
 
             if (!response.Success)
             {

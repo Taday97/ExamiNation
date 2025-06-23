@@ -51,7 +51,7 @@ namespace ExamiNation.API.Controllers.Test
 
 
         //[Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
-        [HttpGet("get-pages")]
+        [HttpGet("pages")]
         public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
         {
             var response = await _testService.GetAllPagedAsync(queryParameters);

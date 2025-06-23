@@ -21,9 +21,6 @@ namespace ExamiNation.Application.DTOs.CognitiveCategory
         [Required]
         public int TestTypeId { get; set; }
 
-        [ForeignKey(nameof(TestTypeId))]
-        public virtual TestType TestType { get; set; }
 
-        public Guid? CognitiveCategoryId { get; set; }
     }
 }

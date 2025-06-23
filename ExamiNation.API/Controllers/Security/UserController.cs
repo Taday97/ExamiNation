@@ -1,5 +1,6 @@
 ﻿using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Role;
 using ExamiNation.Application.DTOs.User;
 using ExamiNation.Application.Interfaces.Security;
@@ -166,6 +167,18 @@ namespace ExamiNation.API.Controllers.Security
             return Ok(response);
         }
 
+        [HttpGet("pages")]
+        public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _userService.GetAllPagedAsync(queryParameters);
+
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response);
+        }
 
     }
 }

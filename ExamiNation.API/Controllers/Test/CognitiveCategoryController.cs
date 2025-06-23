@@ -2,6 +2,7 @@
 using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.CognitiveCategory;
+using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.Interfaces.Test;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,12 +12,12 @@ namespace ExamiNation.API.Controllers.Test
     [Route("api/[controller]")]
     public class CognitiveCategoryController : ControllerBase
     {
-        private readonly ICognitiveCategoryService _optionService;
+        private readonly ICognitiveCategoryService _cognitiveCategoryService;
         private readonly IMapper _mapper;
 
-        public CognitiveCategoryController(ICognitiveCategoryService optionService, IMapper mapper)
+        public CognitiveCategoryController(ICognitiveCategoryService cognitiveCategoryService, IMapper mapper)
         {
-            _optionService = optionService;
+            _cognitiveCategoryService = cognitiveCategoryService;
             _mapper = mapper;
         }
 
@@ -24,7 +25,7 @@ namespace ExamiNation.API.Controllers.Test
         [HttpGet]
         public async Task<IActionResult> GetAllCognitiveCategorys()
         {
-            var response = await _optionService.GetAllAsync();
+            var response = await _cognitiveCategoryService.GetAllAsync();
 
             if (!response.Success)
                 return NotFound(response.Message);
@@ -43,7 +44,7 @@ namespace ExamiNation.API.Controllers.Test
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _optionService.GetByIdAsync(id);
+            var response = await _cognitiveCategoryService.GetByIdAsync(id);
 
             if (!response.Success)
                 return NotFound(response.Message);
@@ -59,7 +60,7 @@ namespace ExamiNation.API.Controllers.Test
             if (createCognitiveCategoryDto == null)
                 return BadRequest("CognitiveCategory data cannot be null.");
 
-            var response = await _optionService.AddAsync(createCognitiveCategoryDto);
+            var response = await _cognitiveCategoryService.AddAsync(createCognitiveCategoryDto);
 
             if (!response.Success)
                 return BadRequest(response.Message);
@@ -87,7 +88,7 @@ namespace ExamiNation.API.Controllers.Test
             }
 
             editCognitiveCategoryDto.Id = id;
-            var response = await _optionService.UpdateAsync(editCognitiveCategoryDto);
+            var response = await _cognitiveCategoryService.UpdateAsync(editCognitiveCategoryDto);
             if (!response.Success)
                 return BadRequest(response.Message);
             return Ok(response);
@@ -103,13 +104,24 @@ namespace ExamiNation.API.Controllers.Test
                 return BadRequest(errorResponse.Message);
             }
 
-            var response = await _optionService.DeleteAsync(id);
+            var response = await _cognitiveCategoryService.DeleteAsync(id);
 
             if (!response.Success)
                 return NotFound(response.Message);
             return Ok(response);
         }
+        [HttpGet("pages")]
+        public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _cognitiveCategoryService.GetAllPagedAsync(queryParameters);
 
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response);
+        }
 
     }
 

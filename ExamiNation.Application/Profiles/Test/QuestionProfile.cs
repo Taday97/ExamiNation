@@ -10,6 +10,8 @@ namespace ExamiNation.Application.Profiles.Test
         public QuestionProfile()
         {
             CreateMap<Question, QuestionDto>().ReverseMap();
+            CreateMap<Question, QuestionViewDto>()
+            .ForMember(dest => dest.CognitiveCategoryCode, opt => opt.MapFrom(src => src.CognitiveCategory!=null ?  src.CognitiveCategory.Code:"")).ReverseMap();
             CreateMap<CreateQuestionDto, Question>()
            .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options));
             CreateMap<EditQuestionDto, Question>().ReverseMap();

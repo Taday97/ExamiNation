@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.Interfaces.Test;
 using ExamiNation.Application.Services.Test;
@@ -133,6 +134,19 @@ namespace ExamiNation.API.Controllers.Test
 
             if (!response.Success)
                 return NotFound(response.Message);
+            return Ok(response);
+        }
+        
+        [HttpGet("pages")]
+        public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _scoreRangeService.GetAllPagedAsync(queryParameters);
+
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
             return Ok(response);
         }
 

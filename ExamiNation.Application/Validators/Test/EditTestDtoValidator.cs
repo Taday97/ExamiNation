@@ -30,9 +30,9 @@ namespace ExamiNation.Application.Validators.Test
            .Must(value => Enum.IsDefined(typeof(TestType), value))
            .WithMessage("Invalid test type.");
 
-            RuleFor(x => x.ImageUrl)
+            RuleFor(x => x.ImageFile)
                .Must(BeAValidImage).WithMessage("The file must be a valid image (jpg, jpeg, png, gif).")
-               .When(x => x.ImageUrl != null);
+               .When(x => x.ImageFile != null);
         }
 
         private bool BeAValidImage(IFormFile imageUrl)

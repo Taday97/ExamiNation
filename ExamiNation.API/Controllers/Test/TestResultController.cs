@@ -3,8 +3,10 @@ using Azure;
 using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.Option;
+using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Application.Interfaces.Test;
+using ExamiNation.Application.Services.Test;
 using ExamiNation.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -196,6 +198,19 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response);
         }
 
+        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        [HttpGet("pages")]
+        public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _testResultService.GetTestResultsPagedAsync(queryParameters);
+
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response);
+        }
 
     }
 

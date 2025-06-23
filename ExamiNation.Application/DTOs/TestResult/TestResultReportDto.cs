@@ -13,9 +13,11 @@ namespace ExamiNation.Application.DTOs.TestResult
         public int QuestionCount { get; set; }
         public int AnsweredCount { get; set; }
         public int NextQuestionPage { get; set; }
+        public decimal ScoreMax { get; set; }
 
         public List<CognitiveCategoryResultDto> CategoryResults { get; set; }
 
-        public double? ProgressPercentage => Math.Round((double)AnsweredCount / QuestionCount * 100, 2);
+        public double ProgressPercentage => QuestionCount == 0 ? 0.0 : Math.Round((double)AnsweredCount / QuestionCount * 100, 2);
+
     }
 }

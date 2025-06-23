@@ -29,10 +29,10 @@ namespace ExamiNation.Application.Services.Test
         public TestService(ITestRepository testRepository, IUserRepository userRepository, IUserService userService, IMapper mapper, IImageStorageService imageStorage)
         {
             _testRepository = testRepository;
-            _userRepository = userRepository;
+            _userRepository = userRepository;                       
             _userService = userService;
             _mapper = mapper;
-            _imageStorage = imageStorage;
+            _imageStorage = imageStorage;       
         }
 
         public async Task<ApiResponse<IEnumerable<TestDto>>> GetAllAsync()
@@ -89,15 +89,10 @@ namespace ExamiNation.Application.Services.Test
 
             var (tests, totalCount) = await _testRepository.GetPagedWithCountAsync(optionsQuery);
 
-            if (!tests.Any())
-            {
-                return ApiResponse<PagedResponse<TestDto>>.CreateErrorResponse("No tests found.");
-            }
-
             var testDtos = _mapper.Map<IEnumerable<TestDto>>(tests);
 
             var result = _mapper.Map<PagedResponse<TestDto>>(queryParameters);
-           
+
             result.Items = testDtos;
             result.TotalCount = totalCount;
 
@@ -111,7 +106,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<TestDto>.CreateErrorResponse("Test ID must be a valid GUID.");
             }
-            var test = await _testRepository.GetByIdAsync(guid,true,l=>l.Include(m=>m.Questions));
+            var test = await _testRepository.GetByIdAsync(guid, true, l => l.Include(m => m.Questions));
             if (test == null)
             {
                 return ApiResponse<TestDto>.CreateErrorResponse($"Test with id {id} not found.");
@@ -127,14 +122,14 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<TestDto>.CreateErrorResponse("Test data cannot be null.");
             }
-            
+
             var testEntity = _mapper.Map<TestEntity>(testDto);
 
             if (testDto.ImageUrl != null && testDto.ImageUrl.Length > 0)
             {
                 try
                 {
-                  var imageUrl = await _imageStorage.SaveImageAsync(testDto.ImageUrl, "test");
+                    var imageUrl = await _imageStorage.SaveImageAsync(testDto.ImageUrl, "test");
 
                     testEntity.ImageUrl = imageUrl;
                 }
@@ -144,7 +139,7 @@ namespace ExamiNation.Application.Services.Test
                 }
             }
 
-
+            testEntity.CreatedAt = DateTime.Now;
             var createdTest = await _testRepository.AddAsync(testEntity);
 
             var createdTestDto = _mapper.Map<TestDto>(createdTest);
@@ -160,7 +155,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<TestDto>.CreateErrorResponse("Test ID must be a valid GUID.");
             }
-            
+
             var test = await _testRepository.GetByIdAsync(guid);
             if (test == null)
             {
@@ -193,11 +188,11 @@ namespace ExamiNation.Application.Services.Test
             _mapper.Map(editTestDto, test);
 
 
-            if (editTestDto.ImageUrl != null && editTestDto.ImageUrl.Length > 0)
+            if (editTestDto.ImageFile != null && editTestDto.ImageFile.Length > 0)
             {
                 try
                 {
-                    var imageUrl = await _imageStorage.SaveImageAsync(editTestDto.ImageUrl, "test");
+                    var imageUrl = await _imageStorage.SaveImageAsync(editTestDto.ImageFile, "test");
 
                     test.ImageUrl = imageUrl;
                 }
@@ -205,6 +200,11 @@ namespace ExamiNation.Application.Services.Test
                 {
                     return ApiResponse<TestDto>.CreateErrorResponse($"Error while saving the image: {ex.Message}");
                 }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(editTestDto.ImageUrl))
+                    test.ImageUrl = editTestDto.ImageUrl;
             }
 
             await _testRepository.UpdateAsync(test);

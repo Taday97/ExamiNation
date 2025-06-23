@@ -138,14 +138,11 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<IEnumerable<TestResultReportDto>>.CreateErrorResponse("No TestResult found.");
             }
 
-            List<TestResultReportDto> dtos =await _testResultReportService.TestResultsReportsMapping(testResult);
+            List<TestResultReportDto> dtos = await _testResultReportService.TestResultsReportsMapping(testResult);
 
 
             return ApiResponse<IEnumerable<TestResultReportDto>>.CreateSuccessResponse("TestResult retrieved successfully.", dtos);
         }
-
-
-
 
         public async Task<ApiResponse<TestResultDto>> AddAsync(CreateTestResultDto testResultDto)
         {
@@ -391,7 +388,11 @@ namespace ExamiNation.Application.Services.Test
         public async Task<ApiResponse<PagedResponse<TestResultDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
             var optionsQuery = _mapper.Map<PagedQueryOptions<TestResult>>(queryParameters);
-
+            optionsQuery.Includes = new List<Expression<Func<TestResult, object>>>
+            {
+               l => l.User,
+               l => l.Test,
+            };
             var (testResults, totalCount) = await _testResultRepository.GetPagedWithCountAsync(optionsQuery);
 
             if (!testResults.Any())
@@ -399,10 +400,8 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<PagedResponse<TestResultDto>>.CreateErrorResponse("No testResults found.");
             }
 
-            var testResultDtos = _mapper.Map<IEnumerable<TestResultDto>>(testResults);
-
             var result = _mapper.Map<PagedResponse<TestResultDto>>(queryParameters);
-            result.Items = testResultDtos;
+            result.Items = await _testResultReportService.TestResultsReportsMapping(testResults);
             result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<TestResultDto>>.CreateSuccessResponse("TestResults retrieved successfully.", result);
@@ -414,7 +413,7 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<ScoreRangeDetailsDto>.CreateErrorResponse("TestResult ID must be a valid GUID.");
             }
-            var testResult = await _testResultRepository.GetByIdAsync(guid, asNoTracking: true, include: l => l.Include(m => m.Answers).Include(m => m.Test).ThenInclude(n => n.Questions));
+            var testResult = await _testResultRepository.GetByIdAsync(guid, asNoTracking: true, include: l => l.Include(m => m.User).Include(m => m.Answers).Include(m => m.Test).ThenInclude(n => n.Questions));
 
             if (testResult == null)
             {
@@ -434,6 +433,31 @@ namespace ExamiNation.Application.Services.Test
             testScoreRangeDetailsDto.CategoryResults = await _testResultReportService.CalculateCategoryResults(testResult);
 
             return ApiResponse<ScoreRangeDetailsDto>.CreateSuccessResponse("Summary retrieved successfully.", testScoreRangeDetailsDto);
+        }
+
+        public async Task<ApiResponse<PagedResponse<TestResultReportDto>>> GetTestResultsPagedAsync(QueryParameters queryParameters)
+        {
+            var optionsQuery = _mapper.Map<PagedQueryOptions<TestResult>>(queryParameters);
+            optionsQuery.Includes = new List<Expression<Func<TestResult, object>>>
+            {
+               l => l.User,
+               l => l.Test,
+            };
+            //optionsQuery.ThenIncludes.Add(q => q.Include(x => x.Answers).ThenInclude(a => a.TestResult));
+            var (testResults, totalCount) = await _testResultRepository.GetPagedWithCountAsync(optionsQuery);
+
+            if (!testResults.Any())
+            {
+                return ApiResponse<PagedResponse<TestResultReportDto>>.CreateErrorResponse("No testResults found.");
+            }
+
+            var testResultDtos = await _testResultReportService.TestResultsReportsMapping(testResults);
+
+            var result = _mapper.Map<PagedResponse<TestResultReportDto>>(queryParameters);
+            result.Items = testResultDtos;
+            result.TotalCount = totalCount;
+
+            return ApiResponse<PagedResponse<TestResultReportDto>>.CreateSuccessResponse("TestResults retrieved successfully.", result);
         }
     }
 }

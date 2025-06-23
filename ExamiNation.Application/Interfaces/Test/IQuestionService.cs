@@ -8,7 +8,7 @@ namespace ExamiNation.Application.Interfaces.Test
     public interface IQuestionService : IGenericService<QuestionDto, CreateQuestionDto, EditQuestionDto>
     {
         Task<ApiResponse<IEnumerable<QuestionDto>>> GetByTestIdAsync(Guid testId);
-        Task<ApiResponse<PagedResponse<QuestionDtoWithOptions>>> GetAllQuestionWithOptionsPagedAsync(QueryParameters queryParameters);
+        Task<ApiResponse<PagedResponse<QuestionViewDto>>> GetAllQuestionPagedAsync(QueryParameters queryParameters);
         Task<ApiResponse<QuestionsPagedWithTestDto>> GetAllQuestionWithOptionsTestPagedAsync(QueryParameters queryParameters);
     }
 }

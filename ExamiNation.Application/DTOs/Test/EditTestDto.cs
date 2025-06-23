@@ -14,10 +14,12 @@ namespace ExamiNation.Application.DTOs.Test
         public string Name { get; set; }
 
         [StringLength(500)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public TestType Type { get; set; }
-        public IFormFile? ImageUrl { get; set; }
+
+        public string? ImageUrl { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }

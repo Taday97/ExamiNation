@@ -1,4 +1,6 @@
 ﻿using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.ScoreRange;
 using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Domain.Enums;
@@ -12,5 +14,7 @@ namespace ExamiNation.Application.Interfaces.Test
         Task<ApiResponse<IEnumerable<TestResultDto>>> GetByTestIdAsync(Guid testId);
         Task<ApiResponse<IEnumerable<TestResultReportDto>>> GetByUserIdAsync(Guid userId);
         Task<ApiResponse<ScoreRangeDetailsDto>> GetSummaryAsync(Guid id);
+
+        Task<ApiResponse<PagedResponse<TestResultReportDto>>> GetTestResultsPagedAsync(QueryParameters queryParameters);
     }
 }

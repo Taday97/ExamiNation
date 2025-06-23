@@ -1,4 +1,5 @@
-﻿using ExamiNation.Domain.Entities.Security;
+﻿using ExamiNation.Domain.Common;
+using ExamiNation.Domain.Entities.Security;
 using System.Linq.Expressions;
 
 namespace ExamiNation.Domain.Interfaces.Security
@@ -16,5 +17,6 @@ namespace ExamiNation.Domain.Interfaces.Security
         Task<Role?> UpdateAsync(Role role);
 
         Task<Role?> DeleteAsync(Guid id);
+        Task<(IEnumerable<Role> Items, int TotalCount)> GetPagedWithCountAsync(PagedQueryOptions<Role> options);
     }
 }

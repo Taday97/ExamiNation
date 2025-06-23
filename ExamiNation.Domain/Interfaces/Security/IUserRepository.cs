@@ -1,4 +1,5 @@
-﻿using ExamiNation.Domain.Entities.Security;
+﻿using ExamiNation.Domain.Common;
+using ExamiNation.Domain.Entities.Security;
 using System.Linq.Expressions;
 
 namespace ExamiNation.Domain.Interfaces.Security
@@ -22,5 +23,6 @@ namespace ExamiNation.Domain.Interfaces.Security
         Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> filter = null, bool asNoTracking = true);
 
         Task<ApplicationUser?> FindFirstUserAsync(Expression<Func<ApplicationUser, bool>> filter, bool asNoTracking = true);
+        Task<(IEnumerable<ApplicationUser> Items, int TotalCount)> GetPagedWithCountAsync(PagedQueryOptions<ApplicationUser> options);
     }
 }

@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.Role;
+using ExamiNation.Application.DTOs.User;
 using ExamiNation.Application.Interfaces.Security;
+using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Security;
 using ExamiNation.Domain.Interfaces.Security;
 
@@ -127,7 +131,22 @@ namespace ExamiNation.Application.Services.Security
             return ApiResponse<RoleDto>.CreateSuccessResponse("Role updated successfully.", roleDto);
         }
 
+        public async Task<ApiResponse<PagedResponse<RoleDto>>> GetAllPagedAsync(QueryParameters queryParameters)
+        {
+            var optionsQuery = _mapper.Map<PagedQueryOptions<ApplicationUser>>(queryParameters);
 
+
+            var (tests, totalCount) = await _userRepository.GetPagedWithCountAsync(optionsQuery);
+
+            var rolesDtos = _mapper.Map<IEnumerable<RoleDto>>(tests);
+
+            var result = _mapper.Map<PagedResponse<RoleDto>>(queryParameters);
+
+            result.Items =rolesDtos;
+            result.TotalCount = totalCount;
+
+            return ApiResponse<PagedResponse<RoleDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
+        }
 
     }
 }

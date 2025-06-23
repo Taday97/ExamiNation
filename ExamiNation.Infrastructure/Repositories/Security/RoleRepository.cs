@@ -1,6 +1,9 @@
-﻿using ExamiNation.Domain.Entities.Security;
+﻿using ExamiNation.Domain.Common;
+using ExamiNation.Domain.Entities.Security;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Infrastructure.Data;
+using ExamiNation.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -87,6 +90,47 @@ namespace ExamiNation.Infrastructure.Repositories.Security
             _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
             return role;
+        }
+        public async Task<(IEnumerable<Role> Items, int TotalCount)> GetPagedWithCountAsync(PagedQueryOptions<Role> options)
+        {
+            IQueryable<Role> query = _context.Roles;
+
+            if (options.AsNoTracking)
+                query = query.AsNoTracking();
+
+            if (options?.Includes != null)
+            {
+                foreach (var include in options.Includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            if (options?.ThenIncludes != null)
+            {
+                foreach (var thenInclude in options.ThenIncludes)
+                {
+                    query = thenInclude(query);
+                }
+            }
+
+            if (options?.Filters != null && options.Filters.Any())
+            {
+                query = query.ApplyFilters(options.Filters);
+            }
+
+            if (!string.IsNullOrEmpty(options?.SortBy))
+            {
+                query = query.ApplyOrdering(options.SortBy, options.SortDescending);
+            }
+
+            var totalCount = await query.CountAsync();
+
+
+            query = query
+                .Skip(((options.PageNumber ?? 1) - 1) * (options.PageSize ?? int.MaxValue))
+                .Take(options.PageSize ?? int.MaxValue);
+
+            return (await query.ToListAsync(), totalCount);
         }
     }
 }
