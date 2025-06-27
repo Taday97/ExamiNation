@@ -9,6 +9,7 @@ using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ExamiNation.Application.Services.Test
@@ -153,14 +154,6 @@ namespace ExamiNation.Application.Services.Test
         public async Task<ApiResponse<PagedResponse<AnswerDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
             var optionsQuery = _mapper.Map<PagedQueryOptions<Answer>>(queryParameters);
-            //var optionsQuery = new PagedQueryOptions<Answer>
-            //{
-            //    Filters = queryParameters.Filters,
-            //    SortBy = queryParameters.SortBy,
-            //    SortDescending = queryParameters.SortDescending,
-            //    PageNumber = queryParameters.PageNumber ?? queryParameters.PageNumber.Value,
-            //    PageSize = queryParameters.PageSize ?? queryParameters.PageSize.Value,
-            //};
 
             var (answers, totalCount) = await _answerRepository.GetPagedWithCountAsync(optionsQuery);
 
@@ -176,6 +169,42 @@ namespace ExamiNation.Application.Services.Test
             result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<AnswerDto>>.CreateSuccessResponse("Answeres retrieved successfully.", result);
+        }
+
+        public async Task<ApiResponse<PagedResponse<AnswerResultDetailDto>>> GetResultDetails(QueryParameters queryParameters)
+        {
+            var optionsQuery = _mapper.Map<PagedQueryOptions<Answer>>(queryParameters);
+            optionsQuery.Includes = new List<Expression<Func<Answer, object>>>
+            {
+                l => l.Question,
+                l => l.Option
+            };
+            optionsQuery.ThenIncludes.Add(q => q.Include(x => x.Question).ThenInclude(a => a.Options));
+
+            var (answers, totalCount) = await _answerRepository.GetPagedWithCountAsync(optionsQuery);
+
+            //if (!answers.Any())
+            //{
+            //    return ApiResponse<PagedResponse<AnswerResultDetailDto>>.CreateErrorResponse("No answers found.");
+            //}
+
+            var answerDtos = answers.Select(l => new AnswerResultDetailDto
+            {
+                TestResultId = l.TestResultId,
+                QuestionNumber = l.Question.QuestionNumber,
+                QuestionText = l.Question.Text,
+                CorrectAnswerText = l.Question.Options.FirstOrDefault(l => l.IsCorrect)?.Text ?? "",
+                UserAnswerText = l.Option.Text,
+                IsCorrect = l.Option.IsCorrect,
+
+            }).ToList();
+
+            var result = _mapper.Map<PagedResponse<AnswerResultDetailDto>>(queryParameters);
+
+            result.Items = answerDtos;
+            result.TotalCount = totalCount;
+
+            return ApiResponse<PagedResponse<AnswerResultDetailDto>>.CreateSuccessResponse("Answeres retrieved successfully.", result);
         }
     }
 }

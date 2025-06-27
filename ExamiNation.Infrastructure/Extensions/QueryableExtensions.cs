@@ -84,25 +84,53 @@ namespace ExamiNation.Infrastructure.Extensions
 
 
 
+        //public static IQueryable<T> ApplyOrdering<T>(this IQueryable<T> query, string? sortBy, bool descending)
+        //{
+        //    if (string.IsNullOrWhiteSpace(sortBy)) return query;
+
+        //    var property = typeof(T).GetProperty(sortBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        //    if (property == null) return query;
+
+        //    var param = Expression.Parameter(typeof(T), "x");
+        //    var propertyAccess = Expression.Property(param, property);
+        //    var lambda = Expression.Lambda(propertyAccess, param);
+
+        //    var method = descending ? "OrderByDescending" : "OrderBy";
+
+        //    var result = typeof(Queryable).GetMethods()
+        //        .First(m => m.Name == method && m.GetParameters().Length == 2)
+        //        .MakeGenericMethod(typeof(T), property.PropertyType)
+        //        .Invoke(null, new object[] { query, lambda });
+
+        //    return (IQueryable<T>)result!;
+        //}
         public static IQueryable<T> ApplyOrdering<T>(this IQueryable<T> query, string? sortBy, bool descending)
         {
             if (string.IsNullOrWhiteSpace(sortBy)) return query;
 
-            var property = typeof(T).GetProperty(sortBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            if (property == null) return query;
-
             var param = Expression.Parameter(typeof(T), "x");
-            var propertyAccess = Expression.Property(param, property);
+            Expression propertyAccess = param;
+
+            foreach (var propertyName in sortBy.Split('.'))
+            {
+                var property = propertyAccess.Type.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                if (property == null) return query;
+                propertyAccess = Expression.Property(propertyAccess, property);
+            }
+
             var lambda = Expression.Lambda(propertyAccess, param);
 
-            var method = descending ? "OrderByDescending" : "OrderBy";
+            var methodName = descending ? "OrderByDescending" : "OrderBy";
 
-            var result = typeof(Queryable).GetMethods()
-                .First(m => m.Name == method && m.GetParameters().Length == 2)
-                .MakeGenericMethod(typeof(T), property.PropertyType)
-                .Invoke(null, new object[] { query, lambda });
+            var method = typeof(Queryable).GetMethods()
+                .Where(m => m.Name == methodName && m.GetParameters().Length == 2)
+                .Single()
+                .MakeGenericMethod(typeof(T), propertyAccess.Type);
+
+            var result = method.Invoke(null, new object[] { query, lambda });
 
             return (IQueryable<T>)result!;
         }
+
     }
 }

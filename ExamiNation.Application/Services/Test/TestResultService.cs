@@ -443,7 +443,7 @@ namespace ExamiNation.Application.Services.Test
                l => l.User,
                l => l.Test,
             };
-            //optionsQuery.ThenIncludes.Add(q => q.Include(x => x.Answers).ThenInclude(a => a.TestResult));
+           
             var (testResults, totalCount) = await _testResultRepository.GetPagedWithCountAsync(optionsQuery);
 
             if (!testResults.Any())
@@ -459,5 +459,7 @@ namespace ExamiNation.Application.Services.Test
 
             return ApiResponse<PagedResponse<TestResultReportDto>>.CreateSuccessResponse("TestResults retrieved successfully.", result);
         }
+
+       
     }
 }

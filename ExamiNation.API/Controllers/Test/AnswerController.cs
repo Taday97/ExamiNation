@@ -5,6 +5,8 @@ using ExamiNation.Application.DTOs.Answer;
 using ExamiNation.Application.Interfaces.Test;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ExamiNation.Application.DTOs.RequestParams;
+using ExamiNation.Application.Services.Test;
 
 namespace ExamiNation.API.Controllers.Test
 {
@@ -69,6 +71,20 @@ namespace ExamiNation.API.Controllers.Test
                 return NotFound(response.Message);
 
             return Ok(response.Data);
+        }
+
+        [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
+        [HttpGet("details")]
+        public async Task<IActionResult> GetResultDetails([FromQuery] QueryParameters queryParameters)
+        {
+            var response = await _answerService.GetResultDetails(queryParameters);
+
+            if (!response.Success)
+            {
+                return NotFound(response.Message);
+            }
+
+            return Ok(response);
         }
 
     }

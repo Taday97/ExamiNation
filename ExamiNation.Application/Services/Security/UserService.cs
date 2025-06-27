@@ -390,11 +390,13 @@ namespace ExamiNation.Application.Services.Security
             });
 
             var user = await _userManager.FindByEmailAsync(payload.Email);
+           
             if (user == null)
             {
+                var generatedUsername = await GenerateUniqueUsernameAsync(payload.Email);
                 user = new ApplicationUser
                 {
-                    UserName = payload.Email,
+                    UserName = generatedUsername,
                     Email = payload.Email,
                     EmailConfirmed = true
                 };
@@ -430,6 +432,25 @@ namespace ExamiNation.Application.Services.Security
             };
 
             return ApiResponse<LoginResultDto>.CreateSuccessResponse("Login successful.", result);
+        }
+        private async Task<string> GenerateUniqueUsernameAsync(string email)
+        {
+            var baseUsername = email.Split('@')[0];
+            var username = baseUsername;
+            int suffix = 0;
+
+            while (await _userManager.FindByNameAsync(username) != null && suffix < 1000)
+            {
+                suffix++;
+                username = $"{baseUsername}{suffix}";
+            }
+
+            if (suffix >= 1000)
+            {
+                throw new Exception("No available usernames found. Please try again later.");
+            }
+
+            return username;
         }
 
         public async Task<ApiResponse<PagedResponse<UserDto>>> GetAllPagedAsync(QueryParameters queryParameters)

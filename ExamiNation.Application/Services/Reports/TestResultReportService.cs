@@ -5,6 +5,7 @@ using ExamiNation.Application.Interfaces.Reports;
 using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Test;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,7 @@ namespace ExamiNation.Application.Services.Reports
             _mapper = mapper;
         }
 
+        
         public async Task<List<TestResultReportDto>> TestResultsReportsMapping(IEnumerable<TestResult> testResults)
         {
             var dtos = new List<TestResultReportDto>();

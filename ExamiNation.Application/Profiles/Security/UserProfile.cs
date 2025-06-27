@@ -12,7 +12,7 @@ namespace ExamiNation.Application.Profiles.Security
             CreateMap<ApplicationUser, UserPorfileDto>().ReverseMap();
 
             CreateMap<ApplicationUser, UserLoginResponseDto>()
-                .ForMember(dest => dest.Roles, opt => opt.Ignore());
+                .ForMember(dest => dest.Roles, opt => opt.Ignore()).ReverseMap();
         }
     }
 }
