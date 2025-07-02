@@ -17,11 +17,12 @@ namespace ExamiNation.Application.DTOs.Question
 
         [Required]
         public Guid TestId { get; set; }
+        public Guid? CognitiveCategoryId { get; set; }
         public decimal Score { get; set; } = 1.0m;
 
         public int? QuestionNumber { get; set; }
 
-        public List<EditOptionDto>? Options { get; set; }
+        public List<OptionDto>? Options { get; set; }
     }
 
 }

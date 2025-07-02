@@ -19,13 +19,15 @@ namespace ExamiNation.Application.Services.Test
 {
     public class QuestionService : IQuestionService
     {
+        private readonly IOptionRepository _optionRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public QuestionService(IQuestionRepository questionRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
+        public QuestionService(IOptionRepository optionRepository, IQuestionRepository questionRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
         {
+            _optionRepository = optionRepository;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _userService = userService;
@@ -66,7 +68,7 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<QuestionDto>.CreateErrorResponse($"Question with id {id} not found.");
             }
 
-            var questionDto = _mapper.Map<QuestionDtoWithOptions>(question);
+            var questionDto = _mapper.Map<QuestionDetailsDto>(question);
             return ApiResponse<QuestionDto>.CreateSuccessResponse("Question retrieved successfully.", questionDto);
         }
 
@@ -147,7 +149,7 @@ namespace ExamiNation.Application.Services.Test
             var (questions, totalCount) = await _questionRepository.GetPagedWithCountAsync(optionsQuery);
 
             var questionDtos = _mapper.Map<IEnumerable<QuestionDtoWithOptions>>(questions);
-           
+
             var testDto = _mapper.Map<TestDto>(questions.FirstOrDefault()?.Test);
 
             var result = _mapper.Map<PagedResponse<QuestionDtoWithOptions>>(queryParameters);
@@ -219,10 +221,9 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<QuestionDto>.CreateErrorResponse($"Question with id {editQuestionDto.Id} not found.");
             }
-
             _mapper.Map(editQuestionDto, question);
 
-            SyncOptions(question, editQuestionDto.Options);
+            await SyncOptions(question, editQuestionDto.Options);
 
             await _questionRepository.UpdateAsync(question);
 
@@ -230,17 +231,23 @@ namespace ExamiNation.Application.Services.Test
             return ApiResponse<QuestionDto>.CreateSuccessResponse("Question updated successfully.", questionDto);
         }
 
-        private void SyncOptions(Question question, List<EditOptionDto>? updatedOptions)
+        private async Task SyncOptions(Question question, List<OptionDto>? updatedOptions)
         {
-            updatedOptions ??= new List<EditOptionDto>();
+            updatedOptions ??= new List<OptionDto>();
 
-            var toRemove = question.Options
-                .Where(opt => !updatedOptions.Any(u => u.Id == opt.Id))
+            var updatedWithId = updatedOptions.Where(o => o.Id != null).ToList();
+            var optionsQuestion= await _optionRepository.GetAllAsync(new QueryOptions<Option>
+            {
+                Filter = q => q.QuestionId == question.Id,
+            });
+            var toRemove = optionsQuestion
+                .Where(opt => !updatedWithId.Any(u => u.Id == opt.Id))
                 .ToList();
 
             foreach (var option in toRemove)
             {
                 question.Options.Remove(option);
+                await _optionRepository.DeleteAsync(option.Id); 
             }
 
             foreach (var updated in updatedOptions)
@@ -249,16 +256,20 @@ namespace ExamiNation.Application.Services.Test
                 if (existingOption != null)
                 {
                     _mapper.Map(updated, existingOption);
+                    await _optionRepository.UpdateAsync(existingOption);
                 }
                 else
                 {
                     var newOption = _mapper.Map<Option>(updated);
-                    newOption.Id = Guid.NewGuid();
+                    newOption.Question = null;
                     newOption.QuestionId = question.Id;
+
+                    await _optionRepository.AddAsync(newOption);
                     question.Options.Add(newOption);
                 }
             }
         }
+
 
 
     }

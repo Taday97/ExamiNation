@@ -61,7 +61,24 @@ namespace ExamiNation.API.Controllers.Test
             var result = await _questionService.GetByTestIdAsync(testId);
             return Ok(result);
         }
-                                  
+
+        [Authorize(Roles = RoleGroups.All)]
+        [HttpGet("test/{testId}/next-number")]
+        public async Task<IActionResult> GetNextQuestionNumber(Guid testId)
+        {
+            var result = await _questionService.GetByTestIdAsync(testId);
+            var questions = result?.Data;
+
+            if (questions == null || !questions.Any())
+            {
+                return Ok(1);
+            }
+
+            var maxNumber = questions.Max(q => q.QuestionNumber);
+            return Ok(maxNumber + 1);
+        }
+
+
         [Authorize(Roles = RoleGroups.All)]
         [HttpGet("pages")]
         public async Task<IActionResult> GetPagedQuestions([FromQuery] QueryParameters queryParameters)

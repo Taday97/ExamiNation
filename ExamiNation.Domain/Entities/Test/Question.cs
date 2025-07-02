@@ -28,8 +28,8 @@ namespace ExamiNation.Domain.Entities.Test
         [Precision(10, 4)]
         public decimal Score { get; set; } = 1.0m;
 
-        public virtual ICollection<Option> Options { get;  set; }
-        public virtual ICollection<Answer> Answers { get;  set; }
+        public virtual ICollection<Option> Options { get; set; } = new List<Option>();
+        public virtual ICollection<Answer> Answers { get;  set; } = new List<Answer>();
 
         [NotMapped]
         public string CognitiveCategoryCode { get; set; }

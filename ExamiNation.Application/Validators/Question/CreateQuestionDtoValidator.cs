@@ -26,18 +26,17 @@ namespace ExamiNation.Application.Validators.Question
             RuleFor(x => x.TestId)
                 .NotEmpty().WithMessage("Test ID is required.");
 
-            When(x => x.Options != null && x.Options.Any(), (Action)(() =>
+            RuleForEach(x => x.Options).ChildRules(options =>
             {
-                RuleForEach(x => x.Options).SetValidator(new CreateOptionDtoValidator());
+                options.RuleFor(o => o.Text).NotEmpty().MaximumLength(300);
+            });
 
-                When(x => x.Type == QuestionType.MultipleChoice || x.Type == QuestionType.TrueFalse, () =>
-                {
-                    RuleFor(x => x.Options)
-                        .Must(options => options.Any(o => o.IsCorrect))
-                        .WithMessage("At least one correct option is required for MultipleChoice or TrueFalse questions.");
-                });
-            }));
-
+            When(x => x.Type == QuestionType.MultipleChoice || x.Type == QuestionType.TrueFalse, () =>
+            {
+                RuleFor(x => x.Options)
+                    .Must(options => options.Any(o => o.IsCorrect))
+                    .WithMessage("At least one correct option is required for MultipleChoice or TrueFalse questions.");
+            });
             When(x => x.QuestionNumber.HasValue, () =>
             {
                 RuleFor(x => x)
@@ -48,7 +47,7 @@ namespace ExamiNation.Application.Validators.Question
 
         private async Task<bool> IsUniqueQuestionNumberAsync(CreateQuestionDto dto, CancellationToken cancellationToken)
         {
-            return await _questionRepository.FindFirstAsync(l=>l.TestId== dto.TestId && l.QuestionNumber== dto.QuestionNumber.Value)==null;
+            return await _questionRepository.FindFirstAsync(l => l.TestId == dto.TestId && l.QuestionNumber == dto.QuestionNumber.Value) == null;
         }
 
 

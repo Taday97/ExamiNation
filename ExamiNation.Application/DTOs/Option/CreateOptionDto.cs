@@ -13,7 +13,6 @@ namespace ExamiNation.Application.DTOs.Option
         [DefaultValue(false)]
         public bool IsCorrect { get; set; } = false;
 
-        [Required]
         public Guid? QuestionId { get; set; }
     }
 }
