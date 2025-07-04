@@ -65,7 +65,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _optionService.AddAsync(createOptionDto);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return CreatedAtAction(nameof(GetOptionById), new { id = response.Data.Id }, response.Data);
         }
@@ -92,7 +92,7 @@ namespace ExamiNation.API.Controllers.Test
             editOptionDto.Id = id;
             var response = await _optionService.UpdateAsync(editOptionDto);
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 
@@ -109,7 +109,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _optionService.DeleteAsync(id);
 
             if (!response.Success)
-                return NotFound(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 

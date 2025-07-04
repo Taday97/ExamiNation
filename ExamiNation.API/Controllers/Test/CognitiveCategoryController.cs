@@ -63,7 +63,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _cognitiveCategoryService.AddAsync(createCognitiveCategoryDto);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return CreatedAtAction(nameof(GetCognitiveCategoryById), new { id = response.Data.Id }, response.Data);
         }
@@ -90,7 +90,7 @@ namespace ExamiNation.API.Controllers.Test
             editCognitiveCategoryDto.Id = id;
             var response = await _cognitiveCategoryService.UpdateAsync(editCognitiveCategoryDto);
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 
@@ -107,7 +107,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _cognitiveCategoryService.DeleteAsync(id);
 
             if (!response.Success)
-                return NotFound(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
         [HttpGet("pages")]

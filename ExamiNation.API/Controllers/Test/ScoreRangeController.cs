@@ -55,6 +55,22 @@ namespace ExamiNation.API.Controllers.Test
             return Ok(response.Data);
         }
 
+        [Authorize(Roles = RoleGroups.All)]
+        [HttpGet("test/{testId}/next-minScore")]
+        public async Task<IActionResult> GetNextQuestionNumber(Guid testId)
+        {
+            var result = await _scoreRangeService.GetByTestIdAsync(testId);
+            var questions = result?.Data;
+
+            if (questions == null || !questions.Any())
+            {
+                return Ok(1);
+            }
+
+            var maxNumber = questions.Max(q => q.MaxScore);
+            return Ok(maxNumber + 1);
+        }
+
         [Authorize(Roles = RoleGroups.AdminOrDevOrCreator)]
         [HttpGet("classification")]
         public async Task<IActionResult> GetClassificationAsync([FromQuery] Guid testId, [FromQuery] decimal score)
@@ -89,7 +105,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _scoreRangeService.AddAsync(createScoreRangeDto);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return CreatedAtAction(nameof(GetScoreRangeById), new { id = response.Data.Id }, response.Data);
         }
@@ -116,7 +132,7 @@ namespace ExamiNation.API.Controllers.Test
             editScoreRangeDto.Id = id;
             var response = await _scoreRangeService.UpdateAsync(editScoreRangeDto);
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 
@@ -133,7 +149,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _scoreRangeService.DeleteAsync(id);
 
             if (!response.Success)
-                return NotFound(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
         

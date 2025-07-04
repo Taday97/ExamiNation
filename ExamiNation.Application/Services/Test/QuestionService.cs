@@ -11,6 +11,8 @@ using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
@@ -24,14 +26,16 @@ namespace ExamiNation.Application.Services.Test
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        protected readonly AppDbContext _context;
 
-        public QuestionService(IOptionRepository optionRepository, IQuestionRepository questionRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
+        public QuestionService(IOptionRepository optionRepository, IQuestionRepository questionRepository, IUserRepository userRepository, IUserService userService, IMapper mapper, AppDbContext context)
         {
             _optionRepository = optionRepository;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _userService = userService;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<ApiResponse<IEnumerable<QuestionDto>>> GetAllAsync()
@@ -87,10 +91,6 @@ namespace ExamiNation.Application.Services.Test
 
             var questions = await _questionRepository.GetAllAsync(options);
 
-            if (questions == null || !questions.Any())
-            {
-                return ApiResponse<IEnumerable<QuestionDto>>.CreateErrorResponse("No questions found for the specified test.");
-            }
 
             var questionDtos = _mapper.Map<IEnumerable<QuestionDto>>(questions);
 
@@ -198,8 +198,22 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<QuestionDto>.CreateErrorResponse($"Question with id {id} not found.");
             }
+            try
+            {
+                var questionDelete = await _questionRepository.DeleteAsync(guid);
 
-            var rolDelete = await _questionRepository.DeleteAsync(guid);
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                return ApiResponse<QuestionDto>.CreateErrorResponse(
+                  "This question cannot be deleted because it has already been used in answers."
+               );
+            }
+            catch
+            {
+                throw;
+            }
+
 
             var questionDto = _mapper.Map<QuestionDto>(question);
 
@@ -223,7 +237,16 @@ namespace ExamiNation.Application.Services.Test
             }
             _mapper.Map(editQuestionDto, question);
 
-            await SyncOptions(question, editQuestionDto.Options);
+            try
+            {
+                await SyncOptions(question, editQuestionDto.Options);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return ApiResponse<QuestionDto>.CreateErrorResponse(
+                    ex.Message
+                );
+            }
 
             await _questionRepository.UpdateAsync(question);
 
@@ -236,7 +259,7 @@ namespace ExamiNation.Application.Services.Test
             updatedOptions ??= new List<OptionDto>();
 
             var updatedWithId = updatedOptions.Where(o => o.Id != null).ToList();
-            var optionsQuestion= await _optionRepository.GetAllAsync(new QueryOptions<Option>
+            var optionsQuestion = await _optionRepository.GetAllAsync(new QueryOptions<Option>
             {
                 Filter = q => q.QuestionId == question.Id,
             });
@@ -244,31 +267,49 @@ namespace ExamiNation.Application.Services.Test
                 .Where(opt => !updatedWithId.Any(u => u.Id == opt.Id))
                 .ToList();
 
-            foreach (var option in toRemove)
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                question.Options.Remove(option);
-                await _optionRepository.DeleteAsync(option.Id); 
+                foreach (var option in toRemove)
+                {
+                    question.Options.Remove(option);
+                    await _optionRepository.DeleteAsync(option.Id);
+                }
+
+                foreach (var updated in updatedOptions)
+                {
+                    var existingOption = question.Options.FirstOrDefault(o => o.Id == updated.Id);
+                    if (existingOption != null)
+                    {
+                        _mapper.Map(updated, existingOption);
+                        await _optionRepository.UpdateAsync(existingOption);
+                    }
+                    else
+                    {
+                        var newOption = _mapper.Map<Option>(updated);
+                        newOption.Question = null;
+                        newOption.QuestionId = question.Id;
+
+                        await _optionRepository.AddAsync(newOption);
+                        question.Options.Add(newOption);
+                    }
+                }
+
+                await transaction.CommitAsync();
             }
-
-            foreach (var updated in updatedOptions)
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547) // FK violation
             {
-                var existingOption = question.Options.FirstOrDefault(o => o.Id == updated.Id);
-                if (existingOption != null)
-                {
-                    _mapper.Map(updated, existingOption);
-                    await _optionRepository.UpdateAsync(existingOption);
-                }
-                else
-                {
-                    var newOption = _mapper.Map<Option>(updated);
-                    newOption.Question = null;
-                    newOption.QuestionId = question.Id;
-
-                    await _optionRepository.AddAsync(newOption);
-                    question.Options.Add(newOption);
-                }
+                await transaction.RollbackAsync();
+                throw new InvalidOperationException("Options cannot be change because they are being used in answers.", ex);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
             }
         }
+
 
 
 

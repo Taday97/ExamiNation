@@ -33,6 +33,10 @@ namespace ExamiNation.Application.Validators.ScoreRange
             RuleFor(x => x)
                 .MustAsync(NotOverlapWithOtherRanges)
                 .WithMessage("The score range overlaps with an existing range for this test.");
+
+            RuleFor(x => x)
+               .MustAsync(NotDuplicateClassification)
+               .WithMessage("The classification already exists for this test.");
         }
 
         private async Task<bool> NotOverlapWithOtherRanges(EditScoreRangeDto dto, CancellationToken cancellationToken)
@@ -41,7 +45,7 @@ namespace ExamiNation.Application.Validators.ScoreRange
             {
                 Filter = l => l.TestId == dto.TestId,
             };
-            var existingRanges = await _scoreRangeRepository.GetAllAsync();
+            var existingRanges = await _scoreRangeRepository.GetAllAsync(options);
 
             return existingRanges
                 .Where(r => r.Id != dto.Id)
@@ -49,10 +53,21 @@ namespace ExamiNation.Application.Validators.ScoreRange
                     dto.MaxScore < range.MinScore || dto.MinScore > range.MaxScore
                 );
         }
+        private async Task<bool> NotDuplicateClassification(EditScoreRangeDto dto, CancellationToken cancellationToken)
+        {
+            QueryOptions<ScoreRangeEntity> options = new QueryOptions<ScoreRangeEntity> { Filter = l => l.TestId == dto.TestId };
+
+            var existingRanges = await _scoreRangeRepository.GetAllAsync(options);
+
+            return existingRanges.Where(r => r.Id != dto.Id).All(range =>
+                !string.Equals(range.Classification, dto.Classification, StringComparison.OrdinalIgnoreCase)
+            );
+        }
 
         public override ValidationResult Validate(ValidationContext<EditScoreRangeDto> context)
         {
             return AsyncContext.Run(() => base.ValidateAsync(context));
         }
+
     }
 }

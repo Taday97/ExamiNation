@@ -34,7 +34,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _userService.RegisterUser(model);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(new { message = response.Message });
         }
@@ -117,7 +117,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _userService.SendResetLinkAsync(model);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(response.Message);
         }
@@ -145,7 +145,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _userService.ChangePasswordAsync(model);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(response.Message);
         }
@@ -158,7 +158,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _userService.ConfirmEmailAsync(model);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(response.Message);
         }

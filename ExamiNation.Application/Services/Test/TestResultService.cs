@@ -15,6 +15,8 @@ using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Infrastructure.Data;
+using ExamiNation.Infrastructure.Repositories.Test;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -292,7 +294,17 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<TestResultDto>.CreateErrorResponse($"TestResult with id {id} not found.");
             }
 
-            var rolDelete = await _testResultRepository.DeleteAsync(guid);
+            try
+            {
+                var _testResultDelete = await _testResultRepository.DeleteAsync(guid);
+
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                return ApiResponse<TestResultDto>.CreateErrorResponse(
+                  "This test result cannot be deleted because it is being used in another entity."
+               );
+            }
 
             var testResultDto = _mapper.Map<TestResultDto>(testResult);
 
@@ -395,11 +407,6 @@ namespace ExamiNation.Application.Services.Test
             };
             var (testResults, totalCount) = await _testResultRepository.GetPagedWithCountAsync(optionsQuery);
 
-            if (!testResults.Any())
-            {
-                return ApiResponse<PagedResponse<TestResultDto>>.CreateErrorResponse("No testResults found.");
-            }
-
             var result = _mapper.Map<PagedResponse<TestResultDto>>(queryParameters);
             result.Items = await _testResultReportService.TestResultsReportsMapping(testResults);
             result.TotalCount = totalCount;
@@ -445,11 +452,6 @@ namespace ExamiNation.Application.Services.Test
             };
            
             var (testResults, totalCount) = await _testResultRepository.GetPagedWithCountAsync(optionsQuery);
-
-            if (!testResults.Any())
-            {
-                return ApiResponse<PagedResponse<TestResultReportDto>>.CreateErrorResponse("No testResults found.");
-            }
 
             var testResultDtos = await _testResultReportService.TestResultsReportsMapping(testResults);
 

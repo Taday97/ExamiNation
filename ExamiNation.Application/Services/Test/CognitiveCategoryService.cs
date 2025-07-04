@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ExamiNation.Application.DTOs.Answer;
 using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.CognitiveCategory;
 using ExamiNation.Application.DTOs.RequestParams;
@@ -9,19 +10,22 @@ using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamiNation.Application.Services.Test
 {
     public class CognitiveCategoryService : ICognitiveCategoryService
     {
-        private readonly ICognitiveCategoryRepository _optionRepository;
+        private readonly ICognitiveCategoryRepository _cognitiveCategoryRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public CognitiveCategoryService(ICognitiveCategoryRepository optionRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
+        public CognitiveCategoryService(ICognitiveCategoryRepository cognitiveCategoryRepository, IUserRepository userRepository, IUserService userService, IMapper mapper)
         {
-            _optionRepository = optionRepository;
+            _cognitiveCategoryRepository = cognitiveCategoryRepository;
             _userRepository = userRepository;
             _userService = userService;
             _mapper = mapper;
@@ -29,16 +33,16 @@ namespace ExamiNation.Application.Services.Test
 
         public async Task<ApiResponse<IEnumerable<CognitiveCategoryDto>>> GetAllAsync()
         {
-            var cognitiveCategories = await _optionRepository.GetAllAsync();
+            var cognitiveCategories = await _cognitiveCategoryRepository.GetAllAsync();
 
             if (cognitiveCategories == null || !cognitiveCategories.Any())
             {
                 return ApiResponse<IEnumerable<CognitiveCategoryDto>>.CreateErrorResponse("No cognitiveCategories found.");
             }
 
-            var optionDtos = _mapper.Map<IEnumerable<CognitiveCategoryDto>>(cognitiveCategories);
+            var cognitiveCategoryDtos = _mapper.Map<IEnumerable<CognitiveCategoryDto>>(cognitiveCategories);
 
-            return ApiResponse<IEnumerable<CognitiveCategoryDto>>.CreateSuccessResponse("CognitiveCategory retrieved successfully.", optionDtos);
+            return ApiResponse<IEnumerable<CognitiveCategoryDto>>.CreateSuccessResponse("CognitiveCategory retrieved successfully.", cognitiveCategoryDtos);
         }
         public async Task<ApiResponse<CognitiveCategoryDto>> GetByIdAsync(Guid id)
         {
@@ -46,26 +50,26 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse("CognitiveCategory ID must be a valid GUID.");
             }
-            var option = await _optionRepository.GetByIdAsync(guid);
-            if (option == null)
+            var cognitiveCategory = await _cognitiveCategoryRepository.GetByIdAsync(guid);
+            if (cognitiveCategory == null)
             {
                 return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse($"CognitiveCategory with id {id} not found.");
             }
 
-            var optionDto = _mapper.Map<CognitiveCategoryDto>(option);
-            return ApiResponse<CognitiveCategoryDto>.CreateSuccessResponse("CognitiveCategory retrieved successfully.", optionDto);
+            var cognitiveCategoryDto = _mapper.Map<CognitiveCategoryDto>(cognitiveCategory);
+            return ApiResponse<CognitiveCategoryDto>.CreateSuccessResponse("CognitiveCategory retrieved successfully.", cognitiveCategoryDto);
         }
 
-        public async Task<ApiResponse<CognitiveCategoryDto>> AddAsync(CreateCognitiveCategoryDto optionDto)
+        public async Task<ApiResponse<CognitiveCategoryDto>> AddAsync(CreateCognitiveCategoryDto cognitiveCategoryDto)
         {
-            if (optionDto == null)
+            if (cognitiveCategoryDto == null)
             {
                 return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse("CognitiveCategory data cannot be null.");
             }
 
-            var optionEntity = _mapper.Map<CognitiveCategory>(optionDto);
+            var cognitiveCategoryEntity = _mapper.Map<CognitiveCategory>(cognitiveCategoryDto);
 
-            var createdCognitiveCategory = await _optionRepository.AddAsync(optionEntity);
+            var createdCognitiveCategory = await _cognitiveCategoryRepository.AddAsync(cognitiveCategoryEntity);
 
             var createdCognitiveCategoryDto = _mapper.Map<CognitiveCategoryDto>(createdCognitiveCategory);
 
@@ -84,17 +88,27 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse("CognitiveCategory ID is required.");
             }
 
-            var option = await _optionRepository.GetByIdAsync(guid);
-            if (option == null)
+            var cognitiveCategory = await _cognitiveCategoryRepository.GetByIdAsync(guid);
+            if (cognitiveCategory == null)
             {
                 return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse($"CognitiveCategory with id {id} not found.");
             }
 
-            var rolDelete = await _optionRepository.DeleteAsync(guid);
+            try
+            {
+                var cognitiveCategoryDelete = await _cognitiveCategoryRepository.DeleteAsync(guid);
 
-            var optionDto = _mapper.Map<CognitiveCategoryDto>(option);
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse(
+                  "This cognitive category cannot be deleted because it is being used in another entity."
+               );
+            }
 
-            return ApiResponse<CognitiveCategoryDto>.CreateSuccessResponse("CognitiveCategory deleted successfully.", optionDto);
+            var cognitiveCategoryDto = _mapper.Map<CognitiveCategoryDto>(cognitiveCategory);
+
+            return ApiResponse<CognitiveCategoryDto>.CreateSuccessResponse("CognitiveCategory deleted successfully.", cognitiveCategoryDto);
         }
 
         public async Task<ApiResponse<CognitiveCategoryDto>> UpdateAsync(EditCognitiveCategoryDto editCognitiveCategoryDto)
@@ -107,35 +121,30 @@ namespace ExamiNation.Application.Services.Test
             {
                 return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse("CognitiveCategory ID must be a valid GUID.");
             }
-            var option = await _optionRepository.GetByIdAsync(guid);
-            if (option == null)
+            var cognitiveCategory = await _cognitiveCategoryRepository.GetByIdAsync(guid);
+            if (cognitiveCategory == null)
             {
                 return ApiResponse<CognitiveCategoryDto>.CreateErrorResponse($"CognitiveCategory with id {editCognitiveCategoryDto.Id} not found.");
             }
 
-            _mapper.Map(editCognitiveCategoryDto, option);
+            _mapper.Map(editCognitiveCategoryDto, cognitiveCategory);
 
-            await _optionRepository.UpdateAsync(option);
+            await _cognitiveCategoryRepository.UpdateAsync(cognitiveCategory);
 
-            CognitiveCategoryDto optionDto = _mapper.Map<CognitiveCategoryDto>(option);
-            return ApiResponse<CognitiveCategoryDto>.CreateSuccessResponse("CognitiveCategory updated successfully.", optionDto);
+            CognitiveCategoryDto cognitiveCategoryDto = _mapper.Map<CognitiveCategoryDto>(cognitiveCategory);
+            return ApiResponse<CognitiveCategoryDto>.CreateSuccessResponse("CognitiveCategory updated successfully.", cognitiveCategoryDto);
         }
 
         public async Task<ApiResponse<PagedResponse<CognitiveCategoryDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
             var cognitiveCategoriesQuery = _mapper.Map<PagedQueryOptions<CognitiveCategory>>(queryParameters);
 
-            var (cognitiveCategories, totalCount) = await _optionRepository.GetPagedWithCountAsync(cognitiveCategoriesQuery);
+            var (cognitiveCategories, totalCount) = await _cognitiveCategoryRepository.GetPagedWithCountAsync(cognitiveCategoriesQuery);
 
-            if (!cognitiveCategories.Any())
-            {
-                return ApiResponse<PagedResponse<CognitiveCategoryDto>>.CreateErrorResponse("No cognitiveCategories found.");
-            }
-
-            var optionDtos = _mapper.Map<IEnumerable<CognitiveCategoryDto>>(cognitiveCategories);
+            var cognitiveCategoryDtos = _mapper.Map<IEnumerable<CognitiveCategoryDto>>(cognitiveCategories);
 
             var result = _mapper.Map<PagedResponse<CognitiveCategoryDto>>(queryParameters);
-            result.Items = optionDtos;
+            result.Items = cognitiveCategoryDtos;
             result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<CognitiveCategoryDto>>.CreateSuccessResponse("CognitiveCategorys retrieved successfully.", result);

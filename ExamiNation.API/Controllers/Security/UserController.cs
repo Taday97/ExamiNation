@@ -98,7 +98,7 @@ namespace ExamiNation.API.Controllers.Security
 
             var response = await _userService.Update(dto);
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 
@@ -116,7 +116,7 @@ namespace ExamiNation.API.Controllers.Security
 
             if (!response.Success)
             {
-                return NotFound(response);
+                return BadRequest(new { message = response.Message });
             }
 
             return Ok(response);
@@ -133,7 +133,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _userService.GetUserRolesAsync(userId);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(response);
         }
@@ -147,7 +147,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _userService.AssignRolesToUserAsync(userId, roles);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(response);
         }
@@ -162,7 +162,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _userService.RemoveRolesFromUserAsync(userId, roles);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(response);
         }

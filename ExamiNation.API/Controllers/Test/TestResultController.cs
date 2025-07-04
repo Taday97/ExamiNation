@@ -113,7 +113,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _testResultService.AddAsync(createTestResultDto);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return CreatedAtAction(nameof(GetTestResultById), new { id = response.Data.Id }, response.Data);
         }
@@ -133,7 +133,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _testResultService.AddSubmitAnswerAsync(submitAnswerDto, userId);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return CreatedAtAction(nameof(GetTestResultById), new { id = response.Data.Id }, response.Data);
         }
@@ -150,7 +150,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _testResultService.GetSummaryAsync(id);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return Ok(response);
         }
@@ -177,7 +177,7 @@ namespace ExamiNation.API.Controllers.Test
             editTestResultDto.Id = id;
             var response = await _testResultService.UpdateAsync(editTestResultDto);
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 
@@ -194,7 +194,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _testResultService.DeleteAsync(id);
 
             if (!response.Success)
-                return NotFound(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 

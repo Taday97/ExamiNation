@@ -4,6 +4,7 @@ using ExamiNation.Application.DTOs.ApiResponse;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.Test;
+using ExamiNation.Application.DTOs.TestResult;
 using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Application.Interfaces.Storage;
 using ExamiNation.Application.Interfaces.Test;
@@ -12,6 +13,8 @@ using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Enums;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TestEntity = ExamiNation.Domain.Entities.Test.Test;
@@ -29,10 +32,10 @@ namespace ExamiNation.Application.Services.Test
         public TestService(ITestRepository testRepository, IUserRepository userRepository, IUserService userService, IMapper mapper, IImageStorageService imageStorage)
         {
             _testRepository = testRepository;
-            _userRepository = userRepository;                       
+            _userRepository = userRepository;
             _userService = userService;
             _mapper = mapper;
-            _imageStorage = imageStorage;       
+            _imageStorage = imageStorage;
         }
 
         public async Task<ApiResponse<IEnumerable<TestDto>>> GetAllAsync()
@@ -162,7 +165,17 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<TestDto>.CreateErrorResponse($"Test with id {id} not found.");
             }
 
-            var rolDelete = await _testRepository.DeleteAsync(guid);
+            try
+            {
+                var _testResultDelete = await _testRepository.DeleteAsync(guid);
+
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                return ApiResponse<TestDto>.CreateErrorResponse(
+                  "This test cannot be deleted because it is being used in another entity."
+               );
+            }
 
             var testDto = _mapper.Map<TestDto>(test);
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.Answer;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.Question;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.Interfaces.Security;
@@ -9,6 +10,8 @@ using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -144,7 +147,17 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<AnswerDto>.CreateErrorResponse($"Answer with id {id} not found.");
             }
 
-            var rolDelete = await _answerRepository.DeleteAsync(guid);
+            try
+            {
+                var answerDelete = await _answerRepository.DeleteAsync(guid);
+
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                return ApiResponse<AnswerDto>.CreateErrorResponse(
+                  "This answer cannot be deleted because it is being used in another entity."
+               );
+            }
 
             var answerDto = _mapper.Map<AnswerDto>(answer);
 
@@ -156,11 +169,6 @@ namespace ExamiNation.Application.Services.Test
             var optionsQuery = _mapper.Map<PagedQueryOptions<Answer>>(queryParameters);
 
             var (answers, totalCount) = await _answerRepository.GetPagedWithCountAsync(optionsQuery);
-
-            if (!answers.Any())
-            {
-                return ApiResponse<PagedResponse<AnswerDto>>.CreateErrorResponse("No answers found.");
-            }
 
             var answerDtos = _mapper.Map<IEnumerable<AnswerDto>>(answers);
             var result = _mapper.Map<PagedResponse<AnswerDto>>(queryParameters);
@@ -183,10 +191,6 @@ namespace ExamiNation.Application.Services.Test
 
             var (answers, totalCount) = await _answerRepository.GetPagedWithCountAsync(optionsQuery);
 
-            //if (!answers.Any())
-            //{
-            //    return ApiResponse<PagedResponse<AnswerResultDetailDto>>.CreateErrorResponse("No answers found.");
-            //}
 
             var answerDtos = answers.Select(l => new AnswerResultDetailDto
             {

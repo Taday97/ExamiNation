@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.CognitiveCategory;
+using ExamiNation.Application.DTOs.Question;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.ScoreRange;
@@ -9,6 +11,8 @@ using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -92,7 +96,17 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<ScoreRangeDto>.CreateErrorResponse($"ScoreRange with id {id} not found.");
             }
 
-            var rolUpdateAsync = await _scoreRangeRepository.DeleteAsync(guid);
+            try
+            {
+                var scoreRangeDelete = await _scoreRangeRepository.DeleteAsync(guid);
+
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                return ApiResponse<ScoreRangeDto>.CreateErrorResponse(
+                  "This score range cannot be deleted because it is being used in another entity."
+               );
+            }
 
             var scoreRangeDto = _mapper.Map<ScoreRangeDto>(scoreRange);
 
@@ -153,10 +167,6 @@ namespace ExamiNation.Application.Services.Test
             };
             var (scoreRanges, totalCount) = await _scoreRangeRepository.GetPagedWithCountAsync(optionsQuery);
 
-            if (!scoreRanges.Any())
-            {
-                return ApiResponse<PagedResponse<ScoreRangeDto>>.CreateErrorResponse("No scoreRanges found.");
-            }
 
             var scoreRangeDtos = _mapper.Map<IEnumerable<ScoreRangeDto>>(scoreRanges);
 
@@ -165,6 +175,27 @@ namespace ExamiNation.Application.Services.Test
             result.TotalCount = totalCount;
 
             return ApiResponse<PagedResponse<ScoreRangeDto>>.CreateSuccessResponse("ScoreRanges retrieved successfully.", result);
+        }
+
+        public async Task<ApiResponse<IEnumerable<ScoreRangeDto>>> GetByTestIdAsync(Guid testId)
+        {
+            if (testId == Guid.Empty)
+            {
+                return ApiResponse<IEnumerable<ScoreRangeDto>>.CreateErrorResponse("Test ID is invalid.");
+            }
+
+            var options = new QueryOptions<ScoreRange>
+            {
+                Filter = q => q.TestId == testId,
+                OrderBy = q => q.OrderBy(p => p.MaxScore),
+            };
+
+            var questions = await _scoreRangeRepository.GetAllAsync(options);
+
+
+            var questionDtos = _mapper.Map<IEnumerable<ScoreRangeDto>>(questions);
+
+            return ApiResponse<IEnumerable<ScoreRangeDto>>.CreateSuccessResponse("Questions retrieved successfully.", questionDtos);
         }
     }
 }

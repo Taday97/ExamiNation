@@ -119,7 +119,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _questionService.AddAsync(createQuestionDto);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return CreatedAtAction(nameof(GetQuestionById), new { id = response.Data.Id }, response.Data);
         }
@@ -146,7 +146,7 @@ namespace ExamiNation.API.Controllers.Test
             editQuestionDto.Id = id;
             var response = await _questionService.UpdateAsync(editQuestionDto);
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 
@@ -163,7 +163,7 @@ namespace ExamiNation.API.Controllers.Test
             var response = await _questionService.DeleteAsync(id);
 
             if (!response.Success)
-                return NotFound(response.Message);
+                return BadRequest(new { message = response.Message});
             return Ok(response);
         }
 

@@ -63,7 +63,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _roleService.AddAsync(createRoleDto);
 
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
 
             return CreatedAtAction(nameof(GetRoleById), new { id = response.Data.Id }, response.Data);
         }
@@ -85,7 +85,7 @@ namespace ExamiNation.API.Controllers.Security
             editRoleDto.Id = id;
             var response = await _roleService.Update(editRoleDto);
             if (!response.Success)
-                return BadRequest(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
 
@@ -102,7 +102,7 @@ namespace ExamiNation.API.Controllers.Security
             var response = await _roleService.Delete(roleId);
 
             if (!response.Success)
-                return NotFound(response.Message);
+                return BadRequest(new { message = response.Message });
             return Ok(response);
         }
         [HttpGet("pages")]

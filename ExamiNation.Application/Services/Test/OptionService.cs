@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.CognitiveCategory;
 using ExamiNation.Application.DTOs.Option;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
@@ -9,6 +10,9 @@ using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Test;
 using ExamiNation.Domain.Interfaces.Security;
 using ExamiNation.Domain.Interfaces.Test;
+using ExamiNation.Infrastructure.Repositories.Test;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamiNation.Application.Services.Test
 {
@@ -90,7 +94,17 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<OptionDto>.CreateErrorResponse($"Option with id {id} not found.");
             }
 
-            var rolDelete = await _optionRepository.DeleteAsync(guid);
+            try
+            {
+                var optionDelete = await _optionRepository.DeleteAsync(guid);
+
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                return ApiResponse<OptionDto>.CreateErrorResponse(
+                  "This option cannot be deleted because it is being used in another entity."
+               );
+            }
 
             var optionDto = _mapper.Map<OptionDto>(option);
 
@@ -126,11 +140,6 @@ namespace ExamiNation.Application.Services.Test
             var optionsQuery = _mapper.Map<PagedQueryOptions<Option>>(queryParameters);
 
             var (options, totalCount) = await _optionRepository.GetPagedWithCountAsync(optionsQuery);
-
-            if (!options.Any())
-            {
-                return ApiResponse<PagedResponse<OptionDto>>.CreateErrorResponse("No options found.");
-            }
 
             var optionDtos = _mapper.Map<IEnumerable<OptionDto>>(options);
 

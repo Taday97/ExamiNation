@@ -1,21 +1,25 @@
 ﻿using ExamiNation.Application.DTOs.CognitiveCategory;
+using ExamiNation.Application.DTOs.ScoreRange;
+using ExamiNation.Domain.Common;
+using ExamiNation.Domain.Interfaces.Test;
 using FluentValidation;
+using FluentValidation.Results;
+using Nito.AsyncEx;
+using CognitiveCategoryEntity = ExamiNation.Domain.Entities.Test.CognitiveCategory;
 
 namespace ExamiNation.Application.Validators.CognitiveCategory
 {
     public class EditCognitiveCategoryDtoValidator : AbstractValidator<EditCognitiveCategoryDto>
     {
+        private readonly ICognitiveCategoryRepository _cognitiveCategoryRepository;
 
-        public EditCognitiveCategoryDtoValidator()
+        public EditCognitiveCategoryDtoValidator(ICognitiveCategoryRepository cognitiveCategoryRepository)
         {
-            RuleFor(x => x.Id)
-                .NotEmpty()
-                .Must(Id => Guid.TryParse(Id.ToString(), out _)).WithMessage("CognitiveCategory ID must be a valid GUID.")
-                .Must((dto, Id) => Id == dto.Id).When(dto => !string.IsNullOrEmpty(dto.Id.ToString())).WithMessage("CognitiveCategory ID in request body does not match the ID in the URL.");
+            _cognitiveCategoryRepository = cognitiveCategoryRepository;
 
             RuleFor(x => x.Name)
-              .NotEmpty().WithMessage("Name is required.")
-              .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.");
+                .NotEmpty().WithMessage("Name is required.")
+                .MaximumLength(100).WithMessage("Name cannot exceed 100 characters.");
 
             RuleFor(x => x.Code)
                 .NotEmpty().WithMessage("Code is required.")
@@ -26,8 +30,40 @@ namespace ExamiNation.Application.Validators.CognitiveCategory
 
             RuleFor(x => x.TestTypeId)
                 .GreaterThan(0).WithMessage("A valid test type must be selected.");
+            RuleFor(x => x)
+                .MustAsync(NotDuplicateName)
+                .WithMessage("Name already exists for this test type.");
+
+            RuleFor(x => x)
+                .MustAsync(NotDuplicateCode)
+                .WithMessage("Code already exists for this test type.");
         }
 
-    }
+        private async Task<bool> NotDuplicateName(EditCognitiveCategoryDto dto, CancellationToken cancellationToken)
+        {
+            var options = new QueryOptions<CognitiveCategoryEntity>
+            {
+                Filter = cc => cc.TestTypeId == dto.TestTypeId && cc.Name.ToLower() == dto.Name.ToLower() && cc.Id != dto.Id
+            };
 
+            var existingItems = await _cognitiveCategoryRepository.GetAllAsync(options);
+            return false;
+        }
+
+        private async Task<bool> NotDuplicateCode(EditCognitiveCategoryDto dto, CancellationToken cancellationToken)
+        {
+            var options = new QueryOptions<CognitiveCategoryEntity>
+            {
+                Filter = cc => cc.TestTypeId == dto.TestTypeId && cc.Code.ToLower() == dto.Code.ToLower() && cc.Id != dto.Id
+            };
+
+            var existingItems = await _cognitiveCategoryRepository.GetAllAsync(options);
+            return false;
+        }
+
+        public override ValidationResult Validate(ValidationContext<EditCognitiveCategoryDto> context)
+        {
+            return AsyncContext.Run(() => base.ValidateAsync(context));
+        }
+    }
 }
