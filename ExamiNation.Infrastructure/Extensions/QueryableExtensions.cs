@@ -7,6 +7,8 @@ namespace ExamiNation.Infrastructure.Extensions
     {
         public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, Dictionary<string, string> filters)
         {
+            ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
+            Expression? combinedCondition = null;
             int appliedFilters = 0;
 
             foreach (var filter in filters)
@@ -14,7 +16,6 @@ namespace ExamiNation.Infrastructure.Extensions
                 var property = typeof(T).GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                 if (property == null) continue;
 
-                var parameter = Expression.Parameter(typeof(T), "x");
                 var propertyAccess = Expression.Property(parameter, property);
                 Expression? filterCondition = null;
 
@@ -68,19 +69,35 @@ namespace ExamiNation.Infrastructure.Extensions
 
                 if (filterCondition != null)
                 {
-                    var lambda = Expression.Lambda<Func<T, bool>>(filterCondition, parameter);
-                    query = query.Where(lambda);
+                    if (combinedCondition == null)
+                    {
+                        combinedCondition = filterCondition;
+                    }
+                    else
+                    {
+
+                        combinedCondition = Expression.AndAlso(combinedCondition, filterCondition);
+
+                    }
                     appliedFilters++;
                 }
             }
 
             if (filters.Count > 0 && appliedFilters == 0)
             {
-                return query.Where(_ => false); 
+                // No filtros válidos, devolver query vacía
+                return query.Where(_ => false);
+            }
+
+            if (combinedCondition != null)
+            {
+                var lambda = Expression.Lambda<Func<T, bool>>(combinedCondition, parameter);
+                return query.Where(lambda);
             }
 
             return query;
         }
+
 
 
 

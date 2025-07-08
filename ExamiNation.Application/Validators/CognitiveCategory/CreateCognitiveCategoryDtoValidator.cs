@@ -29,25 +29,40 @@ namespace ExamiNation.Application.Validators.CognitiveCategory
                 .MaximumLength(250).WithMessage("Description cannot exceed 250 characters.");
 
             RuleFor(x => x.TestTypeId)
-                .GreaterThan(0).WithMessage("A valid test type must be selected.");
-            RuleFor(x => x)
-                .MustAsync(NotDuplicateName)
-                .WithMessage("Name already exists for this test type.");
+                .NotNull().WithMessage("A valid test type must be selected.");
 
-            RuleFor(x => x)
-                .MustAsync(NotDuplicateCode)
-                .WithMessage("Code already exists for this test type.");
+            RuleFor(x => x.Name)
+           .CustomAsync(async (name, context, cancellation) =>
+           {
+                var dto = context.InstanceToValidate;  // Aquí tienes el objeto completo
+                var isDuplicate = await NotDuplicateName(dto, cancellation);
+              if (isDuplicate)
+              {
+                 context.AddFailure("Name", "Name already exists for this test type.");
+              }
+           });
+
+            RuleFor(x => x.Code)
+           .CustomAsync(async (code, context, cancellation) =>
+           {
+               var dto = context.InstanceToValidate;  // Aquí tienes el objeto completo
+               var isDuplicate = await NotDuplicateName(dto, cancellation);
+               if (isDuplicate)
+               {
+                   context.AddFailure("Code", "Code already exists for this test type.");
+               }
+           });
         }
 
         private async Task<bool> NotDuplicateName(CreateCognitiveCategoryDto dto, CancellationToken cancellationToken)
         {
             var options = new QueryOptions<CognitiveCategoryEntity>
             {
-                Filter = cc => cc.TestTypeId == dto.TestTypeId && cc.Name.ToLower() == dto.Name.ToLower() 
+                Filter = cc => cc.TestTypeId == dto.TestTypeId && cc.Name.ToLower() == dto.Name.ToLower()
             };
 
             var existingItems = await _cognitiveCategoryRepository.GetAllAsync(options);
-            return !existingItems.Any();
+            return existingItems.Any();
         }
 
         private async Task<bool> NotDuplicateCode(CreateCognitiveCategoryDto dto, CancellationToken cancellationToken)
@@ -58,7 +73,7 @@ namespace ExamiNation.Application.Validators.CognitiveCategory
             };
 
             var existingItems = await _cognitiveCategoryRepository.GetAllAsync(options);
-            return !existingItems.Any();
+            return existingItems.Any();
         }
 
         public override ValidationResult Validate(ValidationContext<CreateCognitiveCategoryDto> context)

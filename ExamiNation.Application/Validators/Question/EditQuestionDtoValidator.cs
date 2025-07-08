@@ -42,9 +42,16 @@ namespace ExamiNation.Application.Validators.Question
 
             When(x => x.QuestionNumber.HasValue, () =>
             {
-                RuleFor(x => x)
-                    .MustAsync(IsUniqueQuestionNumberAsync)
-                    .WithMessage("Question number is already used in this test.");
+                RuleFor(x => x.QuestionNumber)
+                .CustomAsync(async (code, context, cancellation) =>
+                {
+                    var dto = context.InstanceToValidate; 
+                    var isUniqueQuestion = await IsUniqueQuestionNumberAsync(dto, cancellation);
+                    if (!isUniqueQuestion)
+                    {
+                        context.AddFailure("QuestionNumber", "Question number is already used in this test.");
+                    }
+                });
             });
         }
 

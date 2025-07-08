@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ExamiNation.API.Controllers.Test
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class CognitiveCategoryController : ControllerBase
     {

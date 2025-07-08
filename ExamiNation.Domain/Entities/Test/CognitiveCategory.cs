@@ -13,7 +13,14 @@ namespace ExamiNation.Domain.Entities.Test
         public string Name { get; set; }
 
         [Required, StringLength(50)]
-        public string Code { get; set; }
+        private string _code = string.Empty;
+
+        [Required, StringLength(50)]
+        public string Code
+        {
+            get => _code;
+            set => _code = value?.ToUpperInvariant().Trim() ?? string.Empty;
+        }
 
         [StringLength(250)]
         public string? Description { get; set; }

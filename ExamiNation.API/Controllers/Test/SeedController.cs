@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExamiNation.API.Controllers.Test
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class SeedController : ControllerBase
     {
         private readonly Seeder _testSeeder;
