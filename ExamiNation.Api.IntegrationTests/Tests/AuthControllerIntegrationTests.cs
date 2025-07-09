@@ -724,7 +724,11 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var body = await response.Content.ReadAsStringAsync();
-            body.Should().Be("Email not registered.");
+
+            var json = System.Text.Json.JsonDocument.Parse(body);
+            var message = json.RootElement.GetProperty("message").GetString();
+
+            message.Should().Be("Email not registered.");
         }
         [Test]
         public async Task SendResetLink_Should_Return_Ok_When_EmailValid()
@@ -746,7 +750,10 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var body = await response.Content.ReadAsStringAsync();
-            body.Should().Be("Email not registered.");
+            var json = System.Text.Json.JsonDocument.Parse(body);
+            var message = json.RootElement.GetProperty("message").GetString();
+
+            message.Should().Be("Email not registered.");
         }
 
         [Test]

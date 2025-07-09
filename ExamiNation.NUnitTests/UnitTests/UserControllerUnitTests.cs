@@ -329,8 +329,8 @@ namespace ExamiNation.NUnitTests.UnitTests
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
-            var notFoundResult = result as BadRequestObjectResult;
-            notFoundResult!.Value.Should().BeEquivalentTo(expectedResponse.Message);
+            var badRequest = result as BadRequestObjectResult;
+            badRequest!.Value.Should().BeEquivalentTo(new { message = expectedResponse.Message });
         }
 
         [Test]
@@ -380,9 +380,10 @@ namespace ExamiNation.NUnitTests.UnitTests
             var result = await _controller.DeleteUser(userId);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>();
-            var notFoundResult = result as NotFoundObjectResult;
-            notFoundResult!.Value.Should().BeEquivalentTo(expectedResponse);
+
+            result.Should().BeOfType<BadRequestObjectResult>();
+            var badRequest = result as BadRequestObjectResult;
+            badRequest!.Value.Should().BeEquivalentTo(new { message = expectedResponse.Message });
 
         }
 
@@ -474,8 +475,8 @@ namespace ExamiNation.NUnitTests.UnitTests
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
-            var notFoundResult = result as BadRequestObjectResult;
-            notFoundResult!.Value.Should().BeEquivalentTo(expectedResponse.Message);
+            var badRequest = result as BadRequestObjectResult;
+            badRequest!.Value.Should().BeEquivalentTo(new { message = expectedResponse.Message });
         }
         [Test]
         public async Task RemoveRolesFromUser_ReturnsOk_WhenRolesAreRemovedSuccessfully()
@@ -529,8 +530,9 @@ namespace ExamiNation.NUnitTests.UnitTests
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
-            var notFoundResult = result as BadRequestObjectResult;
-            notFoundResult!.Value.Should().BeEquivalentTo(expectedResponse.Message);
+            var badRequest = result as BadRequestObjectResult;
+            badRequest!.Value.Should().BeEquivalentTo(new { message = expectedResponse.Message });
+
         }
 
         [Test]
@@ -584,8 +586,8 @@ namespace ExamiNation.NUnitTests.UnitTests
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
-            var notFoundResult = result as BadRequestObjectResult;
-            notFoundResult!.Value.Should().BeEquivalentTo(expectedResponse.Message);
+            var badRequest = result as BadRequestObjectResult;
+            badRequest!.Value.Should().BeEquivalentTo(new { message = expectedResponse.Message });
         }
 
     }

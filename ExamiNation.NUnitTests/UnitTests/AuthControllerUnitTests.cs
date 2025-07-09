@@ -13,6 +13,7 @@ using Moq;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ExamiNation.NUnitTests.UnitTests
@@ -67,8 +68,8 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequest = result as BadRequestObjectResult;
+            badRequest!.Value.Should().BeEquivalentTo(new { message = "User registration failed." });
 
-            badRequest!.Value.Should().Be("User registration failed.");
         }
 
         [Test]
@@ -111,7 +112,7 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequest = result as BadRequestObjectResult;
-            badRequest!.Value.Should().Be("This email is already registered.");
+            badRequest!.Value.Should().BeEquivalentTo(new { message = "This email is already registered." });
         }
         [Test]
         public async Task Register_UsernameAlreadyTaken_ReturnsBadRequest()
@@ -135,7 +136,7 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequest = result as BadRequestObjectResult;
-            badRequest!.Value.Should().Be("This username is already taken.");
+            badRequest!.Value.Should().BeEquivalentTo(new { message = "This username is already taken." });
         }
 
 
@@ -225,7 +226,7 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequest = result as BadRequestObjectResult;
-            badRequest!.Value.Should().Be("Email confirmation failed.");
+            badRequest!.Value.Should().BeEquivalentTo(new { message = "Email confirmation failed." });
         }
         [Test]
         public async Task ConfirmEmail_UserNotFound_ReturnsBadRequest()
@@ -245,7 +246,8 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequest = result as BadRequestObjectResult;
-            badRequest!.Value.Should().Be("User not found.");
+            badRequest!.Value.Should().BeEquivalentTo(new { message = "User not found." });
+
         }
 
         [Test]
@@ -435,8 +437,9 @@ namespace ExamiNation.NUnitTests.UnitTests
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
-            var okResult = result as BadRequestObjectResult;
-            okResult!.Value.Should().BeEquivalentTo("SendResetLinkModelDto cannot be null.");
+            var badRequest = result as BadRequestObjectResult;
+            badRequest!.Value.Should().BeEquivalentTo(new { message = "SendResetLinkModelDto cannot be null." });
+
 
         }
         [Test]
@@ -456,7 +459,8 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequest = result as BadRequestObjectResult;
-            badRequest!.Value.Should().Be("Email not registered.");
+            badRequest!.Value.Should().BeEquivalentTo(new { message = "Email not registered." });
+
         }
         [Test]
         public async Task SendResetLink_ServiceSuccess_ReturnsOk()
@@ -702,31 +706,13 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequest = result as BadRequestObjectResult;
-            badRequest!.Value.Should().Be("ChangePasswordModelDto is invalid.");
-        }
-        [Test]
-        public async Task ChangePassword_ServiceFails_ReturnsBadRequestWithMessage()
-        {
-            // Arrange
-            var model = new ChangePasswordModelDto
-            {
-                Username = "existinguser",
-                OldPassword = "wrongpass",
-                NewPassword = "NewPass@123"
-            };
 
-            var apiResponse = ApiResponse<string>.CreateErrorResponse("Old password is incorrect.");
+            var json = JsonSerializer.Serialize(badRequest!.Value);
 
-            _mockUserService.Setup(x => x.ChangePasswordAsync(model))
-                .ReturnsAsync(apiResponse);
+            var doc = JsonDocument.Parse(json);
+            var message = doc.RootElement.GetProperty("message").GetString();
 
-            // Act
-            var result = await _controller.ChangePassword(model);
-
-            // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
-            var badRequest = result as BadRequestObjectResult;
-            badRequest!.Value.Should().Be("Old password is incorrect.");
+            message.Should().Be("ChangePasswordModelDto is invalid.");
         }
         [Test]
         public async Task ChangePassword_ServiceSuccess_ReturnsOk()
@@ -778,7 +764,8 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequestResult = result as BadRequestObjectResult;
-            badRequestResult!.Value.Should().Be("Old password is incorrect.");
+            badRequestResult!.Value.Should().BeEquivalentTo(new { message = "Old password is incorrect." });
+
         }
         [Test]
         public async Task ChangePassword_UserNotFound_ReturnsBadRequest()
@@ -805,7 +792,7 @@ namespace ExamiNation.NUnitTests.UnitTests
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
             var badRequestResult = result as BadRequestObjectResult;
-            badRequestResult!.Value.Should().Be("User not found.");
+            badRequestResult!.Value.Should().BeEquivalentTo(new { message = "User not found." });
         }
         [Test]
         public async Task ChangePassword_Success_ReturnsOk()

@@ -299,7 +299,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             var response = await _client.DeleteAsync("/api/role/null");
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -312,7 +312,7 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             var response = await _client.DeleteAsync("/api/role/nonexistent-role-id");
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Test]
