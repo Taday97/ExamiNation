@@ -28,7 +28,7 @@ namespace ExamiNation.Domain.Entities.Test
         public virtual ICollection<Question> Questions { get;  set; }
         public virtual ICollection<TestResult> TestResults { get;  set; }
         public virtual ICollection<ScoreRange> ScoreRanges { get;  set; }
-        
     }
 
 }
+

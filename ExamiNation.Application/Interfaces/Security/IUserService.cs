@@ -29,6 +29,6 @@ namespace ExamiNation.Application.Interfaces.Security
         Task<ApiResponse<bool>> AssignRolesToUserAsync(string userId, List<string> roles);
         Task<ApiResponse<bool>> RemoveRolesFromUserAsync(string userId, List<string> roles);
         Task<ApiResponse<LoginResultDto>> GoogleLoginAsync(GoogleLoginDto idToken);
-        Task<ApiResponse<PagedResponse<UserDto>>> GetAllPagedAsync(QueryParameters queryParameters);
+        Task<ApiResponse<PagedResponse<UserPorfileDto>>> GetAllPagedAsync(QueryParameters queryParameters);
     }
 }

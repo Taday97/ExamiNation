@@ -23,6 +23,6 @@ namespace ExamiNation.Domain.Interfaces.Security
         Task<IEnumerable<ApplicationUser>> GetUsersAsync(Expression<Func<ApplicationUser, bool>> filter = null, bool asNoTracking = true);
 
         Task<ApplicationUser?> FindFirstUserAsync(Expression<Func<ApplicationUser, bool>> filter, bool asNoTracking = true);
-        Task<(IEnumerable<ApplicationUser> Items, int TotalCount)> GetPagedWithCountAsync(PagedQueryOptions<ApplicationUser> options);
+        Task<(IEnumerable<ApplicationUser> Items, int TotalCount, Dictionary<Guid, List<string?>>)> GetPagedWithCountAsync(PagedQueryOptions<ApplicationUser> options);
     }
 }

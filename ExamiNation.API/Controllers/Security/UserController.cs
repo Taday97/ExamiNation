@@ -167,6 +167,7 @@ namespace ExamiNation.API.Controllers.Security
             return Ok(response);
         }
 
+        [Authorize(Roles = RoleGroups.AdminOrDev)]
         [HttpGet("pages")]
         public async Task<IActionResult> GetPagedTests([FromQuery] QueryParameters queryParameters)
         {

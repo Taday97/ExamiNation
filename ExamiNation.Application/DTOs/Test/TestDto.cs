@@ -18,5 +18,7 @@ namespace ExamiNation.Application.DTOs.Test
 
         public string? ImageUrl { get; set; }
 
+        public bool IsScoringComplete { get; set; }
+
     }
 }

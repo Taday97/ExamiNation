@@ -16,7 +16,10 @@ using ExamiNation.Domain.Interfaces.Test;
 using ExamiNation.Infrastructure.Repositories.Test;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Net.Mime.MediaTypeNames;
 using TestEntity = ExamiNation.Domain.Entities.Test.Test;
 
 namespace ExamiNation.Application.Services.Test
@@ -71,6 +74,7 @@ namespace ExamiNation.Application.Services.Test
                 Includes = new List<Expression<Func<TestEntity, object>>>
                 {
                    l => l.Questions,
+                   l => l.ScoreRanges,
                 }
 
             };
@@ -81,26 +85,78 @@ namespace ExamiNation.Application.Services.Test
                 return ApiResponse<IEnumerable<TestDto>>.CreateErrorResponse($"No tests found for type '{type}'.");
             }
 
-            var testDtos = _mapper.Map<IEnumerable<TestDto>>(tests);
 
+            var testDtos = _mapper.Map<IEnumerable<TestDto>>(tests);
+            foreach (var (test, dto) in tests.Zip(testDtos, (test, dto) => (test, dto)))
+            {
+                dto.IsScoringComplete = CalculateIsValid(test);
+            }
+            testDtos = testDtos.Where(l => l.IsScoringComplete).ToList();
             return ApiResponse<IEnumerable<TestDto>>.CreateSuccessResponse("Tests retrieved successfully.", testDtos);
         }
         public async Task<ApiResponse<PagedResponse<TestDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
             var optionsQuery = _mapper.Map<PagedQueryOptions<TestEntity>>(queryParameters);
+            optionsQuery.Includes = new List<Expression<Func<TestEntity, object>>>
+                {
+                   l => l.Questions,
+                   l => l.ScoreRanges,
+                };
 
 
             var (tests, totalCount) = await _testRepository.GetPagedWithCountAsync(optionsQuery);
 
             var testDtos = _mapper.Map<IEnumerable<TestDto>>(tests);
 
-            var result = _mapper.Map<PagedResponse<TestDto>>(queryParameters);
+            foreach (var (test, dto) in tests.Zip(testDtos, (test, dto) => (test, dto)))
+            {
+                dto.IsScoringComplete = CalculateIsValid(test);
+            }
+            if (queryParameters?.Filters != null && queryParameters.Filters.TryGetValue("isScoringComplete", out var isScoringCompleteFilter))
+            {
+                if (bool.TryParse(isScoringCompleteFilter, out var isScoringComplete) && isScoringComplete)
+                {
+                    testDtos = testDtos.Where(l => l.IsScoringComplete == isScoringComplete);
+                    totalCount= testDtos.Count();
+                }
+            }
 
+            var result = _mapper.Map<PagedResponse<TestDto>>(queryParameters);
             result.Items = testDtos;
             result.TotalCount = totalCount;
 
+
+
             return ApiResponse<PagedResponse<TestDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
         }
+
+        private bool CalculateIsValid(TestEntity test)
+        {
+            if (test.ScoreRanges == null || !test.ScoreRanges.Any() || test.Questions == null || !test.Questions.Any())
+                return false;
+
+            var minPossibleScore = 1;
+            var maxPossibleScore = test.Questions.Sum(q => q.Score);
+
+            var coveredRanges = test.ScoreRanges
+                .OrderBy(r => r.MinScore)
+                .ToList();
+
+            int currentScore = minPossibleScore;
+
+            foreach (var range in coveredRanges)
+            {
+                if (range.MinScore > currentScore)
+                {
+                    return false;
+                }
+
+                currentScore = Math.Max(currentScore, range.MaxScore + 1);
+            }
+
+            return currentScore > maxPossibleScore;
+        }
+
 
 
         public async Task<ApiResponse<TestDto>> GetByIdAsync(Guid id)

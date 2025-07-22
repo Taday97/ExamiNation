@@ -2,6 +2,7 @@
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Responses;
 using ExamiNation.Application.DTOs.Test;
+using ExamiNation.Application.Mapping.Resolvers;
 using ExamiNation.Domain.Common;
 using ExamiNation.Infrastructure.Extensions;
 using TestEntity = ExamiNation.Domain.Entities.Test.Test;
@@ -12,7 +13,8 @@ namespace ExamiNation.Application.Profiles.Test
     {
         public TestProfile()
         {
-            CreateMap<TestEntity, TestDto>().ReverseMap();
+            CreateMap<TestEntity, TestDto>()
+            .ReverseMap();
             CreateMap<CreateTestDto, TestEntity>();
             CreateMap<EditTestDto, TestEntity>().ReverseMap();
 

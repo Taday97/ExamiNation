@@ -5,6 +5,7 @@ using ExamiNation.Infrastructure.Data;
 using ExamiNation.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace ExamiNation.Infrastructure.Repositories.Security
@@ -149,7 +150,7 @@ namespace ExamiNation.Infrastructure.Repositories.Security
             return await query.FirstOrDefaultAsync(filter);
         }
 
-        public async Task<(IEnumerable<ApplicationUser> Items, int TotalCount)> GetPagedWithCountAsync(PagedQueryOptions<ApplicationUser> options)
+        public async Task<(IEnumerable<ApplicationUser> Items, int TotalCount, Dictionary<Guid, List<string?>>)> GetPagedWithCountAsync(PagedQueryOptions<ApplicationUser> options)
         {
             IQueryable<ApplicationUser> query = _userManager.Users;
 
@@ -171,15 +172,36 @@ namespace ExamiNation.Infrastructure.Repositories.Security
                 }
             }
 
-            if (options?.Filters != null && options.Filters.Any())
-            {
-                query = query.ApplyFilters(options.Filters);
-            }
-
             if (!string.IsNullOrEmpty(options?.SortBy))
             {
                 query = query.ApplyOrdering(options.SortBy, options.SortDescending);
             }
+            if (options?.Filters != null && options.Filters.TryGetValue("roles", out var rolesFilter) && !string.IsNullOrWhiteSpace(rolesFilter))
+            {
+                var roleIds = rolesFilter
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(r => Guid.TryParse(r.Trim(), out var id) ? id : (Guid?)null)
+                    .Where(id => id.HasValue)
+                    .Select(id => id.Value)
+                    .ToList();
+
+                if (roleIds.Any())
+                {
+                    var userIdsWithRole = await _context.UserRoles
+                        .Where(ur => roleIds.Contains(ur.RoleId))
+                        .Select(ur => ur.UserId)
+                        .Distinct()
+                        .ToListAsync();
+
+                    query = query.Where(u => userIdsWithRole.Contains(u.Id));
+                }
+            }
+            else if(options?.Filters != null && options.Filters.Any())
+            {
+                query = query.ApplyFilters(options.Filters);
+            }
+
+
 
             var totalCount = await query.CountAsync();
 
@@ -188,7 +210,26 @@ namespace ExamiNation.Infrastructure.Repositories.Security
                 .Skip(((options.PageNumber ?? 1) - 1) * (options.PageSize ?? int.MaxValue))
                 .Take(options.PageSize ?? int.MaxValue);
 
-            return (await query.ToListAsync(), totalCount);
+            var users = await query.ToListAsync();
+
+            var userIds = users.Select(u => u.Id).ToList();
+
+            var userRolesRaw = await _context.UserRoles
+                .Where(ur => userIds.Contains(ur.UserId))
+                .ToListAsync();
+
+           
+
+            var roles = await _context.Roles.ToListAsync();
+
+            var userRolesDict = userRolesRaw
+                .GroupBy(ur => ur.UserId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(ur => roles.First(r => r.Id == ur.RoleId).Name).ToList()
+                );
+
+            return (users, totalCount, userRolesDict);
         }
     }
 }

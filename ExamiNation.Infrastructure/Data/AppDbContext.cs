@@ -1,5 +1,6 @@
 ﻿using ExamiNation.Domain.Entities.Security;
 using ExamiNation.Domain.Entities.Test;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;

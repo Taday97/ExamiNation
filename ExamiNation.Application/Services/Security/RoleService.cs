@@ -133,10 +133,10 @@ namespace ExamiNation.Application.Services.Security
 
         public async Task<ApiResponse<PagedResponse<RoleDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
-            var optionsQuery = _mapper.Map<PagedQueryOptions<ApplicationUser>>(queryParameters);
+            var optionsQuery = _mapper.Map<PagedQueryOptions<Role>>(queryParameters);
 
 
-            var (tests, totalCount) = await _userRepository.GetPagedWithCountAsync(optionsQuery);
+            var (tests, totalCount) = await _roleRepository.GetPagedWithCountAsync(optionsQuery);
 
             var rolesDtos = _mapper.Map<IEnumerable<RoleDto>>(tests);
 

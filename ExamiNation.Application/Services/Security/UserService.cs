@@ -453,21 +453,35 @@ namespace ExamiNation.Application.Services.Security
             return username;
         }
 
-        public async Task<ApiResponse<PagedResponse<UserDto>>> GetAllPagedAsync(QueryParameters queryParameters)
+        public async Task<ApiResponse<PagedResponse<UserPorfileDto>>> GetAllPagedAsync(QueryParameters queryParameters)
         {
             var optionsQuery = _mapper.Map<PagedQueryOptions<ApplicationUser>>(queryParameters);
 
 
-            var (tests, totalCount) = await _userRepository.GetPagedWithCountAsync(optionsQuery);
+            var (tests, totalCount, userRolesDict) = await _userRepository.GetPagedWithCountAsync(optionsQuery);
 
-            var testDtos = _mapper.Map<IEnumerable<UserDto>>(tests);
+            var testDtos = _mapper.Map<IEnumerable<UserPorfileDto>>(tests);
 
-            var result = _mapper.Map<PagedResponse<UserDto>>(queryParameters);
+            var result = _mapper.Map<PagedResponse<UserPorfileDto>>(queryParameters);
 
             result.Items = testDtos;
             result.TotalCount = totalCount;
+            var userDtos = result.Items;
 
-            return ApiResponse<PagedResponse<UserDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
+            foreach (var dto in userDtos)
+            {
+                if (Guid.TryParse(dto.Id, out var idGuid))
+                {
+                    dto.Roles = userRolesDict.TryGetValue(idGuid, out var roles) ? roles : new List<string>();
+                }
+                else
+                {
+                    dto.Roles = new List<string>();
+                }
+            }
+
+
+            return ApiResponse<PagedResponse<UserPorfileDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
         }
 
     }

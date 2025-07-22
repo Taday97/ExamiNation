@@ -39,7 +39,18 @@ namespace ExamiNation.Infrastructure.Extensions
                 else if (underlyingType == typeof(string))
                 {
                     var searchConstant = Expression.Constant(filter.Value, typeof(string));
-                    filterCondition = Expression.Call(propertyAccess, "Contains", null, searchConstant);
+                    filterCondition = Expression.AndAlso(
+                        Expression.NotEqual(propertyAccess, Expression.Constant(null, typeof(string))),
+                        Expression.Call(propertyAccess, "Contains", null, searchConstant)
+                    );
+                }
+                else if (underlyingType == typeof(bool))
+                {
+                    if (bool.TryParse(filter.Value, out var boolResult))
+                    {
+                        var searchConstant = Expression.Constant(boolResult, propertyType);
+                        filterCondition = Expression.Equal(propertyAccess, searchConstant);
+                    }
                 }
                 else if (underlyingType == typeof(Guid))
                 {
@@ -69,23 +80,15 @@ namespace ExamiNation.Infrastructure.Extensions
 
                 if (filterCondition != null)
                 {
-                    if (combinedCondition == null)
-                    {
-                        combinedCondition = filterCondition;
-                    }
-                    else
-                    {
-
-                        combinedCondition = Expression.AndAlso(combinedCondition, filterCondition);
-
-                    }
+                    combinedCondition = combinedCondition == null
+                        ? filterCondition
+                        : Expression.AndAlso(combinedCondition, filterCondition);
                     appliedFilters++;
                 }
             }
 
             if (filters.Count > 0 && appliedFilters == 0)
             {
-                // No filtros válidos, devolver query vacía
                 return query.Where(_ => false);
             }
 
@@ -97,30 +100,6 @@ namespace ExamiNation.Infrastructure.Extensions
 
             return query;
         }
-
-
-
-
-        //public static IQueryable<T> ApplyOrdering<T>(this IQueryable<T> query, string? sortBy, bool descending)
-        //{
-        //    if (string.IsNullOrWhiteSpace(sortBy)) return query;
-
-        //    var property = typeof(T).GetProperty(sortBy, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-        //    if (property == null) return query;
-
-        //    var param = Expression.Parameter(typeof(T), "x");
-        //    var propertyAccess = Expression.Property(param, property);
-        //    var lambda = Expression.Lambda(propertyAccess, param);
-
-        //    var method = descending ? "OrderByDescending" : "OrderBy";
-
-        //    var result = typeof(Queryable).GetMethods()
-        //        .First(m => m.Name == method && m.GetParameters().Length == 2)
-        //        .MakeGenericMethod(typeof(T), property.PropertyType)
-        //        .Invoke(null, new object[] { query, lambda });
-
-        //    return (IQueryable<T>)result!;
-        //}
         public static IQueryable<T> ApplyOrdering<T>(this IQueryable<T> query, string? sortBy, bool descending)
         {
             if (string.IsNullOrWhiteSpace(sortBy)) return query;
