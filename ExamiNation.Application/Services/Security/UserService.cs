@@ -481,7 +481,7 @@ namespace ExamiNation.Application.Services.Security
             }
 
 
-            return ApiResponse<PagedResponse<UserPorfileDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
+            return ApiResponse<PagedResponse<UserPorfileDto>>.CreateSuccessResponse("Users retrieved successfully.", result);
         }
 
     }

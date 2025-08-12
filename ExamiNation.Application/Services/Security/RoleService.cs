@@ -8,6 +8,7 @@ using ExamiNation.Application.Interfaces.Security;
 using ExamiNation.Domain.Common;
 using ExamiNation.Domain.Entities.Security;
 using ExamiNation.Domain.Interfaces.Security;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExamiNation.Application.Services.Security
 {
@@ -136,14 +137,28 @@ namespace ExamiNation.Application.Services.Security
             var optionsQuery = _mapper.Map<PagedQueryOptions<Role>>(queryParameters);
 
 
-            var (tests, totalCount) = await _roleRepository.GetPagedWithCountAsync(optionsQuery);
+            var (roles, totalCount, userRolesDict) = await _roleRepository.GetPagedWithCountAsync(optionsQuery);
 
-            var rolesDtos = _mapper.Map<IEnumerable<RoleDto>>(tests);
+            var rolesDtos = _mapper.Map<IEnumerable<RoleDto>>(roles);
 
             var result = _mapper.Map<PagedResponse<RoleDto>>(queryParameters);
 
-            result.Items =rolesDtos;
+
+            result.Items = rolesDtos;
             result.TotalCount = totalCount;
+            var userDtos = result.Items;
+
+            foreach (var dto in userDtos)
+            {
+                if (Guid.TryParse(dto.Id, out var idGuid))
+                {
+                    dto.UserCount = userRolesDict.TryGetValue(idGuid, out var users) ? users.Count : 0;
+                }
+                else
+                {
+                    dto.UserCount = 0;
+                }
+            }
 
             return ApiResponse<PagedResponse<RoleDto>>.CreateSuccessResponse("Tests retrieved successfully.", result);
         }
