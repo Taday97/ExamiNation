@@ -15,6 +15,8 @@ namespace ExamiNation.Application.Interfaces.Security
         Task<ApiResponse<UserDto>> Update(UserDto userDto);
 
         Task<ApiResponse<string>> RegisterUser(RegisterModelDto model);
+        Task<ApiResponse<string>> CreateUser(UserCreateDto model);
+        Task<ApiResponse<string>> UpdateUser(UserUpdateDto model);
         Task<ApiResponse<LoginResultDto>> LoginAsync(LoginModelDto model);
         Task<ApiResponse<RefreshTokenModelDto>> RefreshTokenAsync(RefreshTokenModelDto model);
 

@@ -9,6 +9,7 @@ namespace ExamiNation.Application.Profiles.Security
         public UserProfile()
         {
             CreateMap<ApplicationUser, UserDto>().ReverseMap();
+            CreateMap<ApplicationUser, UserUpdateDto>().ReverseMap();
             CreateMap<ApplicationUser, UserPorfileDto>().ReverseMap();
 
             CreateMap<ApplicationUser, UserLoginResponseDto>()

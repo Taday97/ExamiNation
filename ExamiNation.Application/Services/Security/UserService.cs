@@ -15,6 +15,7 @@ using ExamiNation.Infrastructure.Repositories;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace ExamiNation.Application.Services.Security
 {
@@ -141,6 +142,79 @@ namespace ExamiNation.Application.Services.Security
             }
 
             return ApiResponse<string>.CreateSuccessResponse("User registered successfully.");
+        }
+        public async Task<ApiResponse<string>> CreateUser(UserCreateDto model)
+        {
+            var existingEmailUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingEmailUser != null)
+                return ApiResponse<string>.CreateErrorResponse("This email is already registered.");
+
+            var existingUsernameUser = await _userManager.FindByNameAsync(model.UserName);
+            if (existingUsernameUser != null)
+                return ApiResponse<string>.CreateErrorResponse("This username is already taken.");
+
+            var user = new ApplicationUser
+            {
+                UserName = model.UserName,
+                Email = model.Email
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return ApiResponse<string>.CreateErrorResponse("User registration failed.", errors);
+            }
+
+            var response = await AssignRolesToUserAsync(user.Id.ToString(), model.Roles.ToList());
+
+            if (!response.Success)
+            {
+                var errors = response.Errors.ToList();
+                return ApiResponse<string>.CreateErrorResponse("User registration failed.", errors);
+            }
+
+            return ApiResponse<string>.CreateSuccessResponse("User registered successfully.");
+        }
+        public async Task<ApiResponse<string>> UpdateUser(UserUpdateDto userDto)
+        {
+            if (userDto == null)
+            {
+                return ApiResponse<string>.CreateErrorResponse("User data cannot be null.");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userDto.Id.ToString(), asNoTracking: false);
+
+            if (user == null)
+            {
+                return ApiResponse<string>.CreateErrorResponse($"User with id {userDto.Id} not found.");
+            }
+            var existingUserWithEmail = await _userRepository.GetUsersAsync(l => (l.Email == userDto.Email || l.UserName == userDto.UserName) && l.Id != userDto.Id);
+            if (existingUserWithEmail.Any())
+            {
+                return ApiResponse<string>.CreateErrorResponse("Email or username is already in use."); ;
+            }
+
+            _mapper.Map(userDto, user);
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return ApiResponse<string>.CreateErrorResponse("User registration failed.", errors);
+            }
+
+            var response = await AssignRolesToUserAsync(user.Id.ToString(), userDto.Roles.ToList());
+
+            if (!response.Success)
+            {
+                var errors = response.Errors.ToList();
+                return ApiResponse<string>.CreateErrorResponse("User registration failed.", errors);
+            }
+
+            return ApiResponse<string>.CreateSuccessResponse("User updated successfully.");
+
         }
 
         public async Task<ApiResponse<LoginResultDto>> LoginAsync(LoginModelDto model)
@@ -307,7 +381,7 @@ namespace ExamiNation.Application.Services.Security
         }
 
 
-        public async Task<ApiResponse<bool>> AssignRolesToUserAsync(string userId, List<string> roles)
+        public async Task<ApiResponse<bool>> AssignRolesToUserAsync(string userId, List<string> roleIds)
         {
             var user = await _userRepository.GetByIdAsync(userId, false);
             if (user == null)
@@ -315,25 +389,29 @@ namespace ExamiNation.Application.Services.Security
                 return ApiResponse<bool>.CreateErrorResponse("User not found.");
             }
 
-            var normalizedRoles = roles.Select(r => r.ToUpper()).ToList();
-            var existingRoles = await _roleRepository.GetRolesAsync(r => normalizedRoles.Contains(r.NormalizedName.ToUpper()));
-            var existingRoleNames = existingRoles.Select(r => r.NormalizedName.ToUpper()).ToList();
-
-            if (normalizedRoles.Count != existingRoleNames.Count)
+            // Obtener los roles desde sus IDs
+            var existingRoles = await _roleRepository.GetRolesAsync(r => roleIds.Contains(r.Id.ToString()));
+            if (existingRoles.Count() != roleIds.Count)
             {
                 return ApiResponse<bool>.CreateErrorResponse("One or more roles not found.");
             }
 
+            var normalizedRoles = existingRoles
+                .Select(r => r.NormalizedName.ToUpper())
+                .ToList();
+
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            var duplicateRoles = normalizedRoles.Intersect(userRoles.Select(r => r.ToUpper())).ToList();
-            if (duplicateRoles.Any())
+            var rolesToAdd = normalizedRoles
+                .Except(userRoles.Select(r => r.ToUpper()))
+                .ToList();
+
+            if (!rolesToAdd.Any())
             {
-                var rolesList = string.Join(", ", duplicateRoles);
-                return ApiResponse<bool>.CreateErrorResponse($"The user already has the following role(s): {rolesList}.");
+                return ApiResponse<bool>.CreateSuccessResponse("No new roles to assign.", true);
             }
 
-            var result = await _userManager.AddToRolesAsync(user, roles);
+            var result = await _userManager.AddToRolesAsync(user, rolesToAdd);
             if (result.Succeeded)
             {
                 return ApiResponse<bool>.CreateSuccessResponse("Roles assigned successfully.", true);
@@ -342,6 +420,7 @@ namespace ExamiNation.Application.Services.Security
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
             return ApiResponse<bool>.CreateErrorResponse($"Failed to assign roles: {errors}");
         }
+
 
         public async Task<ApiResponse<bool>> RemoveRolesFromUserAsync(string userId, List<string> roles)
         {
@@ -390,7 +469,7 @@ namespace ExamiNation.Application.Services.Security
             });
 
             var user = await _userManager.FindByEmailAsync(payload.Email);
-           
+
             if (user == null)
             {
                 var generatedUsername = await GenerateUniqueUsernameAsync(payload.Email);
@@ -483,6 +562,7 @@ namespace ExamiNation.Application.Services.Security
 
             return ApiResponse<PagedResponse<UserPorfileDto>>.CreateSuccessResponse("Users retrieved successfully.", result);
         }
+
 
     }
 

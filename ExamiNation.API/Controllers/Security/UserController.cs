@@ -1,5 +1,6 @@
 ﻿using ExamiNation.Application.Common.Autorization;
 using ExamiNation.Application.DTOs.ApiResponse;
+using ExamiNation.Application.DTOs.Auth;
 using ExamiNation.Application.DTOs.RequestParams;
 using ExamiNation.Application.DTOs.Role;
 using ExamiNation.Application.DTOs.User;
@@ -82,8 +83,44 @@ namespace ExamiNation.API.Controllers.Security
 
             return Ok(response.Data);
         }
+
+
+        [Authorize(Roles = RoleGroups.AdminOrDev)]
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _userService.CreateUser(model);
+
+            if (!response.Success)
+                return BadRequest(new { message = response.Message });
+
+            return Ok(new { message = response.Message });
+        }
+
         [Authorize(Roles = RoleGroups.AdminOrDev)]
         [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserUpdateDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _userService.UpdateUser(model);
+
+            if (!response.Success)
+                return BadRequest(new { message = response.Message });
+
+            return Ok(new { message = response.Message });
+        }
+
+        [Authorize(Roles = RoleGroups.AdminOrDev)]
+        [HttpPut("edit/{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDto dto)
         {
             if (dto == null)

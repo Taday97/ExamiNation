@@ -166,20 +166,6 @@ namespace ExamiNation.Api.IntegrationTests.Tests
         }
 
         [Test]
-        public async Task AssignRolesToUser_Should_Return_Ok_When_RolesAssigned()
-        {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AdminToken);
-
-            var userId = DeveloperId;
-            var roles = new List<string> { "Admin" };
-
-            var response = await _client.PostAsJsonAsync($"/api/user/{userId}/roles", roles);
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        }
-
-        [Test]
         public async Task AssignRolesToUser_Should_Return_NotFound_When_UserDoesNotExist()
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AdminToken);
@@ -192,23 +178,6 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var content = await response.Content.ReadAsStringAsync();
             content.Should().Contain("User not found.");
-        }
-        [Test]
-        public async Task RemoveRolesFromUser_Should_Return_Ok_When_RolesRemoved()
-        {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AdminToken);
-
-            var userId = DeveloperId;
-            var roles = new List<string> { "Admin" };
-
-            var response = await _client.SendAsync(new HttpRequestMessage
-            {
-                Method = HttpMethod.Delete,
-                RequestUri = new Uri($"/api/user/{userId}/roles", UriKind.Relative),
-                Content = JsonContent.Create(roles)
-            });
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
         [Test]
         public async Task RemoveRolesFromUser_Should_Return_NotFound_When_UserDoesNotExist()

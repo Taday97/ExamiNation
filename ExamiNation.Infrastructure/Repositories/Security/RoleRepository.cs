@@ -167,5 +167,15 @@ namespace ExamiNation.Infrastructure.Repositories.Security
             return (pagedRoles, totalCount, userRolesDict);
         }
 
+        public async Task<bool> RoleExistsAsync(string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(roleName))
+                return false;
+
+            var role = await _context.Roles
+                .FirstOrDefaultAsync(r => r.Name == roleName);
+
+            return role != null;
+        }
     }
 }

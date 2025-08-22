@@ -18,5 +18,6 @@ namespace ExamiNation.Domain.Interfaces.Security
 
         Task<Role?> DeleteAsync(Guid id);
         Task<(IEnumerable<Role> Items, int TotalCount, Dictionary<Guid, List<string?>>)> GetPagedWithCountAsync(PagedQueryOptions<Role> options);
+        Task<bool> RoleExistsAsync(string roleName);
     }
 }

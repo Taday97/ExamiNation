@@ -41,8 +41,8 @@ namespace ExamiNation.API
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
             })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
+           .AddEntityFrameworkStores<AppDbContext>()
+           .AddDefaultTokenProviders();
 
 
             var jwtSettings = configuration.GetSection("JwtSettings");

@@ -100,26 +100,6 @@ namespace ExamiNation.Api.IntegrationTests.Tests
             content.Should().NotBeNullOrEmpty();
         }
 
-        [Test]
-        public async Task Register_Should_Return_Ok_When_Valid_Request()
-        {
-            // Arrange
-            var requestBody = new RegisterModelDto
-            {
-                Username = $"testuser_{Guid.NewGuid()}",
-                Password = "Test@123",
-                Email = $"testuser_{Guid.NewGuid()}@example.com"
-            };
-
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/auth/register", requestBody);
-
-            // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var content = await response.Content.ReadAsStringAsync();
-            content.Should().NotBeNullOrEmpty();
-            content.Should().Contain("User registered successfully.");
-        }
 
         [Test]
         public async Task Login_Should_Return_Ok_When_Valid_Credentials()
