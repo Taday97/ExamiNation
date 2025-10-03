@@ -4,7 +4,7 @@
 
 This project is ideal for showcasing clean architecture, security practices with **ASP.NET Identity**, and robust CI/CD pipelines for automated testing.
 
-![image](https://github.com/user-attachments/assets/78b223b9-96b6-49f6-89f1-113508dd3ba0)
+![image](https://github.com/user-attachments/assets/771820b0-fdc2-44d8-a79a-0f7a3f9c1406)
 
 
 ---
